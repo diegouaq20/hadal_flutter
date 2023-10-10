@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "947936692507",
+    "firebase_url": "https://hadal-8eb6f-default-rtdb.firebaseio.com",
+    "project_id": "hadal-8eb6f",
+    "storage_bucket": "hadal-8eb6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947936692507:android:ad73479af7a37898e2ebbe",
+        "android_client_info": {
+          "package_name": "com.example.hadal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947936692507-hsa5a38cobpprs49f4gpf47k2mqmc021.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeHjkWJOQwY7KrEgMAo5Ul65gsLe8DWEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947936692507-hsa5a38cobpprs49f4gpf47k2mqmc021.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
