@@ -383,9 +383,10 @@ class _AjustesEnfermeraState extends State<AjustesEnfermera> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context,
-                          _picker.getImage(source: ImageSource.gallery));
+                    onTap: () async {
+                      final XFile? pickedFile =
+                          await _picker.pickImage(source: ImageSource.gallery);
+                      Navigator.pop(context, pickedFile);
                     },
                     child: Column(
                       children: <Widget>[
@@ -399,9 +400,10 @@ class _AjustesEnfermeraState extends State<AjustesEnfermera> {
                   ),
                   SizedBox(width: 32), // Espacio entre las opciones
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context,
-                          _picker.getImage(source: ImageSource.camera));
+                    onTap: () async {
+                      final XFile? pickedFile =
+                          await _picker.pickImage(source: ImageSource.camera);
+                      Navigator.pop(context, pickedFile);
                     },
                     child: Column(
                       children: <Widget>[

@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../inicioUsuarios/cambiarContraseña.dart';
 import '../../inicioUsuarios/login_screen.dart';
 
@@ -377,10 +377,10 @@ class _AjustesState extends State<Ajustes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context,
-                          _picker.getImage(source: ImageSource.gallery));
-                    },
+                    // onTap: () {
+                    //   Navigator.pop(context,
+                    //       _picker.getImage(source: ImageSource.gallery));
+                    // },
                     child: Column(
                       children: <Widget>[
                         Icon(Icons.photo, color: Color(0xFF1FBAAF)),
@@ -393,10 +393,10 @@ class _AjustesState extends State<Ajustes> {
                   ),
                   SizedBox(width: 32), // Espacio entre las opciones
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context,
-                          _picker.getImage(source: ImageSource.camera));
-                    },
+                    // onTap: () {
+                    //   Navigator.pop(context,
+                    //       _picker.getImage(source: ImageSource.camera));
+                    // },
                     child: Column(
                       children: <Widget>[
                         Icon(Icons.camera, color: Color(0xFF1FBAAF)),
@@ -691,7 +691,7 @@ class _AjustesState extends State<Ajustes> {
                 ],
               ),
             ),
-            
+
             SizedBox(height: 15),
             Divider(
               color: Colors.grey, // Cambiar el color de la línea divisoria
@@ -1036,7 +1036,7 @@ class _AjustesState extends State<Ajustes> {
                 ],
               ),
             ),
-            SizedBox(height: 5),           
+            SizedBox(height: 5),
             Divider(
               color: Colors.grey, // Cambiar el color de la línea divisoria
               thickness: 1, // Ajustar el grosor de la línea divisoria

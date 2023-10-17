@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/principalEnfermera.dart';
 import 'package:hadal/inicioUsuarios/login_screen.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
@@ -15,6 +16,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey =
+      'pk_test_51NyQXLARylbXLgfzeXUGVsSrTaD6hGUxAjpYxjZlpzVpPdds2WH2chs0tpVK7OjFZTE3jq8vA41ziu7vK2nC9LCk00MNKQOFZY';
+
+  await Stripe.instance.applySettings();
 
   // Solicitar permisos de notificación
   final status = await Permission.notification.request();
@@ -30,7 +36,8 @@ void main() async {
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
-    final InitializationSettings initializationSettings = InitializationSettings(
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
     );
 

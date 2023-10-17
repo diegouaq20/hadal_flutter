@@ -40,7 +40,9 @@ dependencies:
   firebase_database: 
   firebase_core: 
   geolocator:
-  
+  flutter_stripe: ^9.4.0
+
+
   #intl
   intl: ^0.17.0
   #guarda los datos en dispositivo
@@ -63,7 +65,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   uuid: ^3.0.7
-  image_picker:
   flutter_native_image:
   url_launcher: ^6.1.10
   cached_network_image:
@@ -76,6 +77,8 @@ dependencies:
   splash_screen_view: ^3.0.0
   #dependencia para abrir un navegador web al usar URL 
   flutter_web_browser: 
+  image_picker: ^1.0.4
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
