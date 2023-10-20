@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
+import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
 class CitaAgendada extends StatefulWidget {
   final String userId;
@@ -44,7 +45,11 @@ class CitaAgendada extends StatefulWidget {
   _CitaAgendadaState createState() => _CitaAgendadaState();
 }
 
+ClientStripePayment stripePayment = ClientStripePayment();
+
 class _CitaAgendadaState extends State<CitaAgendada> {
+  ClientStripePayment stripePayment = ClientStripePayment();
+
   bool _showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;
 
@@ -165,6 +170,51 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     }
   }
 
+  void _realizarPagoYConfirmarCita() async {
+    try {
+      // Lógica de pago con Stripe aquí
+      await stripePayment.makePayment(context, widget.total);
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final citasRef = FirebaseFirestore.instance.collection('citas');
+
+        final newCitaRef = await citasRef.add({
+          'nombre': widget.nombre,
+          'dia': widget.dayOfWeek,
+          'diaDelMes': widget.dayOfMonth,
+          'mes': widget.month,
+          'hora': widget.schedule,
+          'servicio': widget.serviceName,
+          'total': widget.total,
+          'estado': 'disponible',
+          'domicilio': widget.domicilio,
+          'icono': widget.icono,
+          'photoUrl': widget.photoUrl,
+          'tipoServicio': widget.tipoServicio,
+          'tipoCategoria': widget.tipoCategoria,
+          'pacienteId': widget.userId,
+          'enfermeraId': "",
+          'ubicacionPaciente': widget.ubicacion,
+        });
+
+        // Muestra la pantalla de "Esperando Aceptación" solo si el pago fue exitoso
+        _showWaitingProgressDialog(newCitaRef.id);
+        _waitForCitaAceptada(newCitaRef.id);
+      }
+    } catch (error) {
+      setState(() {
+        _showWaitingDialog = false;
+      });
+      Fluttertoast.showToast(
+        msg: 'Hubo un error al confirmar la cita.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      print(error);
+    }
+  }
+
   void _confirmarCita() async {
     showDialog(
       context: context,
@@ -186,99 +236,105 @@ class _CitaAgendadaState extends State<CitaAgendada> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Servicio: ${widget.serviceName ?? ''}'),
-              Text('Nombre: ${widget.nombre ?? ''}'),
-              Text('Domicilio: ${widget.domicilio ?? ''}'),
-              Text(
-                'Día: ${widget.dayOfWeek ?? ''}, ${widget.dayOfMonth ?? ''} de ${widget.month ?? ''}',
+              Container(
+                width: 80,
+                height: 80,
+                child: SvgPicture.network(
+                  widget.icono,
+                  color: Colors.grey,
+                ),
               ),
-              Text('Hora: ${widget.schedule ?? ''}'),
-              Text('Total: \$${widget.total?.toStringAsFixed(2) ?? ''}'),
-              Text('\nCategoría: Servicio ${widget.tipoCategoria ?? ''}'),
-              Text(
-                'Estado: ${widget.estado ?? ''}',
-                style: TextStyle(
-                  color: Colors
-                      .green, // Puedes ajustar el color según tus necesidades
+              SizedBox(height: 20.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Servicio: ${widget.serviceName}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Nombre: ${widget.nombre}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Domicilio: ${widget.domicilio}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Día: ${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Hora: ${widget.schedule}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Total: \$${widget.total.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Categoría: Servicio ${widget.tipoCategoria}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                    Text(
+                      'Ubicacion: Servicio ${widget.ubicacion}',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF235365),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 30.0),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _realizarPagoYConfirmarCita();
+                    _showWaitingDialog = true;
+                  });
+
+                  _showWaitingDialog = true;
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFF1FBAAF),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'Confirmarrrr',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Cancelar',
-                style: TextStyle(
-                  color: Color(0xFF1FBAAF),
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-
-                setState(() {
-                  _showWaitingDialog = true;
-                });
-
-                try {
-                  final currentUser = FirebaseAuth.instance.currentUser;
-                  if (currentUser != null) {
-                    final citasRef =
-                        FirebaseFirestore.instance.collection('citas');
-
-                    final newCitaRef = await citasRef.add({
-                      'nombre': widget.nombre,
-                      'dia': widget.dayOfWeek,
-                      'diaDelMes': widget.dayOfMonth,
-                      'mes': widget.month,
-                      'hora': widget.schedule,
-                      'servicio': widget.serviceName,
-                      'total': widget.total,
-                      'estado': 'disponible',
-                      'domicilio': widget.domicilio,
-                      'icono': widget.icono,
-                      'photoUrl': widget.photoUrl,
-                      'tipoServicio': widget.tipoServicio,
-                      'tipoCategoria': widget.tipoCategoria,
-                      'pacienteId': widget.userId,
-                      'enfermeraId': "",
-                      'ubicacionPaciente': widget.ubicacion,
-                    });
-
-                    _showWaitingProgressDialog(newCitaRef.id);
-                    _waitForCitaAceptada(newCitaRef.id);
-                  }
-                } catch (error) {
-                  setState(() {
-                    _showWaitingDialog = false;
-                  });
-                  Fluttertoast.showToast(
-                    msg: 'Hubo un error al confirmar la cita.',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                  );
-                  print(error);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFF1FBAAF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Confirmar',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
         );
       },
     );

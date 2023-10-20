@@ -39,7 +39,6 @@ class _CarritoState extends State<Carrito> {
             icon: Icon(Icons.payment),
             onPressed: () {
               // Llamar al método showPaymentSheet cuando se presione el botón}
-              stripePayment.makePayment(context);
             },
           ),
         ],
@@ -72,7 +71,7 @@ class _CarritoState extends State<Carrito> {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF235365))),
-                      Text('Total: \$${serviceData['precio']}',
+                      Text('Totaaaaal: \$${serviceData['precio']}',
                           style: TextStyle(
                               fontSize: 14, color: Color(0xFF235365))),
                     ],

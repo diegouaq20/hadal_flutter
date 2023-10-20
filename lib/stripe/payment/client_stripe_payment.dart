@@ -7,7 +7,10 @@ import 'package:http/http.dart' as http;
 class ClientStripePayment extends GetConnect {
   Map<String, dynamic>? paymentIntentData;
 
-  Future<void> makePayment(BuildContext context) async {
+  Future<void> makePayment(BuildContext context, double _total) async {
+    print(
+        '_________________Valor de total: $_total'); // Imprimir el valor de total en la consola
+
     var gpay = PaymentSheetGooglePay(
       merchantCountryCode: "MX",
       currencyCode: "MXN",
@@ -15,7 +18,7 @@ class ClientStripePayment extends GetConnect {
     );
     try {
       paymentIntentData = await createPaymentIntent(
-        '20',
+        double.parse(_total.toStringAsFixed(2)),
         'MXN',
       );
       await Stripe.instance
@@ -24,12 +27,7 @@ class ClientStripePayment extends GetConnect {
                   paymentIntentClientSecret:
                       paymentIntentData!['client_secret'],
                   merchantDisplayName: 'Hadal',
-                  googlePay: gpay
-                  // googlePay: PaymentSheetGooglePay(
-                  //   merchantCountryCode: 'MX',
-                  //   testEnv: true,
-                  // ),
-                  ))
+                  googlePay: gpay))
           .then((value) {});
 
       showPaymentSheet(context);
@@ -57,7 +55,7 @@ class ClientStripePayment extends GetConnect {
     }
   }
 
-  createPaymentIntent(String amount, String currency) async {
+  createPaymentIntent(double amount, String currency) async {
     try {
       Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
@@ -79,8 +77,8 @@ class ClientStripePayment extends GetConnect {
     }
   }
 
-  String calculateAmount(String amount) {
-    final a = int.parse(amount) * 100;
+  String calculateAmount(double amount) {
+    final a = (amount * 100).toInt();
     return a.toString();
   }
 }

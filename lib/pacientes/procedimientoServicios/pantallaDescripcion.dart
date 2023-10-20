@@ -196,58 +196,59 @@ class _DescripcionState extends State<Descripcion> {
                     ),
                     SizedBox(height: 20),
                     Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xFF1FBAAF)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFF1FBAAF)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
                         children: [
-                          Text(
-                            'Precio: \$${double.parse(widget.servicio['precio']).toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF245366), // Color del texto
-                            ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Precio: \$${double.parse(widget.servicio['precio']).toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF245366), // Color del texto
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Costo de servicio (5%): \$${_costoServicio.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF245366), // Color del texto
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Total: \$$_total',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF245366), // Color del texto
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Costo de servicio (5%): \$${_costoServicio.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF245366), // Color del texto
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Total: \$$_total',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF245366), // Color del texto
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
                   ],
                 ),
               ),
@@ -269,7 +270,7 @@ class _DescripcionState extends State<Descripcion> {
                             nombre: widget.servicio['procedimiento'],
                             icono: widget.servicio['icono'],
                             total: _total,
-                            domicilio:_domicilio,
+                            domicilio: _domicilio,
                             ubicacion: _ubicacion,
                             tipoCategoria: widget.servicio['tipoCategoria'],
                           );
@@ -304,7 +305,7 @@ class _DescripcionState extends State<Descripcion> {
                             nombre: widget.servicio['procedimiento'],
                             icono: widget.servicio['icono'],
                             total: _total,
-                            domicilio:_domicilio,
+                            domicilio: _domicilio,
                             ubicacion: _ubicacion,
                             tipoCategoria: widget.servicio['tipoCategoria'],
                           );
