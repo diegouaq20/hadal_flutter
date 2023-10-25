@@ -44,7 +44,7 @@ dependencies:
 
 
   #intl
-  intl: ^0.17.0
+  intl: ^0.18.1
   #guarda los datos en dispositivo
   shared_preferences: ^2.0.7
   #notificaciones
@@ -71,6 +71,7 @@ dependencies:
   photo_view: ^0.14.0
   auto_size_text: ^3.0.0
   #Dependencias para las notificaciones
+  awesome_notifications: ^0.8.2
   flutter_local_notifications:
   permission_handler:
   #dependencia para el splash
