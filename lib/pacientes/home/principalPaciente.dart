@@ -5,6 +5,7 @@ import 'package:hadal/pacientes/carrito/carrito.dart';
 import 'package:hadal/pacientes/chats/salasPrivadasPacientes.dart';
 import 'package:hadal/pacientes/home/home.dart';
 import 'package:hadal/pacientes/ajustes/ajustes.dart';
+import 'package:hadal/services/notification_service.dart';
 
 class Principal extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class Principal extends StatefulWidget {
 }
 
 class _PrincipalState extends State<Principal> {
-  int _selectedIndex = 2; // Inicialmente seleccionamos la pestaña del índice 2 (Home).
+  int _selectedIndex = 2; // seleccionamos la pestaña del índice 2 (Home).
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,17 @@ class _PrincipalState extends State<Principal> {
             child: IndexedStack(
               index: _selectedIndex,
               children: [
-                Center(child: Text('Notifications')),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await NotificationService.showNotification(
+                        title: "Title of the notification",
+                        body: "Body of the notification",
+                      );
+                    },
+                    child: Text('Notificación'),
+                  ),
+                ),
                 SalasPrivadasPacientes(),
                 Home(),
                 Calendario(),
@@ -77,6 +88,7 @@ class _PrincipalState extends State<Principal> {
       ),
     );
   }
+
   Widget _buildTabItem(int index, String iconPath) {
     return Expanded(
       child: InkWell(
@@ -106,7 +118,9 @@ class _PrincipalState extends State<Principal> {
                     iconPath,
                     width: 28,
                     height: 28,
-                    color: _selectedIndex == index ? Colors.white : Color(0xFF7C7F83),
+                    color: _selectedIndex == index
+                        ? Colors.white
+                        : Color(0xFF7C7F83),
                   ),
                 ],
               ),
