@@ -10,42 +10,44 @@ import 'package:hadal/registroUsuario/registerHome.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart'; // Importa la biblioteca permission_handler
+import 'package:permission_handler/permission_handler.dart';
+import 'package:hadal/services/notification_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.initializeNotification();
 
   Stripe.publishableKey =
       'pk_test_51NyQXLARylbXLgfzeXUGVsSrTaD6hGUxAjpYxjZlpzVpPdds2WH2chs0tpVK7OjFZTE3jq8vA41ziu7vK2nC9LCk00MNKQOFZY';
 
   await Stripe.instance.applySettings();
 
-  // Solicitar permisos de notificación
-  final status = await Permission.notification.request();
+  // // Solicitar permisos de notificación
+  // final status = await Permission.notification.request();
 
-  if (status.isGranted) {
-    // Los permisos de notificación están concedidos, procede con la inicialización de Firebase y notificaciones locales
-    await Firebase.initializeApp();
-    initializeDateFormatting('es');
+  // if (status.isGranted) {
+  //   // Los permisos de notificación están concedidos, procede con la inicialización de Firebase y notificaciones locales
+  await Firebase.initializeApp();
+  initializeDateFormatting('es');
 
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+  //   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //       FlutterLocalNotificationsPlugin();
 
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+  //   final AndroidInitializationSettings initializationSettingsAndroid =
+  //       AndroidInitializationSettings('app_icon');
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
+  //   final InitializationSettings initializationSettings =
+  //       InitializationSettings(
+  //     android: initializationSettingsAndroid,
+  //   );
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  } else {
-    // Los permisos de notificación no están concedidos, puedes mostrar un mensaje al usuario o realizar alguna otra acción
-    print('Permisos de notificación no concedidos');
-  }
+  //   flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // } else {
+  //   // Los permisos de notificación no están concedidos, puedes mostrar un mensaje al usuario o realizar alguna otra acción
+  //   print('Permisos de notificación no concedidos');
+  // }
 
   runApp(MyApp());
 }
