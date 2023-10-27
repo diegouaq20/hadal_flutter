@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hadal/pacientes/calendario/calendario.dart';
-import 'package:hadal/pacientes/carrito/carrito.dart';
 import 'package:hadal/pacientes/chats/salasPrivadasPacientes.dart';
 import 'package:hadal/pacientes/home/home.dart';
 import 'package:hadal/pacientes/ajustes/ajustes.dart';
@@ -30,18 +29,6 @@ class _PrincipalState extends State<Principal> {
                 'HADAL',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24),
-              ),
-              Positioned(
-                right: 0,
-                child: IconButton(
-                  icon: Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Carrito()),
-                    );
-                  },
-                ),
               ),
             ],
           ),

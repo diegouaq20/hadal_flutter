@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
@@ -43,17 +46,21 @@ class CitaAgendada extends StatefulWidget {
 
   @override
   _CitaAgendadaState createState() => _CitaAgendadaState();
+
+  void showWaitingProgressDialog() {}
 }
 
-ClientStripePayment stripePayment = ClientStripePayment();
+ClientStripePayment stripePayment =
+    ClientStripePayment(onPaymentSuccess: (bool) {});
 
 class _CitaAgendadaState extends State<CitaAgendada> {
-  ClientStripePayment stripePayment = ClientStripePayment();
+  ClientStripePayment stripePayment =
+      ClientStripePayment(onPaymentSuccess: (bool) {});
 
-  bool _showWaitingDialog = false;
+  bool showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;
 
-  void _showWaitingProgressDialog(String citaId) {
+  void showWaitingProgressDialog(BuildContext context, String citaId) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -146,7 +153,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
       citaRef.snapshots().listen((snapshot) {
         if (snapshot.exists && snapshot['estado'] == 'aceptado') {
           setState(() {
-            _showWaitingDialog = false;
+            showWaitingDialog = false;
           });
           Navigator.of(context, rootNavigator: true).pop();
           Fluttertoast.showToast(
@@ -198,13 +205,23 @@ class _CitaAgendadaState extends State<CitaAgendada> {
           'ubicacionPaciente': widget.ubicacion,
         });
 
-        // Muestra la pantalla de "Esperando Aceptación" solo si el pago fue exitoso
-        _showWaitingProgressDialog(newCitaRef.id);
-        _waitForCitaAceptada(newCitaRef.id);
+        // Muestra el SnackBar de pago exitoso
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
+        //   ),
+        // );
+
+        // Espera un momento antes de mostrar el WaitingProgressDialog
+        // await Future.delayed(Duration(
+        //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
+
+        // Muestra el WaitingProgressDialog
+        // showWaitingDialog = true;
       }
     } catch (error) {
       setState(() {
-        _showWaitingDialog = false;
+        showWaitingDialog = false;
       });
       Fluttertoast.showToast(
         msg: 'Hubo un error al confirmar la cita.',
@@ -315,10 +332,11 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   Navigator.of(context).pop();
                   setState(() {
                     _realizarPagoYConfirmarCita();
-                    _showWaitingDialog = true;
                   });
 
-                  _showWaitingDialog = true;
+                  await Future.delayed(Duration(seconds: 10));
+
+                  // Puedes ajustar la duración según tus necesidades
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xFF1FBAAF),
@@ -327,7 +345,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   ),
                 ),
                 child: Text(
-                  'Confirmarrrr',
+                  'Proceder al pago',
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -340,47 +358,47 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     );
   }
 
-  void _agregarAlCarrito() {
-    try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final userRef = FirebaseFirestore.instance
-            .collection('usuariopaciente')
-            .doc(currentUser.uid);
-        final carritoRef = userRef.collection('carrito');
+  // void _agregarAlCarrito() {
+  //   try {
+  //     final currentUser = FirebaseAuth.instance.currentUser;
+  //     if (currentUser != null) {
+  //       final userRef = FirebaseFirestore.instance
+  //           .collection('usuariopaciente')
+  //           .doc(currentUser.uid);
+  //       final carritoRef = userRef.collection('carrito');
 
-        // Agregar el servicio al carrito
-        carritoRef.add({
-          'nombre': widget.serviceName,
-          'precio': widget.total,
-          'dia': widget.dayOfWeek,
-          'diaDelMes': widget.dayOfMonth,
-          'mes': widget.month,
-          'hora': widget.schedule,
-          'nombreUsuario': widget.nombre,
-          'domicilio': widget.domicilio,
-          'photoUrl': widget.photoUrl,
-          'icono': widget.icono,
-          'tipoCategoria': widget.tipoCategoria,
-          'estado': "sin pedir"
-          // Otros campos si es necesario
-        });
+  //       // Agregar el servicio al carrito
+  //       carritoRef.add({
+  //         'nombre': widget.serviceName,
+  //         'precio': widget.total,
+  //         'dia': widget.dayOfWeek,
+  //         'diaDelMes': widget.dayOfMonth,
+  //         'mes': widget.month,
+  //         'hora': widget.schedule,
+  //         'nombreUsuario': widget.nombre,
+  //         'domicilio': widget.domicilio,
+  //         'photoUrl': widget.photoUrl,
+  //         'icono': widget.icono,
+  //         'tipoCategoria': widget.tipoCategoria,
+  //         'estado': "sin pedir"
+  //         // Otros campos si es necesario
+  //       });
 
-        Fluttertoast.showToast(
-          msg: 'El servicio se ha añadido al carrito correctamente.',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
-      }
-    } catch (error) {
-      Fluttertoast.showToast(
-        msg: 'Hubo un error al añadir el servicio al carrito.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
-      print(error);
-    }
-  }
+  //       Fluttertoast.showToast(
+  //         msg: 'El servicio se ha añadido al carrito correctamente.',
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.CENTER,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     Fluttertoast.showToast(
+  //       msg: 'Hubo un error al añadir el servicio al carrito.',
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.CENTER,
+  //     );
+  //     print(error);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -514,25 +532,25 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               ),
             ),
             SizedBox(height: 15.0),
-            ElevatedButton(
-              onPressed: _agregarAlCarrito,
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFFF4FCFB),
-                onPrimary: Color(0xFF1FBAAF),
-                minimumSize: Size(double.infinity, 50.0),
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Color(0xFF1FBAAF)),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              child: Text(
-                'Añadir al carrito',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Color(0xFF1FBAAF),
-                ),
-              ),
-            ),
+            // ElevatedButton(
+            //   onPressed: _agregarAlCarrito,
+            //   style: ElevatedButton.styleFrom(
+            //     primary: Color(0xFFF4FCFB),
+            //     onPrimary: Color(0xFF1FBAAF),
+            //     minimumSize: Size(double.infinity, 50.0),
+            //     shape: RoundedRectangleBorder(
+            //       side: BorderSide(color: Color(0xFF1FBAAF)),
+            //       borderRadius: BorderRadius.circular(10.0),
+            //     ),
+            //   ),
+            //   child: Text(
+            //     'Añadir al carrito',
+            //     style: TextStyle(
+            //       fontSize: 18.0,
+            //       color: Color(0xFF1FBAAF),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
