@@ -20,7 +20,7 @@ void main() async {
   await NotificationService.initializeNotification();
 
   Stripe.publishableKey =
-      'pk_test_51NyQXLARylbXLgfzeXUGVsSrTaD6hGUxAjpYxjZlpzVpPdds2WH2chs0tpVK7OjFZTE3jq8vA41ziu7vK2nC9LCk00MNKQOFZY';
+      'KAKAKApk_test_51NyQXLARylbXLgfzeXUGVsSrTaD6hGUxAjpYxjZlpzVpPdds2WH2chs0tpVK7OjFZTE3jq8vA41ziu7vK2nC9LCk00MNKQOFZY';
 
   await Stripe.instance.applySettings();
 
