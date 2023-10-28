@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hadal/pacientes/procedimientoServicios/pantallaDescripcion.dart';
-import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/detallesCitas.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
+
 import 'verMas.dart';
 
 class Home extends StatefulWidget {
@@ -156,83 +158,168 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      constraints: BoxConstraints(maxHeight: 60),
-                      child: Center(
-                        child: Wrap(
-                          spacing: 27,
-                          runSpacing: 10,
-                          children: serviciosBasicosDocs.map((servicioDoc) {
-                            final data =
-                                servicioDoc.data() as Map<String, dynamic>;
-                            final serviceName = data['procedimiento'];
-                            final serviceIconUrl = data['icono'];
+  padding: EdgeInsets.symmetric(horizontal: 30),
+  constraints: BoxConstraints(maxHeight: 60),
+  child: Center(
+    child: Wrap(
+      spacing: 27,
+      runSpacing: 10,
+      children: serviciosBasicosDocs.map((servicioDoc) {
+        final data = servicioDoc.data() as Map<String, dynamic>;
+        final serviceName = data['procedimiento'];
+        final serviceIconUrl = data['icono'];
 
-                            final serviceNameFormatted = serviceName.length > 10
-                                ? serviceName.substring(0, 8) + '..'
-                                : serviceName;
+        final serviceNameFormatted = serviceName.length > 10
+            ? serviceName.substring(0, 8) + '..'
+            : serviceName;
 
-                            return Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Descripcion(
-                                          servicio: servicioDoc,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 60,
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFF6FFFE),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 5.0,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        SvgPicture.network(
-                                          serviceIconUrl,
-                                          height: 40.0,
-                                          color: Color(0xFF7C7F83),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 0),
-                                  child: Text(
-                                    serviceNameFormatted,
-                                    style: TextStyle(
-                                      color: Color(0xFF235365),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
+        return Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      title: Center(
+                        child: Text(
+                          "Selecciona una opción",
+                          style: TextStyle(
+                            color: Color(0xFF235365),
+                          ),
                         ),
                       ),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Descripcion(
+                                        servicio: servicioDoc,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text("Domicilio registrado"),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DescripcionParaTerceros(
+                                        servicio: servicioDoc,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text("Para alguien más"),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
+                                ),
+                                onPressed: () {
+                                  // Navegar a una ruta no diseñada
+                                  // Aquí puedes agregar la lógica para la tercera opción
+                                },
+                                child: Text("Ubicación actual"),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Colors.red,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Cancelar"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF6FFFE),
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 5.0,
+                      offset: Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.network(
+                      serviceIconUrl,
+                      height: 40.0,
+                      color: Color(0xFF7C7F83),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0),
+              child: Text(
+                serviceNameFormatted,
+                style: TextStyle(
+                  color: Color(0xFF235365),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    ),
+  ),
+),
+
                     SizedBox(height: 20),
                     Padding(
                       padding:

@@ -134,7 +134,7 @@ class ClientStripePayment extends GetConnect {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación',
+                'Esperando Aceptación desde la clase pago',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hadal/pacientes/procedimientoServicios/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
 
 void main() => runApp(ColumnasBasicos());
 
@@ -74,57 +75,143 @@ class MyHomePage extends StatelessWidget {
                             : serviceName;
 
                         return Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Descripcion(
-                                      servicio: servicioDoc,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                height: 150,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF6FFFE),
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey,
-                                      blurRadius: 5.0,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
+  children: [
+    GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      title: Center(
+                        child: Text(
+                          "Selecciona una opción",
+                          style: TextStyle(
+                            color: Color(0xFF235365),
+                          ),
+                        ),
+                      ),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
                                 ),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    SvgPicture.network(
-                                      serviceIconUrl,
-                                      height: 60.0,
-                                      color: Color(0xFF7C7F83),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Descripcion(
+                                        servicio: servicioDoc,
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
+                                child: Text("Domicilio registrado"),
                               ),
                             ),
-                            SizedBox(height: 10),
-                            Text(
-                              serviceNameFormatted,
-                              style: TextStyle(
-                                color: Color(0xFF235365),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DescripcionParaTerceros(
+                                        servicio: servicioDoc,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text("Para alguien más"),
                               ),
-                              textAlign: TextAlign.center,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Color(0xFF1FBAAF),
+                                ),
+                                onPressed: () {
+                                  // Navegar a una ruta no diseñada
+                                  // Aquí puedes agregar la lógica para la tercera opción
+                                },
+                                child: Text("Ubicación actual"),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0)),
+                                  primary: Colors.red,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Cancelar"),
+                              ),
                             ),
                           ],
-                        );
+                        ),
+                      ),
+                    );
+          },
+        );
+      },
+      child: Container(
+        height: 150,
+        width: 150,
+        decoration: BoxDecoration(
+          color: Color(0xFFF6FFFE),
+          borderRadius: BorderRadius.circular(15.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 5.0,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SvgPicture.network(
+              serviceIconUrl,
+              height: 60.0,
+              color: Color(0xFF7C7F83),
+            ),
+          ],
+        ),
+      ),
+    ),
+    SizedBox(height: 10),
+    Text(
+      serviceNameFormatted,
+      style: TextStyle(
+        color: Color(0xFF235365),
+        fontWeight: FontWeight.bold,
+        fontSize: 15.0,
+      ),
+      textAlign: TextAlign.center,
+    ),
+  ],
+);
+
                       }).toList(),
                     ),
                   );

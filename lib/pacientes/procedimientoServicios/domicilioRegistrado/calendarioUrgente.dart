@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:hadal/pacientes/procedimientoServicios/citaAgendada.dart';
-import 'package:hadal/pacientes/procedimientoServicios/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/citaAgendada.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarioAgregar extends StatefulWidget {
+class CalendarioUrgente extends StatefulWidget {
   final Servicios servicio;
 
-  CalendarioAgregar({required this.servicio});
+  CalendarioUrgente({required this.servicio});
 
   @override
-  _CalendarioAgregarState createState() => _CalendarioAgregarState();
+  _CalendarioUrgenteState createState() => _CalendarioUrgenteState();
 }
 
-class _CalendarioAgregarState extends State<CalendarioAgregar> {
+class _CalendarioUrgenteState extends State<CalendarioUrgente> {
   late String nombre;
   late String domicilio;
   late GeoPoint _ubicacion;
@@ -35,15 +35,15 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
     setState(() {
       nombre = userDoc['nombre'] ?? "";
       domicilio = userDoc['domicilio'] ?? "";
-      _ubicacion = userDoc['ubicacion'] ?? "";
       photoUrl = userDoc['photoUrl'] ?? "";
+      _ubicacion = userDoc['ubicacion'] ?? "";
     });
   }
 
   int _selectedHorarioIndex = -1;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime _selectedDay = DateTime.now(); // Establece el día actual como el día seleccionado.
 
   final List<String> horarios = [
     '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
@@ -96,10 +96,7 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                 return isSameDay(_selectedDay, day);
               },
               onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
+                // No hacemos nada aquí para deshabilitar la selección de días.
               },
               locale: 'es_ES',
               headerStyle: HeaderStyle(
@@ -190,12 +187,12 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
               ),
               child: TextButton(
                 onPressed: () {
-                  if (_selectedDay == null || _selectedHorarioIndex == -1) {
+                  if (_selectedHorarioIndex == -1) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Selecciona una fecha y un horario'),
+                          title: Text('Selecciona un horario'),
                           actions: <Widget>[
                             TextButton(
                               child: Text('Aceptar'),
@@ -210,57 +207,36 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                     return;
                   }
                   final now = DateTime.now();
-                  if (_selectedDay!.isBefore(DateTime(now.year, now.month, now.day - 0))) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('No puedes agendar citas en fechas pasadas'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('Aceptar'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    return;
-                  }
-                  final dayOfWeek = DateFormat.EEEE('es_ES').format(_selectedDay!);
-                  final dayOfMonth = _selectedDay!.day;
-                  final month = DateFormat.MMMM('es_ES').format(_selectedDay!);
+                  final dayOfWeek = DateFormat.EEEE('es_ES').format(now);
+                  final dayOfMonth = now.day;
+                  final month = DateFormat.MMMM('es_ES').format(now);
                   final serviceName = widget.servicio.nombre;
                   final schedule = horarios[_selectedHorarioIndex];
                   final total = widget.servicio.total;
                   final icono = widget.servicio.icono;
                   final tipoCategoria = widget.servicio.tipoCategoria;
-                  final ubicacion = widget.servicio.ubicacion;
                   Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => CitaAgendada(
-     userId: FirebaseAuth.instance.currentUser!.uid,
-      dayOfWeek: dayOfWeek,
-      dayOfMonth: dayOfMonth,
-      month: month,
-      serviceName: serviceName,
-      schedule: schedule,
-      estado: 'disponible',
-      tipoServicio: 'Cita',
-      nombre: nombre,
-      total: total,
-      icono: icono,
-      domicilio: domicilio, // Pasar el valor de domicilio aquí
-      ubicacion: _ubicacion,
-      photoUrl: photoUrl,
-      tipoCategoria: tipoCategoria,
-    ),
-  ),
-);
-
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CitaAgendada(
+                        userId: FirebaseAuth.instance.currentUser!.uid,
+                        dayOfWeek: dayOfWeek,
+                        dayOfMonth: dayOfMonth,
+                        month: month,
+                        serviceName: serviceName,
+                        schedule: schedule,
+                        estado: 'disponible',
+                        tipoServicio: 'Urgente',
+                        nombre: nombre,
+                        total: total,
+                        icono: icono,
+                        domicilio: domicilio,
+                        photoUrl: photoUrl,
+                        tipoCategoria: tipoCategoria,
+                        ubicacion: _ubicacion,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
                   'Agendar',

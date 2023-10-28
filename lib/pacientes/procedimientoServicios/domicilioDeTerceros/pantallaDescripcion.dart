@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hadal/pacientes/procedimientoServicios/calendarioAgregar.dart';
-import 'package:hadal/pacientes/procedimientoServicios/calendarioUrgente.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/calendarioAgregar.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/calendarioUrgente.dart';
 
 class Servicios {
   String nombre;
@@ -24,17 +24,17 @@ class Servicios {
   });
 }
 
-class Descripcion extends StatefulWidget {
+class DescripcionParaTerceros extends StatefulWidget {
   final dynamic servicio;
 
-  Descripcion({required this.servicio});
+  DescripcionParaTerceros({required this.servicio});
 
   @override
-  _DescripcionState createState() => _DescripcionState();
+  _DescripcionParaTercerosState createState() =>
+      _DescripcionParaTercerosState();
 }
 
-class _DescripcionState extends State<Descripcion> {
-  List<Servicios> _servicios = [];
+class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
   double _total = 0.0;
   double _costoServicio = 0.0;
   late String _domicilio = "";
@@ -48,15 +48,24 @@ class _DescripcionState extends State<Descripcion> {
         .doc(currentUser!.uid)
         .get();
     setState(() {
-      _domicilio = userDoc['domicilio'] ?? "";
-      _ubicacion = userDoc['ubicacion'] ?? "";
+      
+      _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
     });
   }
+
+  late TextEditingController _domicilioController;
 
   @override
   void initState() {
     super.initState();
     initializeAppAndGetName();
+    _domicilioController = TextEditingController(text: _domicilio);
+  }
+
+  @override
+  void dispose() {
+    _domicilioController.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,14 +148,17 @@ class _DescripcionState extends State<Descripcion> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       padding: EdgeInsets.all(10),
-                      child: SingleChildScrollView(
-                        child: RichText(
-                          textAlign: TextAlign.justify,
-                          text: TextSpan(
-                            style: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF245366)),
-                            text: '$_domicilio',
-                          ),
+                      child: TextFormField(
+                        controller: _domicilioController,
+                        onChanged: (value) {
+                          setState(() {
+                            _domicilio = value;
+                          });
+                        },
+                        style: TextStyle(fontSize: 16.0, color: Color(0xFF245366)),
+                        decoration: InputDecoration(
+                          hintText: "Ingrese su domicilio",
+                          border: InputBorder.none,
                         ),
                       ),
                     ),
@@ -196,8 +208,7 @@ class _DescripcionState extends State<Descripcion> {
                     ),
                     SizedBox(height: 20),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       decoration: BoxDecoration(
                         border: Border.all(color: Color(0xFF1FBAAF)),
                         borderRadius: BorderRadius.circular(10),
@@ -270,7 +281,7 @@ class _DescripcionState extends State<Descripcion> {
                             nombre: widget.servicio['procedimiento'],
                             icono: widget.servicio['icono'],
                             total: _total,
-                            domicilio: _domicilio,
+                            domicilio: _domicilioController.text,
                             ubicacion: _ubicacion,
                             tipoCategoria: widget.servicio['tipoCategoria'],
                           );
@@ -278,7 +289,7 @@ class _DescripcionState extends State<Descripcion> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  CalendarioAgregar(servicio: servicio),
+                                  CalendarioAgregarTerceros(servicio: servicio),
                             ),
                           );
                         },
@@ -305,7 +316,7 @@ class _DescripcionState extends State<Descripcion> {
                             nombre: widget.servicio['procedimiento'],
                             icono: widget.servicio['icono'],
                             total: _total,
-                            domicilio: _domicilio,
+                            domicilio: _domicilioController.text,
                             ubicacion: _ubicacion,
                             tipoCategoria: widget.servicio['tipoCategoria'],
                           );
@@ -313,7 +324,7 @@ class _DescripcionState extends State<Descripcion> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  CalendarioUrgente(servicio: servicio),
+                                  CalendarioUrgenteTerceros(servicio: servicio),
                             ),
                           );
                         },
