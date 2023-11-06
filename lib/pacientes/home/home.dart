@@ -1,11 +1,20 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/detallesCitas.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:hadal/main.dart';
+import 'package:http/http.dart' as http;
 
 import 'verMas.dart';
 
@@ -21,6 +30,255 @@ class _HomeState extends State<Home> {
   String tipoUsuario = "";
   String tipoCategoria = "";
 
+  ////////////////////////////////////////////////
+  GeoPoint? ubicacion;
+  String locationName = "Obteniendo nombre del lugar...";
+
+  late User _currentUser;
+
+  Timer? locationUpdateTimer;
+  @override
+  void dispose() {
+    locationUpdateTimer?.cancel();
+    super.dispose();
+  }
+
+  void startLocationUpdateTimer() {
+    const Duration updateInterval = const Duration(seconds: 60);
+    locationUpdateTimer = Timer.periodic(updateInterval, (Timer t) {
+      updateLocation();
+    });
+  }
+
+  Future<void> _getLocationName() async {
+    try {
+      final latitudesearch = ubicacion!.latitude.toString();
+      final longitudeSearch = ubicacion!.longitude.toString();
+
+      final response = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitudesearch&lon=$longitudeSearch'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        String displayName = data['display_name'];
+        locationName = displayName;
+      } else {
+        locationName = "Error al obtener el nombre del lugar.";
+      }
+    } catch (e) {
+      locationName = "Error: $e";
+    }
+  }
+
+  Future<GeoPoint?> _getUserLocation() async {
+    try {
+      final userEnfermeraSnapshot = await FirebaseFirestore.instance
+          .collection('usuariopaciente')
+          .doc(_currentUser.uid)
+          .get();
+
+      if (userEnfermeraSnapshot.exists) {
+        return userEnfermeraSnapshot.get('ubicacion') as GeoPoint?;
+      }
+    } catch (error) {
+      print('Error al obtener la ubicación del usuario paciente: $error');
+    }
+
+    return null;
+  }
+
+  double _calculateDistance(GeoPoint? point1, GeoPoint? point2) {
+    if (point1 == null || point2 == null) {
+      return double.infinity;
+    }
+
+    const radius = 6371;
+
+    final lat1 = point1.latitude * pi / 180;
+    final lon1 = point1.longitude * pi / 180;
+    final lat2 = point2.latitude * pi / 180;
+    final lon2 = point2.longitude * pi / 180;
+
+    final dLat = lat2 - lat1;
+    final dLon = lon2 - lon1;
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    final distance = radius * c;
+
+    return distance;
+  }
+
+  Future<void> _showLocationDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ClipRRect(
+          borderRadius:
+              BorderRadius.circular(16), // Ajusta el radio según tu preferencia
+          child: AlertDialog(
+            title: Text(
+              'Ubicación Actual',
+              style: TextStyle(
+                color: Color(0xFF245366),
+              ),
+            ),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FutureBuilder<void>(
+                  future: _getLocationName(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Text(
+                        '$locationName',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF245366),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                ),
+                SizedBox(height: 16),
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('usuariopaciente')
+                      .doc(_currentUser.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      final document = snapshot.data;
+                      if (document != null && document.exists) {
+                        final ubicacion = document['ubicacion'] as GeoPoint?;
+                        if (ubicacion != null) {
+                          final latitude = ubicacion.latitude;
+                          final longitude = ubicacion.longitude;
+                          return Text(
+                            'Ubicación:\nLatitud $latitude, Longitud $longitude',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                    return CircularProgressIndicator();
+                  },
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Cerrar',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  'Actualizar',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  updateLocation();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateLocation() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        LocationPermission permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
+          Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+
+          double latitude = position.latitude;
+          double longitude = position.longitude;
+
+          final enfermeraDoc = await FirebaseFirestore.instance
+              .collection('usuariopaciente')
+              .doc(user.uid)
+              .get();
+
+          if (enfermeraDoc.exists) {
+            await enfermeraDoc.reference.update({
+              'ubicacion': GeoPoint(latitude, longitude),
+            });
+          }
+        } else {
+          showDialog(
+            context: navigatorKey.currentState!.overlay!.context,
+            barrierDismissible: false,
+            builder: (context) {
+              return CustomAlertDialog(
+                title: 'Permisos de Ubicación',
+                content:
+                    'Se requiere acceso a la ubicación para utilizar esta aplicación. Por favor, conceda los permisos de ubicación en la configuración de su dispositivo y vuelva a iniciar la aplicación.',
+                borderColor: Colors.teal,
+                borderRadius: 20,
+                titleTextColor: Colors.teal,
+                contentTextColor: Colors.black,
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      print('Error actualizando la ubicación: $e');
+
+      showDialog(
+        context: navigatorKey.currentState!.overlay!.context,
+        barrierDismissible: false,
+        builder: (context) {
+          return CustomAlertDialog(
+            title: 'Encender GPS',
+            content:
+                'Para utilizar esta aplicación, debe encender el GPS de su dispositivo. Por favor, encienda el GPS y vuelva a iniciar la aplicación.',
+            borderColor: Colors.teal,
+            borderRadius: 20,
+            titleTextColor: Colors.teal,
+            contentTextColor: Colors.black,
+          );
+        },
+      );
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////
+
   List<QueryDocumentSnapshot> serviciosBasicosDocs = [];
   bool showContent = false;
 
@@ -35,6 +293,7 @@ class _HomeState extends State<Home> {
         primerApellido = documentSnapshot.get('primerApellido') ?? "";
         segundoApellido = documentSnapshot.get('segundoApellido') ?? "";
         tipoUsuario = documentSnapshot.get('tipoUsuario') ?? "";
+        ubicacion = documentSnapshot.get('ubicacion');
         showContent = true; // Mostrar contenido después de cargar los datos
       });
     }
@@ -45,6 +304,10 @@ class _HomeState extends State<Home> {
     super.initState();
     _getUserData();
     _loadServicios();
+    //servicios de geolocalizacion
+    _currentUser = FirebaseAuth.instance.currentUser!;
+    //_loadSavedState();
+    startLocationUpdateTimer();
   }
 
   void _loadServicios() async {
@@ -134,6 +397,18 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
+                        InkWell(
+                          onTap: () {
+                            _showLocationDialog(); // Función para mostrar el diálogo
+                          },
+                          child: Text(
+                            'Ubicación actual',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF245366),
+                            ),
+                          ),
+                        ),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -158,167 +433,227 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                     Container(
-  padding: EdgeInsets.symmetric(horizontal: 30),
-  constraints: BoxConstraints(maxHeight: 60),
-  child: Center(
-    child: Wrap(
-      spacing: 27,
-      runSpacing: 10,
-      children: serviciosBasicosDocs.map((servicioDoc) {
-        final data = servicioDoc.data() as Map<String, dynamic>;
-        final serviceName = data['procedimiento'];
-        final serviceIconUrl = data['icono'];
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      constraints: BoxConstraints(maxHeight: 60),
+                      child: Center(
+                        child: Wrap(
+                          spacing: 27,
+                          runSpacing: 10,
+                          children: serviciosBasicosDocs.map((servicioDoc) {
+                            final data =
+                                servicioDoc.data() as Map<String, dynamic>;
+                            final serviceName = data['procedimiento'];
+                            final serviceIconUrl = data['icono'];
 
-        final serviceNameFormatted = serviceName.length > 10
-            ? serviceName.substring(0, 8) + '..'
-            : serviceName;
+                            final serviceNameFormatted = serviceName.length > 10
+                                ? serviceName.substring(0, 8) + '..'
+                                : serviceName;
 
-        return Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      title: Center(
-                        child: Text(
-                          "Selecciona una opción",
-                          style: TextStyle(
-                            color: Color(0xFF235365),
-                          ),
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0)),
+                                          title: Center(
+                                            child: Text(
+                                              "Selecciona una opción",
+                                              style: TextStyle(
+                                                color: Color(0xFF235365),
+                                              ),
+                                            ),
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0)),
+                                                      primary:
+                                                          Color(0xFF1FBAAF),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Descripcion(
+                                                            servicio:
+                                                                servicioDoc,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                        "Domicilio registrado"),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0)),
+                                                      primary:
+                                                          Color(0xFF1FBAAF),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DescripcionParaTerceros(
+                                                            servicio:
+                                                                servicioDoc,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                        "Para alguien más"),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0)),
+                                                      primary:
+                                                          Color(0xFF1FBAAF),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DescripcionRealtime(
+                                                            servicio:
+                                                                servicioDoc,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "Ubicación actual",
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                        ),
+                                                        Text(
+                                                          "(Solo si se encuentra fuera de su domicilio registrado)",
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0)),
+                                                      primary: Colors.red,
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text("Cancelar"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF6FFFE),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          blurRadius: 5.0,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SvgPicture.network(
+                                          serviceIconUrl,
+                                          height: 40.0,
+                                          color: Color(0xFF7C7F83),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 0),
+                                  child: Text(
+                                    serviceNameFormatted,
+                                    style: TextStyle(
+                                      color: Color(0xFF235365),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
                         ),
                       ),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  primary: Color(0xFF1FBAAF),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Descripcion(
-                                        servicio: servicioDoc,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Text("Domicilio registrado"),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  primary: Color(0xFF1FBAAF),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DescripcionParaTerceros(
-                                        servicio: servicioDoc,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Text("Para alguien más"),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  primary: Color(0xFF1FBAAF),
-                                ),
-                                onPressed: () {
-                                  // Navegar a una ruta no diseñada
-                                  // Aquí puedes agregar la lógica para la tercera opción
-                                },
-                                child: Text("Ubicación actual"),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  primary: Colors.red,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Cancelar"),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF6FFFE),
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 5.0,
-                      offset: Offset(0, 2),
                     ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SvgPicture.network(
-                      serviceIconUrl,
-                      height: 40.0,
-                      color: Color(0xFF7C7F83),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0),
-              child: Text(
-                serviceNameFormatted,
-                style: TextStyle(
-                  color: Color(0xFF235365),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    ),
-  ),
-),
 
                     SizedBox(height: 20),
                     Padding(
@@ -356,7 +691,8 @@ class _HomeState extends State<Home> {
                           return Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                  vertical: 75), // Ajusta el valor del padding vertical
+                                  vertical:
+                                      75), // Ajusta el valor del padding vertical
                               child: Text(
                                 'No hay servicios pendientes.',
                                 style: TextStyle(
@@ -412,48 +748,58 @@ class _HomeState extends State<Home> {
                                 title: Row(
                                   children: [
                                     FutureBuilder<DocumentSnapshot>(
-  future: enfermeraId.isNotEmpty
-      ? FirebaseFirestore.instance
-          .collection('usuarioenfermera')
-          .doc(enfermeraId)
-          .get()
-      : null, // Usar null como future cuando enfermeraId esté vacío
-  builder: (context, enfermeraSnapshot) {
-    if (enfermeraId.isNotEmpty && enfermeraSnapshot.connectionState ==
-        ConnectionState.waiting) {
-      // Mostrar un indicador de carga mientras se espera la consulta.
-      return CircularProgressIndicator();
-    }
+                                      future: enfermeraId.isNotEmpty
+                                          ? FirebaseFirestore.instance
+                                              .collection('usuarioenfermera')
+                                              .doc(enfermeraId)
+                                              .get()
+                                          : null, // Usar null como future cuando enfermeraId esté vacío
+                                      builder: (context, enfermeraSnapshot) {
+                                        if (enfermeraId.isNotEmpty &&
+                                            enfermeraSnapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                          // Mostrar un indicador de carga mientras se espera la consulta.
+                                          return CircularProgressIndicator();
+                                        }
 
-    if (enfermeraId.isEmpty || !enfermeraSnapshot.hasData) {
-      // Mostrar un icono de perfil predeterminado si enfermeraId está vacío o no hay datos de la enfermera.
-      return CircleAvatar(
-        child: Icon(Icons.person, size: 20, color: Colors.white),
-        backgroundColor: Color(0xFF235365),
-        radius: 30,
-      );
-    }
+                                        if (enfermeraId.isEmpty ||
+                                            !enfermeraSnapshot.hasData) {
+                                          // Mostrar un icono de perfil predeterminado si enfermeraId está vacío o no hay datos de la enfermera.
+                                          return CircleAvatar(
+                                            child: Icon(Icons.person,
+                                                size: 20, color: Colors.white),
+                                            backgroundColor: Color(0xFF235365),
+                                            radius: 30,
+                                          );
+                                        }
 
-    final enfermeraData =
-        enfermeraSnapshot.data!.data() as Map<String, dynamic>;
-    final enfermeraPhotoUrl = enfermeraData['photoUrl'];
+                                        final enfermeraData =
+                                            enfermeraSnapshot.data!.data()
+                                                as Map<String, dynamic>;
+                                        final enfermeraPhotoUrl =
+                                            enfermeraData['photoUrl'];
 
-    return CachedNetworkImage(
-      imageUrl: enfermeraPhotoUrl,
-      placeholder: (context, url) => CircleAvatar(
-        child: Icon(Icons.person, size: 20, color: Colors.white),
-        backgroundColor: Color(0xFF235365),
-        radius: 30,
-      ), // Indicador de carga personalizado
-      errorWidget: (context, url, error) => Icon(
-          Icons.error), // Widget para mostrar en caso de error
-      imageBuilder: (context, imageProvider) => CircleAvatar(
-        backgroundImage: imageProvider,
-        radius: 30,
-      ),
-    );
-  },
-),
+                                        return CachedNetworkImage(
+                                          imageUrl: enfermeraPhotoUrl,
+                                          placeholder: (context, url) =>
+                                              CircleAvatar(
+                                            child: Icon(Icons.person,
+                                                size: 20, color: Colors.white),
+                                            backgroundColor: Color(0xFF235365),
+                                            radius: 30,
+                                          ), // Indicador de carga personalizado
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons
+                                                  .error), // Widget para mostrar en caso de error
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  CircleAvatar(
+                                            backgroundImage: imageProvider,
+                                            radius: 30,
+                                          ),
+                                        );
+                                      },
+                                    ),
 
                                     SizedBox(
                                         width:
@@ -527,14 +873,18 @@ class _HomeState extends State<Home> {
                                                     mes: mes,
                                                     nombre: nombre,
                                                     servicio: servicio,
-                                                    tipoCategoria: tipoCategoria,
+                                                    tipoCategoria:
+                                                        tipoCategoria,
                                                     tipoServicio: tipoServicio,
                                                     total: total,
-                                                    fecha: '$dia, $diaDelMes de $mes',
-                                                    categoria: 'Servicio $tipoCategoria',
+                                                    fecha:
+                                                        '$dia, $diaDelMes de $mes',
+                                                    categoria:
+                                                        'Servicio $tipoCategoria',
                                                     pacienteId: pacienteId,
                                                     enfermeraId: enfermeraId,
-                                                    citaId: citaId, // Agregado citaId aquí
+                                                    citaId:
+                                                        citaId, // Agregado citaId aquí
                                                   ),
                                                 ),
                                               );

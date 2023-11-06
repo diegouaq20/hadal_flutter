@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/svg.dart';
 
-class DetallesServiciosPage extends StatelessWidget {
+class DetallesCita extends StatefulWidget {
   final String servicio;
   final String fecha;
   final String categoria;
@@ -17,14 +17,12 @@ class DetallesServiciosPage extends StatelessWidget {
   final String icono;
   final String mes;
   final String nombre;
-  final String photoUrl;
   final String tipoCategoria;
-  final String idCita;
-  final String pacienteId;
   final String enfermeraId;
-  final GeoPoint ubicacionPaciente;
+  final String pacienteId;
+  final String citaId;
 
-  DetallesServiciosPage({
+  DetallesCita({
     required this.servicio,
     required this.fecha,
     required this.categoria,
@@ -38,18 +36,75 @@ class DetallesServiciosPage extends StatelessWidget {
     required this.icono,
     required this.mes,
     required this.nombre,
-    required this.photoUrl,
     required this.tipoCategoria,
-    required this.idCita,
+    required this.enfermeraId,
     required this.pacienteId,
-    required this.enfermeraId, 
-    required this.ubicacionPaciente,
+    required this.citaId,
   });
 
   @override
+  _DetallesCitaState createState() => _DetallesCitaState();
+}
+
+class _DetallesCitaState extends State<DetallesCita> {
+  String? photoUrlEnfermera;
+  String? nombreEnfermera;
+
+  // Función para cancelar la cita
+  void cancelarCita() async {
+    try {
+      // Elimina la cita de la colección 'citas'
+      await FirebaseFirestore.instance
+          .collection('citas')
+          .doc(widget.citaId) // Utiliza el ID del paciente como documento
+          .delete();
+
+      // Luego de eliminar la cita con éxito, navegamos atrás.
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Servicio cancelado con éxito.'),
+      ));
+    } catch (e) {
+      // Maneja cualquier error que pueda ocurrir al cancelar la cita.
+      print('Error al cancelar la cita: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Llamar a la función para obtener la información de la enfermera
+    obtenerInfoEnfermera();
+  }
+
+  Future<void> obtenerInfoEnfermera() async {
+    try {
+      final enfermeraDoc = await FirebaseFirestore.instance
+          .collection('usuarioenfermera')
+          .doc(widget.enfermeraId) // Utiliza el ID de la enfermera
+          .get();
+
+      if (enfermeraDoc.exists) {
+        final data = enfermeraDoc.data() as Map<String, dynamic>;
+        setState(() {
+          photoUrlEnfermera =
+              data['photoUrl'] ?? ''; // Obtenemos la URL de la imagen
+          nombreEnfermera = data['nombre'] ?? '';
+        });
+      } else {
+        // El documento de la enfermera no existe, maneja el error aquí.
+      }
+    } catch (e) {
+      // Maneja cualquier error que pueda ocurrir durante la consulta.
+      print('Error al obtener información de la enfermera: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String servicioDisplay =
-        servicio.length > 30 ? servicio.substring(0, 30) + '...' : servicio;
+    String servicioDisplay = widget.servicio.length > 30
+        ? widget.servicio.substring(0, 30) + '...'
+        : widget.servicio;
 
     return Scaffold(
       appBar: AppBar(
@@ -71,11 +126,19 @@ class DetallesServiciosPage extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(photoUrl),
+                      backgroundImage: photoUrlEnfermera != null &&
+                              photoUrlEnfermera!.isNotEmpty
+                          ? NetworkImage(photoUrlEnfermera!)
+                          : null, // Usamos null para mostrar el círculo sin imagen
+                      child: photoUrlEnfermera == null ||
+                              photoUrlEnfermera!.isEmpty
+                          ? Icon(Icons.person, size: 20, color: Colors.white)
+                          : null, // Usamos null para mostrar la imagen si está presente
+                      backgroundColor: Color(0xFF235365),
                     ),
                     SizedBox(width: 16),
                     Text(
-                      '$nombre',
+                      '${nombreEnfermera ?? 'En espera...'}',
                       style: TextStyle(
                         fontSize: 20,
                         color: Color(0xFF000328),
@@ -90,7 +153,7 @@ class DetallesServiciosPage extends StatelessWidget {
                 child: Row(
                   children: [
                     SvgPicture.network(
-                      icono,
+                      widget.icono,
                       width: 24,
                       height: 24,
                     ),
@@ -112,7 +175,7 @@ class DetallesServiciosPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Categoría: $tipoCategoria',
+                  'Categoría: ${widget.tipoCategoria}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
@@ -122,7 +185,7 @@ class DetallesServiciosPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Fecha: $fecha',
+                  'Fecha: ${widget.fecha}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
@@ -132,7 +195,7 @@ class DetallesServiciosPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Horario: $hora',
+                  'Horario: ${widget.hora}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
@@ -142,7 +205,7 @@ class DetallesServiciosPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Domicilio: $domicilio',
+                  'Domicilio: ${widget.domicilio}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
@@ -152,22 +215,30 @@ class DetallesServiciosPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Tipo de Servicio: $tipoServicio',
+                  'Tipo de Servicio: ${widget.tipoServicio}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
                 ),
               ),
-
-              /*Padding(
+              Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  'Tipo de Servicio: $ubicacionPaciente',
+                  'ID Enfermera: ${widget.enfermeraId.isNotEmpty ? widget.enfermeraId : 'En espera...'}',
                   style: TextStyle(
                     color: Color(0xFF000328),
                   ),
                 ),
-              ),*/
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  'ID Paciente: ${widget.pacienteId}',
+                  style: TextStyle(
+                    color: Color(0xFF000328),
+                  ),
+                ),
+              ),
 
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
@@ -181,7 +252,7 @@ class DetallesServiciosPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '$total', // Mostramos el total
+                      '${widget.total}', // Mostramos el total
                       style: TextStyle(
                         fontSize: 20,
                         color: Color(0xFF000328),
@@ -190,90 +261,31 @@ class DetallesServiciosPage extends StatelessWidget {
                   ],
                 ),
               ),
+
+              // Agrega un botón para cancelar el servicio
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Llama a la función para cancelar la cita cuando se presiona el botón
+                    cancelarCita();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                  child: Text(
+                    'Cancelar Servicio',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('citas').doc(idCita).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtiene el estado.
-          }
-
-          Map<String, dynamic> citaData = snapshot.data!.data() as Map<String, dynamic>;
-
-          // Verifica si el estado es "aceptado" y deshabilita los botones si es así.
-          bool estadoAceptado = citaData['estado'] == 'aceptado';
-
-          return BottomButtons(
-            idCita: idCita,
-            estadoAceptado: estadoAceptado,
-          );
-        },
-      ),
     );
   }
-}
-
-class BottomButtons extends StatelessWidget {
-  final String idCita;
-  final bool estadoAceptado;
-
-  BottomButtons({
-    required this.idCita,
-    required this.estadoAceptado,
-  });
-
-  Future<void> _aceptarCita(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await FirebaseFirestore.instance.collection('citas').doc(idCita).update({
-          'estado': 'aceptado',
-          'enfermeraId': user.uid,
-        });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Cita aceptada con éxito.'),
-        ));
-      } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error al aceptar la cita: $error'),
-        ));
-      }
-    }
-  }
-
-  @override
-Widget build(BuildContext context) {
-  return Container(
-    color: Color(0xFFF4FCFB),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ElevatedButton(
-            onPressed: estadoAceptado
-                ? null // Deshabilita el botón si el estado es "aceptado".
-                : () {
-                    _aceptarCita(context);
-                    Navigator.pop(context); // Cierra la pantalla actual
-                  },
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xFF1FBAAF),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              minimumSize: Size(300, 40),
-            ),
-            child: Text('Aceptar'),
-          ),
-          SizedBox(height: 10),
-        ],
-      ),
-    ),
-  );
-}
-
 }
