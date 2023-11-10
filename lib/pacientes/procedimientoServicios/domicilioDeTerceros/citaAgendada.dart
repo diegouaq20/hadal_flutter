@@ -60,6 +60,16 @@ class _CitaAgendadaState extends State<CitaAgendada> {
   bool showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;
 
+  _CitaAgendadaState() {
+    stripePayment = ClientStripePayment(
+      onPaymentSuccess: (bool paymentSuccessful) {
+        if (paymentSuccessful) {
+          pagoConfirmadoCrearCita();
+        }
+      },
+    );
+  }
+
   void showWaitingProgressDialog(BuildContext context, String citaId) {
     showDialog(
       context: context,
@@ -181,44 +191,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     try {
       // Lógica de pago con Stripe aquí
       await stripePayment.makePayment(context, widget.total);
-
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final citasRef = FirebaseFirestore.instance.collection('citas');
-
-        final newCitaRef = await citasRef.add({
-          'nombre': widget.nombre,
-          'dia': widget.dayOfWeek,
-          'diaDelMes': widget.dayOfMonth,
-          'mes': widget.month,
-          'hora': widget.schedule,
-          'servicio': widget.serviceName,
-          'total': widget.total,
-          'estado': 'disponible',
-          'domicilio': widget.domicilio,
-          'icono': widget.icono,
-          'photoUrl': widget.photoUrl,
-          'tipoServicio': widget.tipoServicio,
-          'tipoCategoria': widget.tipoCategoria,
-          'pacienteId': widget.userId,
-          'enfermeraId': "",
-          'ubicacionPaciente': widget.ubicacion,
-        });
-
-        // Muestra el SnackBar de pago exitoso
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
-        //   ),
-        // );
-
-        // Espera un momento antes de mostrar el WaitingProgressDialog
-        // await Future.delayed(Duration(
-        //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
-
-        // Muestra el WaitingProgressDialog
-        // showWaitingDialog = true;
-      }
+      print("Se inicia ventana de pago correctamente");
     } catch (error) {
       setState(() {
         showWaitingDialog = false;
@@ -229,6 +202,46 @@ class _CitaAgendadaState extends State<CitaAgendada> {
         gravity: ToastGravity.CENTER,
       );
       print(error);
+    }
+  }
+
+  pagoConfirmadoCrearCita() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final citasRef = FirebaseFirestore.instance.collection('citas');
+
+      final newCitaRef = await citasRef.add({
+        'nombre': widget.nombre,
+        'dia': widget.dayOfWeek,
+        'diaDelMes': widget.dayOfMonth,
+        'mes': widget.month,
+        'hora': widget.schedule,
+        'servicio': widget.serviceName,
+        'total': widget.total,
+        'estado': 'disponible',
+        'domicilio': widget.domicilio,
+        'icono': widget.icono,
+        'photoUrl': widget.photoUrl,
+        'tipoServicio': widget.tipoServicio,
+        'tipoCategoria': widget.tipoCategoria,
+        'pacienteId': widget.userId,
+        'enfermeraId': "",
+        'ubicacionPaciente': widget.ubicacion,
+      });
+
+      // Muestra el SnackBar de pago exitoso
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
+      //   ),
+      // );
+
+      // Espera un momento antes de mostrar el WaitingProgressDialog
+      // await Future.delayed(Duration(
+      //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
+
+      // Muestra el WaitingProgressDialog
+      // showWaitingDialog = true;
     }
   }
 

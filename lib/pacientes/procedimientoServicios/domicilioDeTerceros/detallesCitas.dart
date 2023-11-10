@@ -43,24 +43,24 @@ class DetallesCita extends StatefulWidget {
   });
 
   @override
-  _DetallesCitaState createState() => _DetallesCitaState();
+  DetallesCitaState createState() => DetallesCitaState();
 }
 
-class _DetallesCitaState extends State<DetallesCita> {
+class DetallesCitaState extends State<DetallesCita> {
   String? photoUrlEnfermera;
   String? nombreEnfermera;
+  DetallesCitaState? _detallesCitaState; // Instancia del estado
 
   // Función para cancelar la cita
-  void cancelarCita() async {
+  void cancelarCita(BuildContext context, String citaId) async {
     try {
       // Elimina la cita de la colección 'citas'
       await FirebaseFirestore.instance
           .collection('citas')
-          .doc(widget.citaId) // Utiliza el ID del paciente como documento
+          .doc(citaId) // No es necesario utilizar widget.citaId
           .delete();
 
       // Luego de eliminar la cita con éxito, navegamos atrás.
-      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Servicio cancelado con éxito.'),
       ));
@@ -75,6 +75,7 @@ class _DetallesCitaState extends State<DetallesCita> {
     super.initState();
     // Llamar a la función para obtener la información de la enfermera
     obtenerInfoEnfermera();
+    _detallesCitaState = this; // Asignar la instancia actual
   }
 
   Future<void> obtenerInfoEnfermera() async {
@@ -102,6 +103,8 @@ class _DetallesCitaState extends State<DetallesCita> {
 
   @override
   Widget build(BuildContext context) {
+    _detallesCitaState = this;
+
     String servicioDisplay = widget.servicio.length > 30
         ? widget.servicio.substring(0, 30) + '...'
         : widget.servicio;
@@ -268,7 +271,7 @@ class _DetallesCitaState extends State<DetallesCita> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Llama a la función para cancelar la cita cuando se presiona el botón
-                    cancelarCita();
+                    _detallesCitaState?.cancelarCita(context, widget.citaId);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),

@@ -28,7 +28,8 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
   void initState() {
     super.initState();
     initializeAppAndGetName();
-    _domicilioController = TextEditingController(text: widget.servicio.domicilio);
+    _domicilioController =
+        TextEditingController(text: widget.servicio.domicilio);
   }
 
   Future<void> initializeAppAndGetName() async {
@@ -51,8 +52,20 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
   DateTime? _selectedDay;
 
   final List<String> horarios = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00'
   ];
 
   @override
@@ -131,7 +144,8 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
               child: ListView.separated(
                 itemCount: horarios.length,
                 separatorBuilder: (context, index) => Divider(
-                  color: _selectedHorarioIndex == index ? null : Color(0xFF245366),
+                  color:
+                      _selectedHorarioIndex == index ? null : Color(0xFF245366),
                   thickness: 2.0,
                   indent: MediaQuery.of(context).size.width * 0.2,
                   endIndent: MediaQuery.of(context).size.width * 0.05,
@@ -146,7 +160,9 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
                           child: Text(
                             horarios[index],
                             style: TextStyle(
-                              color: _selectedHorarioIndex == index ? Color(0xFF245366) : null,
+                              color: _selectedHorarioIndex == index
+                                  ? Color(0xFF245366)
+                                  : null,
                             ),
                           ),
                         ),
@@ -157,14 +173,18 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
                                   color: Color(0xFF8CA6A3),
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SizedBox(height: 5.0),
                                     Text(
                                       '${widget.servicio.nombre}',
-                                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
                                     ),
                                   ],
                                 ),

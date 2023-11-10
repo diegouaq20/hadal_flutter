@@ -58,16 +58,15 @@ class ClientStripePayment extends GetConnect {
                   Text('Pago exitoso: Tu pago fue procesado correctamente'),
             ),
           );
-
+          print("_____________Servicio creado_____________");
+          onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
           Future.delayed(Duration(seconds: 2), () {
-            // Llamar a la función de callback con true para mostrar el diálogo
             showWaitingDialog = true;
 
-            // Llamar a la función para mostrar el diálogo de espera
+            // Llama a la función para mostrar el diálogo de espera
             if (showWaitingDialog) {
-              showWaitingProgressDialog(context,
-                  'citaId'); // Reemplaza 'citaId' con el valor correcto
+              showWaitingProgressDialog(context, '6rCB8WGMNamyJopH4y99');
             }
           });
         }).onError((error, stackTrace) {
@@ -75,7 +74,6 @@ class ClientStripePayment extends GetConnect {
         });
       } else {
         print('PaymentIntent data is null');
-        // Handle the case when paymentIntentData is null, e.g., show an error message.
       }
     } on StripeException catch (err) {
       print('Error Stripe: $err');
@@ -104,7 +102,10 @@ class ClientStripePayment extends GetConnect {
             'Content-Type': 'application/x-www-form-urlencoded',
           });
 
-      return jsonDecode(response.body);
+      final responseBody = jsonDecode(response.body);
+      final amountStr = responseBody['amount'].toString();
+
+      return responseBody..['amount'] = amountStr;
     } catch (err) {
       print('Error: ${err}');
     }
@@ -169,6 +170,20 @@ class ClientStripePayment extends GetConnect {
                         gravity: ToastGravity.CENTER,
                       );
                     }
+
+                    // //COMISION DE PAGO
+                    final totalAmount =
+                        double.parse(paymentIntentData!['amount']) /
+                            100.0; // Convierte centavos a dólares
+                    final cancellationFee = totalAmount * 0.10;
+                    final refundAmount = totalAmount - cancellationFee;
+
+                    print(
+                        "____________El valor del refund es de: $refundAmount");
+                    // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+                    await refundPayment(
+                        context, paymentIntentData!['id'], refundAmount);
+                    //COMISION DE PAGO
                   } catch (error) {
                     Fluttertoast.showToast(
                       msg: 'Hubo un error al cancelar el servicio.',
@@ -197,5 +212,43 @@ class ClientStripePayment extends GetConnect {
         );
       },
     );
+  }
+
+  Future<void> refundPayment(
+      BuildContext context, String paymentIntentId, double refundAmount) async {
+    try {
+      // Convierte el monto de reembolso a una cadena
+      final refundAmountStr = calculateAmount(refundAmount);
+
+      var response = await http
+          .post(Uri.parse('https://api.stripe.com/v1/refunds'), body: {
+        'payment_intent': paymentIntentId,
+        'amount':
+            refundAmountStr, // Utiliza la cadena refundAmountStr en lugar de refundAmount
+      }, headers: {
+        'Authorization':
+            'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+
+      if (response.statusCode == 200) {
+        // Reembolso exitoso
+        Navigator.of(context).pop(); // Cierra el diálogo de espera
+        Fluttertoast.showToast(
+          msg: 'El reembolso se ha procesado correctamente.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      } else {
+        // Error en el reembolso
+        Fluttertoast.showToast(
+          msg:
+              'Hubo un error al procesar el reembolso. El valor del reembolso es de: ${refundAmount.toStringAsFixed(2)}',
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 }
