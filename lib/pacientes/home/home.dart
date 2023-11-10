@@ -111,108 +111,7 @@ class _HomeState extends State<Home> {
     return distance;
   }
 
-  Future<void> _showLocationDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ClipRRect(
-          borderRadius:
-              BorderRadius.circular(16), // Ajusta el radio según tu preferencia
-          child: AlertDialog(
-            title: Text(
-              'Ubicación Actual',
-              style: TextStyle(
-                color: Color(0xFF245366),
-              ),
-            ),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FutureBuilder<void>(
-                  future: _getLocationName(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Text(
-                        '$locationName',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF245366),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text(
-                        'Error: ${snapshot.error}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.red,
-                        ),
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                ),
-                SizedBox(height: 16),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('usuariopaciente')
-                      .doc(_currentUser.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      final document = snapshot.data;
-                      if (document != null && document.exists) {
-                        final ubicacion = document['ubicacion'] as GeoPoint?;
-                        if (ubicacion != null) {
-                          final latitude = ubicacion.latitude;
-                          final longitude = ubicacion.longitude;
-                          return Text(
-                            'Ubicación:\nLatitud $latitude, Longitud $longitude',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          );
-                        }
-                      }
-                    }
-                    return CircularProgressIndicator();
-                  },
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Cerrar',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                ),
-              ),
-              TextButton(
-                child: Text(
-                  'Actualizar',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  updateLocation();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  
 
   Future<void> updateLocation() async {
     try {
@@ -397,18 +296,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            _showLocationDialog(); // Función para mostrar el diálogo
-                          },
-                          child: Text(
-                            'Ubicación actual',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF245366),
-                            ),
-                          ),
-                        ),
+                        
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
