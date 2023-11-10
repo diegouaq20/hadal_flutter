@@ -159,7 +159,7 @@ class DetallesServiciosPage extends StatelessWidget {
                 ),
               ),
 
-              /*Padding(
+              Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   'Tipo de Servicio: $ubicacionPaciente',
@@ -167,7 +167,7 @@ class DetallesServiciosPage extends StatelessWidget {
                     color: Color(0xFF000328),
                   ),
                 ),
-              ),*/
+              ),
 
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),

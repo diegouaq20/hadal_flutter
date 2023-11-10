@@ -50,7 +50,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
   }
 
   void startLocationUpdateTimer() {
-    const Duration updateInterval = const Duration(seconds: 60);
+    const Duration updateInterval = const Duration(seconds: 10);
     locationUpdateTimer = Timer.periodic(updateInterval, (Timer t) {
       updateLocation();
     });
@@ -81,7 +81,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
       segundoApellido = docSnapshot.get('segundoApellido') ?? "";
       tipoUsuario = docSnapshot.get('tipoUsuario') ?? "";
       categoria = docSnapshot.get('categoria') ?? "";
-      ubicacion = docSnapshot.get('ubicacion');
+      ubicacion = docSnapshot.get('ubicacion'); 
       distanciaBarra = docSnapshot.get('distancia');
       showContent = true;
     });
@@ -186,104 +186,79 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
         .where('enfermeraId', isEqualTo: _currentUser.uid)
         .snapshots();
   }
-//Color(0xFF245366)
+
   Future<void> _showLocationDialog() async {
     showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16), // Ajusta el radio según tu preferencia
-      child: AlertDialog(
-        title: Text('Ubicación Actual',
-        style: TextStyle(
-                      color: Color(0xFF245366),
-                    ),),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FutureBuilder<void>(
-              future: _getLocationName(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Text(
-                    '$locationName',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF245366),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text(
-                    'Error: ${snapshot.error}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.red,
-                    ),
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
-            SizedBox(height: 16),
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('usuarioenfermera')
-                  .doc(_currentUser.uid)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  final document = snapshot.data;
-                  if (document != null && document.exists) {
-                    final ubicacion = document['ubicacion'] as GeoPoint?;
-                    if (ubicacion != null) {
-                      final latitude = ubicacion.latitude;
-                      final longitude = ubicacion.longitude;
-                      return Text(
-                        'Ubicación:\nLatitud $latitude, Longitud $longitude',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      );
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ubicación Actual'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('usuarioenfermera')
+                    .doc(_currentUser.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    final document = snapshot.data;
+                    if (document != null && document.exists) {
+                      final ubicacion = document['ubicacion'] as GeoPoint?;
+                      if (ubicacion != null) {
+                        final latitude = ubicacion.latitude;
+                        final longitude = ubicacion.longitude;
+                        return Text(
+                          'Ubicación: Latitud $latitude, Longitud $longitude',
+                          style: TextStyle(
+                              fontSize: 18, color: Color(0xFF245366)),
+                        );
+                      }
                     }
                   }
-                }
-                return CircularProgressIndicator();
+                  return CircularProgressIndicator();
+                },
+              ),
+              SizedBox(height: 16),
+              FutureBuilder<void>(
+                future: _getLocationName(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Text(
+                      '$locationName',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF000328),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.red,
+                      ),
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cerrar'),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
           ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Cerrar',
-            style: TextStyle(color: Colors.white),),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.teal,
-            ),
-          ),
-          TextButton(
-            child: Text(
-              'Actualizar',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              updateLocation();
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.teal,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
-  },
-);
-
   }
 
   Future<void> updateLocation() async {
@@ -349,6 +324,9 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
     }
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -402,58 +380,82 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                                     color: Color(0xFF245366)),
                               ),
                             ),
+                          if (ubicacion !=
+                              null) // Verifica si la ubicación no es nula
+                            StreamBuilder<DocumentSnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('usuarioenfermera')
+                                  .doc(_currentUser.uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.active) {
+                                  final document = snapshot.data;
+                                  if (document != null && document.exists) {
+                                    final ubicacion = document['ubicacion'] as GeoPoint?;
+                                    if (ubicacion != null) {
+                                      final latitude = ubicacion.latitude;
+                                      final longitude = ubicacion.longitude;
+                                      return Text(
+                                        'Ubicación: Latitud $latitude, Longitud $longitude',
+                                        style: TextStyle(fontSize: 18, color: Color(0xFF245366)),
+                                      );
+                                    }
+                                  }
+                                }
+                                return CircularProgressIndicator();
+                              },
+                            )
                         ],
                       ),
                     ],
                   ),
                 ),
               Padding(
-                padding: EdgeInsets.only(
-                    left: 15,
-                    right: 25), // Ajusta el padding según sea necesario
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Coloca los elementos al principio y al final del Row
-                  children: [
-                    Row(
-                      children: [
-                        Switch(
-                          activeColor: Color(0xFF1FBAAF),
-                          inactiveThumbColor: Colors.grey,
-                          value: recepcionActivada,
-                          onChanged: (value) {
-                            setState(() {
-                              recepcionActivada = value;
-                              _saveState(value);
-                            });
-                          },
-                        ),
-                        Text(
-                          recepcionActivada ? 'Activo' : 'Inactivo',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: recepcionActivada
-                                ? Color(0xFF245366)
-                                : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    InkWell(
-                      onTap: () {
-                        _showLocationDialog(); // Función para mostrar el diálogo
-                      },
-                      child: Text(
-                        'Ubicación actual',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFF245366),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+  padding: EdgeInsets.only(left: 15, right: 25), // Ajusta el padding según sea necesario
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Coloca los elementos al principio y al final del Row
+    children: [
+      Row(
+        children: [
+          Switch(
+            activeColor: Color(0xFF1FBAAF),
+            inactiveThumbColor: Colors.grey,
+            value: recepcionActivada,
+            onChanged: (value) {
+              setState(() {
+                recepcionActivada = value;
+                _saveState(value);
+              });
+            },
+          ),
+          Text(
+            recepcionActivada ? 'Activo' : 'Inactivo',
+            style: TextStyle(
+              fontSize: 18,
+              color: recepcionActivada
+                  ? Color(0xFF245366)
+                  : Colors.grey,
+            ),
+          ),
+        ],
+      ),
+      InkWell(
+        onTap: () {
+          _showLocationDialog(); // Función para mostrar el diálogo
+        },
+        child: Text(
+          'Ubicación actual',
+          style: TextStyle(
+            fontSize: 18,
+            color: Color(0xFF245366),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+
               if (recepcionActivada)
                 Container(
                   padding: EdgeInsets.only(left: 25, bottom: 10),
@@ -577,75 +579,76 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                               }
                             },
                             child: Card(
-                              elevation: 3,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Container(
-                                width: 170,
-                                height: 160,
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      child: iconoUrl != null
-                                          ? SvgPicture.network(
-                                              iconoUrl,
-                                              width: 48,
-                                              height: 48,
-                                            )
-                                          : Icon(Icons.info_outline, size: 48),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      servicioRecortado,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF235365),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(height: 10),
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 30, vertical: 4),
-                                        color: tipoServicio == "Urgente"
-                                            ? Colors.red
-                                            : Color(0xFF1FBAAF),
-                                        child: Center(
-                                          child: Text(
-                                            tipoServicio,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+  elevation: 3,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15),
+  ),
+  margin: EdgeInsets.symmetric(
+    horizontal: 10, vertical: 10),
+  child: Container(
+    width: 170,
+    height: 160,
+    padding: EdgeInsets.all(10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          child: iconoUrl != null
+              ? SvgPicture.network(
+            iconoUrl,
+            width: 48,
+            height: 48,
+          )
+              : Icon(Icons.info_outline, size: 48),
+        ),
+        SizedBox(height: 10),
+        Text(
+          servicioRecortado,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF235365),
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 10),
+        Text(
+          '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 30, vertical: 4),
+            color: tipoServicio == "Urgente"
+                ? Colors.red
+                : Color(0xFF1FBAAF),
+            child: Center(
+              child: Text(
+                tipoServicio,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
                           );
                         }).toList(),
                       ),
@@ -775,75 +778,75 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             }
                           },
                           child: Card(
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: Container(
-                              width: 170,
-                              height: 160,
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    child: iconoUrl != null
-                                        ? SvgPicture.network(
-                                            iconoUrl,
-                                            width: 48,
-                                            height: 48,
-                                          )
-                                        : Icon(Icons.info_outline, size: 48),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    servicioRecortado,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF235365),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: 10),
-                                  Expanded(
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 30, vertical: 4),
-                                      color: tipoServicio == "Urgente"
-                                          ? Colors.red
-                                          : Color(0xFF1FBAAF),
-                                      child: Center(
-                                        child: Text(
-                                          tipoServicio,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+  elevation: 3,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15),
+  ),
+  margin: EdgeInsets.symmetric(
+    horizontal: 10, vertical: 10),
+  child: Container(
+    width: 170,
+    height: 160,
+    padding: EdgeInsets.all(10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          child: iconoUrl != null
+              ? SvgPicture.network(
+            iconoUrl,
+            width: 48,
+            height: 48,
+          )
+              : Icon(Icons.info_outline, size: 48),
+        ),
+        SizedBox(height: 10),
+        Text(
+          servicioRecortado,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF235365),
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 10),
+        Text(
+          '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 30, vertical: 4),
+            color: tipoServicio == "Urgente"
+                ? Colors.red
+                : Color(0xFF1FBAAF),
+            child: Center(
+              child: Text(
+                tipoServicio,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+),
                         );
                       }).toList(),
                     ),
