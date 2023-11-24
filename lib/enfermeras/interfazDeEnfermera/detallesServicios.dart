@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DetallesServiciosPage extends StatelessWidget {
   final String servicio;
@@ -226,23 +227,36 @@ class BottomButtons extends StatelessWidget {
   });
 
   Future<void> _aceptarCita(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await FirebaseFirestore.instance.collection('citas').doc(idCita).update({
-          'estado': 'aceptado',
-          'enfermeraId': user.uid,
-        });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Cita aceptada con éxito.'),
-        ));
-      } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error al aceptar la cita: $error'),
-        ));
-      }
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
+      await FirebaseFirestore.instance.collection('citas').doc(idCita).update({
+        'estado': 'aceptado',
+        'enfermeraId': user.uid,
+      });
+
+      Fluttertoast.showToast(
+        msg: 'Cita aceptada con éxito.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } catch (error) {
+      Fluttertoast.showToast(
+        msg: 'Error al aceptar la cita: $error',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
+}
 
   @override
 Widget build(BuildContext context) {

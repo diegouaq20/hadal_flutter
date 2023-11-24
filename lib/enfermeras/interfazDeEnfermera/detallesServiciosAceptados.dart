@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart'; // Importa Geolocator
 import 'package:http/http.dart' as http; // Importa http
 import 'dart:convert';
@@ -51,33 +52,32 @@ class DetallesServiciosAceptados extends StatelessWidget {
     required this.pacienteId,
     required this.enfermeraId,
     required this.ubicacionPaciente,
-  }): latitude = ubicacionPaciente.latitude.toString(),
-  longitude = ubicacionPaciente.longitude.toString();
+  })  : latitude = ubicacionPaciente.latitude.toString(),
+        longitude = ubicacionPaciente.longitude.toString();
 
   String locationName = "Obteniendo nombre del lugar...";
 
   Future<void> _getLocationName() async {
-  try {
-    final latitudesearch = latitude;
-    final longitudeSearch = longitude;
-    print("Latitud: $latitudesearch, Longitud: $longitudeSearch");
+    try {
+      final latitudesearch = latitude;
+      final longitudeSearch = longitude;
+      print("Latitud: $latitudesearch, Longitud: $longitudeSearch");
 
-    final response = await http.get(Uri.parse(
-        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitudesearch&lon=$longitudeSearch'));
+      final response = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitudesearch&lon=$longitudeSearch'));
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print("Respuesta de la API: $data");
-      String displayName = data['display_name'];
-      locationName = displayName;
-    } else {
-      locationName = "Error al obtener el nombre del lugar.";
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print("Respuesta de la API: $data");
+        String displayName = data['display_name'];
+        locationName = displayName;
+      } else {
+        locationName = "Error al obtener el nombre del lugar.";
+      }
+    } catch (e) {
+      locationName = "Error: $e";
     }
-  } catch (e) {
-    locationName = "Error: $e";
   }
-}
-
 
   Future<void> _openInGoogleMaps() async {
     await FlutterWebBrowser.openWebPage(
@@ -86,12 +86,12 @@ class DetallesServiciosAceptados extends StatelessWidget {
   }
 
   Future<void> _openInGoogleMapsRealtime() async {
-  String encodedLocationName = Uri.encodeComponent(locationName);
-  await FlutterWebBrowser.openWebPage(
-    url: 'https://www.google.com/maps/search/?api=1&query=$encodedLocationName',
-  );
-}
-
+    String encodedLocationName = Uri.encodeComponent(locationName);
+    await FlutterWebBrowser.openWebPage(
+      url:
+          'https://www.google.com/maps/search/?api=1&query=$encodedLocationName',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,13 +290,71 @@ class BottomButtons extends StatelessWidget {
           'enfermeraId': "",
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Servicio cancelado con éxito.'),
-        ));
+        Fluttertoast.showToast(
+          msg: 'Servicio cancelado con éxito.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
       } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error al cancelar el servicio: $error'),
-        ));
+        Fluttertoast.showToast(
+          msg: 'Error al cancelar el servicio: $error',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    }
+  }
+
+  Future<void> _servicioAtendido(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        // Obtener el documento de "citas"
+        DocumentSnapshot<Map<String, dynamic>> citaSnapshot =
+            await FirebaseFirestore.instance
+                .collection('citas')
+                .doc(idCita)
+                .get();
+
+        // Transferir el documento a la colección "historial"
+        await FirebaseFirestore.instance
+            .collection('historial')
+            .doc(idCita)
+            .set(citaSnapshot.data() ?? {});
+
+        // Eliminar el documento de la colección "citas"
+        await FirebaseFirestore.instance
+            .collection('citas')
+            .doc(idCita)
+            .delete();
+
+        Fluttertoast.showToast(
+          msg: 'Servicio atendido con éxito.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } catch (error) {
+        Fluttertoast.showToast(
+          msg: 'Error al marcar el servicio como atendido: $error',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
       }
     }
   }
@@ -325,6 +383,21 @@ class BottomButtons extends StatelessWidget {
                 minimumSize: Size(300, 40),
               ),
               child: Text('Cancelar Servicio'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _servicioAtendido(context);
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF1FBAAF),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(300, 40),
+              ),
+              child: Text('Servicio atendido'),
             ),
           ],
         ),
