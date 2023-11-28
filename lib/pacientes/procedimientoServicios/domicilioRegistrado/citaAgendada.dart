@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:hadal/pacientes/home/home.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
@@ -111,16 +112,37 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     // Eliminar el documento de Firestore
                     final currentUser = FirebaseAuth.instance.currentUser;
                     if (currentUser != null) {
-                      final citasRef = FirebaseFirestore.instance.collection(
-                          'citas'); // Cambiar la referencia a la colección "citas"
+                      final citasRef =
+                          FirebaseFirestore.instance.collection('citas');
 
-                      await citasRef
-                          .doc(citaId)
-                          .delete(); // Cambiar la referencia al documento
+                      await citasRef.doc(citaId).delete();
 
-                      Navigator.of(context).pop(); // Cerrar el diálogo
+                      // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
+                      String paymentIntentId =
+                          stripePayment.getPaymentIntentId() ?? '';
+                      double refundAmount = stripePayment.getRefundAmount();
+
+                      // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+                      await stripePayment.refundPayment(
+                        context,
+                        paymentIntentId,
+                        refundAmount,
+                      );
+                      // Llamada al método refundPayment
+
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Principal(),
+                        ),
+                        (Route<dynamic> route) => false,
+                      );
+
+                      //Navigator.of(context, rootNavigator: true).pop();
+
                       Fluttertoast.showToast(
-                        msg: 'El servicio ha sido cancelado.',
+                        msg:
+                            'El servicio ha sido cancelado y el pago reembolsado.',
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.CENTER,
                       );
@@ -136,7 +158,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Color rojo para indicar cancelación
+                  primary: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

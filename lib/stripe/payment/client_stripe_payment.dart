@@ -5,12 +5,33 @@ import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hadal/pacientes/home/home.dart';
+import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
 import 'package:http/http.dart' as http;
 
 void showWaitingProgressDialog() {}
 
 class ClientStripePayment extends GetConnect {
+  String? getPaymentIntentId() {
+    return paymentIntentData?['id'];
+  }
+
+  double getRefundAmount() {
+    final totalAmount = double.parse(paymentIntentData?['amount']) /
+        100.0; // Convierte centavos a dólares
+    final cancellationFee = totalAmount * 0.10;
+    final refundAmount = totalAmount - cancellationFee;
+
+    return refundAmount;
+  }
+
+  //  final totalAmount =
+  //                       double.parse(paymentIntentData!['amount']) /
+  //                           100.0; // Convierte centavos a dólares
+  //                   final cancellationFee = totalAmount * 0.10;
+  //                   final refundAmount = totalAmount - cancellationFee;
+
   DetallesCitaState? detallesCitaState;
 
   void setDetallesCitaState(DetallesCitaState state) {
@@ -82,12 +103,12 @@ class ClientStripePayment extends GetConnect {
           onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
           Future.delayed(Duration(seconds: 2), () {
-            showWaitingDialog = true;
+            // showWaitingDialog = true;
 
-            // Llama a la función para mostrar el diálogo de espera
-            if (showWaitingDialog) {
-              showWaitingProgressDialog(context);
-            }
+            // // Llama a la función para mostrar el diálogo de espera
+            // if (showWaitingDialog) {
+            //   showWaitingProgressDialog(context);
+            // }
           });
         }).onError((error, stackTrace) {
           print('Error con la tarjeta: $error $stackTrace');
@@ -136,96 +157,96 @@ class ClientStripePayment extends GetConnect {
     return a.toString();
   }
 
-  void showWaitingProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-            side: BorderSide(color: Color(0xFF1FBAAF)),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LinearProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1FBAAF)),
-                backgroundColor: Colors.grey[200],
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                'Esperando Aceptación desde la clase pago',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 20, 107, 101),
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 8.0), // Espaciado adicional
-              Text(
-                '(No salga de esta pantalla)',
-                style: TextStyle(
-                  color: Colors.red, // Color de advertencia
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    // Eliminar el documento de Firestore
-                    if (detallesCitaState != null) {
-                      detallesCitaState!
-                          .cancelarCita(context, detallesCitaState!.citaId);
-                    }
+  // void showWaitingProgressDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(15),
+  //           side: BorderSide(color: Color(0xFF1FBAAF)),
+  //         ),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             LinearProgressIndicator(
+  //               valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1FBAAF)),
+  //               backgroundColor: Colors.grey[200],
+  //             ),
+  //             SizedBox(height: 16.0),
+  //             Text(
+  //               'Esperando Aceptación desde la clase pago',
+  //               style: TextStyle(
+  //                 color: Color.fromARGB(255, 20, 107, 101),
+  //                 fontSize: 16,
+  //               ),
+  //             ),
+  //             SizedBox(height: 8.0), // Espaciado adicional
+  //             Text(
+  //               '(No salga de esta pantalla)',
+  //               style: TextStyle(
+  //                 color: Colors.red, // Color de advertencia
+  //                 fontSize: 14,
+  //               ),
+  //             ),
+  //             SizedBox(height: 16.0),
+  //             ElevatedButton(
+  //               onPressed: () async {
+  //                 try {
+  //                   // Eliminar el documento de Firestore
+  //                   if (detallesCitaState != null) {
+  //                     detallesCitaState!
+  //                         .cancelarCita(context, detallesCitaState!.citaId);
+  //                   }
 
-                    // //COMISION DE PAGO
-                    final totalAmount =
-                        double.parse(paymentIntentData!['amount']) /
-                            100.0; // Convierte centavos a dólares
-                    final cancellationFee = totalAmount * 0.10;
-                    final refundAmount = totalAmount - cancellationFee;
+  //                   // //COMISION DE PAGO
+  //                   final totalAmount =
+  //                       double.parse(paymentIntentData!['amount']) /
+  //                           100.0; // Convierte centavos a dólares
+  //                   final cancellationFee = totalAmount * 0.10;
+  //                   final refundAmount = totalAmount - cancellationFee;
 
-                    print(
-                        "____________El valor del refund es de: $refundAmount");
-                    print(
-                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()} $detallesCitaState!.citaId');
-                    // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
-                    await refundPayment(
-                        context, paymentIntentData!['id'], refundAmount);
-                    //COMISION DE PAGO
-                  } catch (error) {
-                    Fluttertoast.showToast(
-                      msg:
-                          'Hubo un error al cancelar el servicio. - Desde client_stripe $error',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                    );
-                    print("_______ERROR AL CANCELAR EL SERVICIO: $error");
-                    print(
-                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()}  $detallesCitaState!.citaId DESDE CANCELAR SERVICIO ERROR');
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Color rojo para indicar cancelación
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  'Cancelar Servicio',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  //                   print(
+  //                       "____________El valor del refund es de: $refundAmount");
+  //                   print(
+  //                       'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()} $detallesCitaState!.citaId');
+  //                   // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+  //                   await refundPayment(
+  //                       context, paymentIntentData!['id'], refundAmount);
+  //                   //COMISION DE PAGO
+  //                 } catch (error) {
+  //                   Fluttertoast.showToast(
+  //                     msg:
+  //                         'Hubo un error al cancelar el servicio. - Desde client_stripe $error',
+  //                     toastLength: Toast.LENGTH_SHORT,
+  //                     gravity: ToastGravity.CENTER,
+  //                   );
+  //                   print("_______ERROR AL CANCELAR EL SERVICIO: $error");
+  //                   print(
+  //                       'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()}  $detallesCitaState!.citaId DESDE CANCELAR SERVICIO ERROR');
+  //                 }
+  //               },
+  //               style: ElevatedButton.styleFrom(
+  //                 primary: Colors.red, // Color rojo para indicar cancelación
+  //                 shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(10),
+  //                 ),
+  //               ),
+  //               child: Text(
+  //                 'Cancelar Servicio',
+  //                 style: TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 16,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> refundPayment(
       BuildContext context, String paymentIntentId, double refundAmount) async {
@@ -246,6 +267,7 @@ class ClientStripePayment extends GetConnect {
 
       if (response.statusCode == 200) {
         // Reembolso exitoso
+        Home();
         Navigator.of(context).pop(); // Cierra el diálogo de espera
         Fluttertoast.showToast(
           msg: 'El reembolso se ha procesado correctamente.',
