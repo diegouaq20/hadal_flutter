@@ -110,12 +110,11 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     // Eliminar el documento de Firestore
                     final currentUser = FirebaseAuth.instance.currentUser;
                     if (currentUser != null) {
-                      final citasRef = FirebaseFirestore.instance.collection(
-                          'citas'); // Cambiar la referencia a la colección "citas"
-
-                      await citasRef
-                          .doc(citaId)
-                          .delete(); // Cambiar la referencia al documento
+                      final citasRef =
+                          FirebaseFirestore.instance.collection('citas');
+                      // Cambiar la referencia a la colección "citas"
+                      await citasRef.doc(citaId).delete();
+                      // Cambiar la referencia al documento
 
                       Navigator.of(context).pop(); // Cerrar el diálogo
                       Fluttertoast.showToast(
@@ -189,13 +188,20 @@ class _CitaAgendadaState extends State<CitaAgendada> {
 
   void _realizarPagoYConfirmarCita() async {
     try {
-      // Lógica de pago con Stripe aquí
       await stripePayment.makePayment(context, widget.total);
+
       print("Se inicia ventana de pago correctamente");
+
+      // Use la función para obtener el ID del servicio
+      String? servicioId = stripePayment.getCreatedServiceId();
+
+      // Realice acciones adicionales según sea necesario
+      if (servicioId != null) {
+        // Puede almacenar el ID o realizar otras acciones aquí
+        print('ID del servicio creado: $servicioId');
+      }
     } catch (error) {
-      setState(() {
-        showWaitingDialog = false;
-      });
+      showWaitingDialog = false;
       Fluttertoast.showToast(
         msg: 'Hubo un error al confirmar la cita.',
         toastLength: Toast.LENGTH_SHORT,
@@ -206,42 +212,39 @@ class _CitaAgendadaState extends State<CitaAgendada> {
   }
 
   pagoConfirmadoCrearCita() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      final citasRef = FirebaseFirestore.instance.collection('citas');
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final citasRef = FirebaseFirestore.instance.collection('citas');
 
-      final newCitaRef = await citasRef.add({
-        'nombre': widget.nombre,
-        'dia': widget.dayOfWeek,
-        'diaDelMes': widget.dayOfMonth,
-        'mes': widget.month,
-        'hora': widget.schedule,
-        'servicio': widget.serviceName,
-        'total': widget.total,
-        'estado': 'disponible',
-        'domicilio': widget.domicilio,
-        'icono': widget.icono,
-        'photoUrl': widget.photoUrl,
-        'tipoServicio': widget.tipoServicio,
-        'tipoCategoria': widget.tipoCategoria,
-        'pacienteId': widget.userId,
-        'enfermeraId': "",
-        'ubicacionPaciente': widget.ubicacion,
-      });
+        final newCitaRef = await citasRef.add({
+          'nombre': widget.nombre,
+          'dia': widget.dayOfWeek,
+          'diaDelMes': widget.dayOfMonth,
+          'mes': widget.month,
+          'hora': widget.schedule,
+          'servicio': widget.serviceName,
+          'total': widget.total,
+          'estado': 'disponible',
+          'domicilio': widget.domicilio,
+          'icono': widget.icono,
+          'photoUrl': widget.photoUrl,
+          'tipoServicio': widget.tipoServicio,
+          'tipoCategoria': widget.tipoCategoria,
+          'pacienteId': widget.userId,
+          'enfermeraId': "",
+          'ubicacionPaciente': widget.ubicacion,
+        });
 
-      // Muestra el SnackBar de pago exitoso
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
-      //   ),
-      // );
+        // Obtener el ID del servicio creado
+        String servicioId = newCitaRef.id;
+        print("________EL ID DEL SERVICIO ES: $servicioId");
+        // Llamar a la función de ClientStripePayment para establecer el ID
 
-      // Espera un momento antes de mostrar el WaitingProgressDialog
-      // await Future.delayed(Duration(
-      //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
-
-      // Muestra el WaitingProgressDialog
-      // showWaitingDialog = true;
+        // Puedes mostrar el SnackBar de pago exitoso aquí si es necesario
+      }
+    } catch (error) {
+      print('Error al crear la cita: $error');
     }
   }
 

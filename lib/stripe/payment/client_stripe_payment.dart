@@ -12,40 +12,51 @@ void showWaitingProgressDialog() {}
 class ClientStripePayment extends GetConnect {
   bool showWaitingDialog = false;
 
+  String? createdServiceId;
+
   Map<String, dynamic>? paymentIntentData;
 
   Function(bool) onPaymentSuccess;
 
-  ClientStripePayment({required this.onPaymentSuccess});
+  ClientStripePayment({required this.onPaymentSuccess, this.createdServiceId});
 
-  Future<void> makePayment(BuildContext context, double _total) async {
-    print(
-        '_________________Valor de total: $_total'); // Imprimir el valor de total en la consola
+  String? getCreatedServiceId() {
+    return createdServiceId;
+  }
+
+  Future<String?> makePayment(BuildContext context, double _total) async {
+    print('_________________Valor de total: $_total');
 
     var gpay = PaymentSheetGooglePay(
       merchantCountryCode: "MX",
       currencyCode: "MXN",
       testEnv: true,
     );
+
     try {
       paymentIntentData = await createPaymentIntent(
         double.parse(_total.toStringAsFixed(2)),
         'MXN',
       );
+
       await Stripe.instance
           .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret:
-                      paymentIntentData!['client_secret'],
-                  merchantDisplayName: 'Hadal',
-                  googlePay: gpay))
+            paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntentData!['client_secret'],
+              merchantDisplayName: 'Hadal',
+              googlePay: gpay,
+            ),
+          )
           .then((value) {});
 
-      showPaymentSheet(context);
+      return showPaymentSheet(context); // Return the service ID
     } catch (err) {
       print('Error: ${err}');
+      return null; // Return null if there's an error
     }
   }
+
+// Resto del código de la clase ClientStripePayment...
 
   showPaymentSheet(BuildContext context) async {
     try {
@@ -58,6 +69,7 @@ class ClientStripePayment extends GetConnect {
                   Text('Pago exitoso: Tu pago fue procesado correctamente'),
             ),
           );
+
           print("_____________Servicio creado_____________");
           onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
@@ -156,12 +168,12 @@ class ClientStripePayment extends GetConnect {
                     // Eliminar el documento de Firestore
                     final currentUser = FirebaseAuth.instance.currentUser;
                     if (currentUser != null) {
-                      final citasRef = FirebaseFirestore.instance.collection(
-                          'citas'); // Cambiar la referencia a la colección "citas"
+                      final citasRef =
+                          FirebaseFirestore.instance.collection('citas');
+// Cambiar la referencia a la colección "citas"
 
-                      await citasRef
-                          .doc(citaId)
-                          .delete(); // Cambiar la referencia al documento
+                      await citasRef.doc(createdServiceId).delete();
+                      // Cambiar la referencia al documento
 
                       Navigator.of(context).pop(); // Cerrar el diálogo
                       Fluttertoast.showToast(
@@ -180,6 +192,8 @@ class ClientStripePayment extends GetConnect {
 
                     print(
                         "____________El valor del refund es de: $refundAmount");
+                    print(
+                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()}');
                     // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
                     await refundPayment(
                         context, paymentIntentData!['id'], refundAmount);

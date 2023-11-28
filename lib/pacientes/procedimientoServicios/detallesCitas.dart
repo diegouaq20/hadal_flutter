@@ -61,6 +61,8 @@ class DetallesCitaState extends State<DetallesCita> {
           .delete();
 
       // Luego de eliminar la cita con éxito, navegamos atrás.
+      Navigator.of(context).pop();
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Servicio cancelado con éxito.'),
       ));
