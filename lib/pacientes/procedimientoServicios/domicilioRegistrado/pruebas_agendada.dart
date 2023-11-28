@@ -57,24 +57,16 @@ class _CitaAgendadaState extends State<CitaAgendada> {
   ClientStripePayment stripePayment =
       ClientStripePayment(onPaymentSuccess: (bool) {});
 
-  bool showWaitingDialog = false;
+  bool showWaitingDialog = true;
   late final GlobalKey<NavigatorState> navigatorKey;
-
-  _CitaAgendadaState() {
-    stripePayment = ClientStripePayment(
-      onPaymentSuccess: (bool paymentSuccessful) {
-        if (paymentSuccessful) {
-          pagoConfirmadoCrearCita();
-        }
-      },
-    );
-  }
 
   void showWaitingProgressDialog(BuildContext context, String citaId) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        _enviarDatosFirebase(); // Llamar a la función para enviar datos a Firebase
+
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -89,7 +81,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación',
+                'Esperando Aceptación - DESDE CITA AGENDADA REGISTRADO',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,
@@ -112,11 +104,10 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     if (currentUser != null) {
                       final citasRef =
                           FirebaseFirestore.instance.collection('citas');
-                      // Cambiar la referencia a la colección "citas"
-                      await citasRef.doc(citaId).delete();
-                      // Cambiar la referencia al documento
 
-                      Navigator.of(context).pop(); // Cerrar el diálogo
+                      await citasRef.doc(citaId).delete();
+
+                      Navigator.of(context).pop();
                       Fluttertoast.showToast(
                         msg: 'El servicio ha sido cancelado.',
                         toastLength: Toast.LENGTH_SHORT,
@@ -133,7 +124,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Color rojo para indicar cancelación
+                  primary: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -186,19 +177,16 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     }
   }
 
-  void _realizarPagoYConfirmarCita() async {
+  void _realizarPagoConStripe() async {
     try {
+      // Lógica de pago con Stripe aquí
       await stripePayment.makePayment(context, widget.total);
-
-      print("Se inicia ventana de pago correctamente");
-
-      // Use la función para obtener el ID del servicio
-
-      // Realice acciones adicionales según sea necesario
     } catch (error) {
-      showWaitingDialog = false;
+      setState(() {
+        showWaitingDialog = true;
+      });
       Fluttertoast.showToast(
-        msg: 'Hubo un error al confirmar la cita.',
+        msg: 'Hubo un error al realizar el pago.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
       );
@@ -206,7 +194,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     }
   }
 
-  pagoConfirmadoCrearCita() async {
+  void _enviarDatosFirebase() async {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
@@ -230,16 +218,17 @@ class _CitaAgendadaState extends State<CitaAgendada> {
           'enfermeraId': "",
           'ubicacionPaciente': widget.ubicacion,
         });
-
-        // Obtener el ID del servicio creado
-        String servicioId = newCitaRef.id;
-        print("________EL ID DEL SERVICIO ES: $servicioId");
-        // Llamar a la función de ClientStripePayment para establecer el ID
-
-        // Puedes mostrar el SnackBar de pago exitoso aquí si es necesario
       }
     } catch (error) {
-      print('Error al crear la cita: $error');
+      setState(() {
+        showWaitingDialog = true;
+      });
+      Fluttertoast.showToast(
+        msg: 'Hubo un error al enviar los datos a Firebase.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      print(error);
     }
   }
 
@@ -342,11 +331,10 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   setState(() {
-                    _realizarPagoYConfirmarCita();
+                    _realizarPagoConStripe();
                   });
 
                   await Future.delayed(Duration(seconds: 10));
-
                   // Puedes ajustar la duración según tus necesidades
                 },
                 style: ElevatedButton.styleFrom(
@@ -368,48 +356,6 @@ class _CitaAgendadaState extends State<CitaAgendada> {
       },
     );
   }
-
-  // void _agregarAlCarrito() {
-  //   try {
-  //     final currentUser = FirebaseAuth.instance.currentUser;
-  //     if (currentUser != null) {
-  //       final userRef = FirebaseFirestore.instance
-  //           .collection('usuariopaciente')
-  //           .doc(currentUser.uid);
-  //       final carritoRef = userRef.collection('carrito');
-
-  //       // Agregar el servicio al carrito
-  //       carritoRef.add({
-  //         'nombre': widget.serviceName,
-  //         'precio': widget.total,
-  //         'dia': widget.dayOfWeek,
-  //         'diaDelMes': widget.dayOfMonth,
-  //         'mes': widget.month,
-  //         'hora': widget.schedule,
-  //         'nombreUsuario': widget.nombre,
-  //         'domicilio': widget.domicilio,
-  //         'photoUrl': widget.photoUrl,
-  //         'icono': widget.icono,
-  //         'tipoCategoria': widget.tipoCategoria,
-  //         'estado': "sin pedir"
-  //         // Otros campos si es necesario
-  //       });
-
-  //       Fluttertoast.showToast(
-  //         msg: 'El servicio se ha añadido al carrito correctamente.',
-  //         toastLength: Toast.LENGTH_SHORT,
-  //         gravity: ToastGravity.CENTER,
-  //       );
-  //     }
-  //   } catch (error) {
-  //     Fluttertoast.showToast(
-  //       msg: 'Hubo un error al añadir el servicio al carrito.',
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.CENTER,
-  //     );
-  //     print(error);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -542,26 +488,6 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
               ),
             ),
-            SizedBox(height: 15.0),
-            // ElevatedButton(
-            //   onPressed: _agregarAlCarrito,
-            //   style: ElevatedButton.styleFrom(
-            //     primary: Color(0xFFF4FCFB),
-            //     onPrimary: Color(0xFF1FBAAF),
-            //     minimumSize: Size(double.infinity, 50.0),
-            //     shape: RoundedRectangleBorder(
-            //       side: BorderSide(color: Color(0xFF1FBAAF)),
-            //       borderRadius: BorderRadius.circular(10.0),
-            //     ),
-            //   ),
-            //   child: Text(
-            //     'Añadir al carrito',
-            //     style: TextStyle(
-            //       fontSize: 18.0,
-            //       color: Color(0xFF1FBAAF),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

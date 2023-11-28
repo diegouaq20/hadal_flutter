@@ -47,15 +47,15 @@ class CitaAgendada extends StatefulWidget {
   @override
   _CitaAgendadaState createState() => _CitaAgendadaState();
 
-  void showWaitingProgressDialog() {}
+  // void showWaitingProgressDialog() {}
 }
 
 ClientStripePayment stripePayment =
-    ClientStripePayment(onPaymentSuccess: (bool) {}, createdServiceId: '');
+    ClientStripePayment(onPaymentSuccess: (bool) {});
 
 class _CitaAgendadaState extends State<CitaAgendada> {
   ClientStripePayment stripePayment =
-      ClientStripePayment(onPaymentSuccess: (bool) {}, createdServiceId: '');
+      ClientStripePayment(onPaymentSuccess: (bool) {});
 
   bool showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;
@@ -67,15 +67,15 @@ class _CitaAgendadaState extends State<CitaAgendada> {
           pagoConfirmadoCrearCita();
         }
       },
-      createdServiceId: '',
     );
   }
 
-  void showWaitingProgressDialog(BuildContext context, String citaId) {
+  void showWaitingProgressDialog(String citaId) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        //pagoConfirmadoCrearCita();
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -90,7 +90,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación',
+                'Esperando Aceptación - DESDE CITA AGENDADA TERCEROS',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,
@@ -127,7 +127,8 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     }
                   } catch (error) {
                     Fluttertoast.showToast(
-                      msg: 'Hubo un error al cancelar el servicio.',
+                      msg:
+                          'Hubo un error al cancelar el servicio. - Desde Cita Agendada Registrado $error',
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                     );
@@ -228,6 +229,15 @@ class _CitaAgendadaState extends State<CitaAgendada> {
         'pacienteId': widget.userId,
         'enfermeraId': "",
         'ubicacionPaciente': widget.ubicacion,
+      });
+
+      String servicioId = newCitaRef.id;
+      print(
+          "________EL ID DEL SERVICIO ES: $servicioId DESDE CITA AGENADA DOMICILIO REGISTRADO");
+
+      setState(() {
+        //showWaitingDialog = true;
+        showWaitingProgressDialog(newCitaRef.id);
       });
 
       // Muestra el SnackBar de pago exitoso
@@ -345,6 +355,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   setState(() {
+                    showWaitingDialog = true;
                     _realizarPagoYConfirmarCita();
                   });
 

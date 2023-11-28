@@ -50,12 +50,13 @@ class CitaAgendada extends StatefulWidget {
   void showWaitingProgressDialog() {}
 }
 
-ClientStripePayment stripePayment =
-    ClientStripePayment(onPaymentSuccess: (bool) {}, createdServiceId: '');
+ClientStripePayment stripePayment = ClientStripePayment(
+  onPaymentSuccess: (bool) {},
+);
 
 class _CitaAgendadaState extends State<CitaAgendada> {
   ClientStripePayment stripePayment =
-      ClientStripePayment(onPaymentSuccess: (bool) {}, createdServiceId: '');
+      ClientStripePayment(onPaymentSuccess: (bool) {});
 
   bool showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;

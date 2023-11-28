@@ -31,7 +31,10 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
   Future<void> initializeAppAndGetName() async {
     await Firebase.initializeApp();
     final currentUser = FirebaseAuth.instance.currentUser;
-    final userDoc = await FirebaseFirestore.instance.collection('usuariopaciente').doc(currentUser!.uid).get();
+    final userDoc = await FirebaseFirestore.instance
+        .collection('usuariopaciente')
+        .doc(currentUser!.uid)
+        .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
       domicilio = userDoc['domicilio'] ?? "";
@@ -46,8 +49,20 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
   DateTime? _selectedDay;
 
   final List<String> horarios = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00'
   ];
 
   @override
@@ -129,7 +144,8 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
               child: ListView.separated(
                 itemCount: horarios.length,
                 separatorBuilder: (context, index) => Divider(
-                  color: _selectedHorarioIndex == index ? null : Color(0xFF245366),
+                  color:
+                      _selectedHorarioIndex == index ? null : Color(0xFF245366),
                   thickness: 2.0,
                   indent: MediaQuery.of(context).size.width * 0.2,
                   endIndent: MediaQuery.of(context).size.width * 0.05,
@@ -144,7 +160,9 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                           child: Text(
                             horarios[index],
                             style: TextStyle(
-                              color: _selectedHorarioIndex == index ? Color(0xFF245366) : null,
+                              color: _selectedHorarioIndex == index
+                                  ? Color(0xFF245366)
+                                  : null,
                             ),
                           ),
                         ),
@@ -155,14 +173,18 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                                   color: Color(0xFF8CA6A3),
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SizedBox(height: 5.0),
                                     Text(
                                       '${widget.servicio.nombre}',
-                                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
                                     ),
                                   ],
                                 ),
@@ -210,12 +232,14 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                     return;
                   }
                   final now = DateTime.now();
-                  if (_selectedDay!.isBefore(DateTime(now.year, now.month, now.day - 0))) {
+                  if (_selectedDay!
+                      .isBefore(DateTime(now.year, now.month, now.day - 0))) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('No puedes agendar citas en fechas pasadas'),
+                          title:
+                              Text('No puedes agendar citas en fechas pasadas'),
                           actions: <Widget>[
                             TextButton(
                               child: Text('Aceptar'),
@@ -229,7 +253,8 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                     );
                     return;
                   }
-                  final dayOfWeek = DateFormat.EEEE('es_ES').format(_selectedDay!);
+                  final dayOfWeek =
+                      DateFormat.EEEE('es_ES').format(_selectedDay!);
                   final dayOfMonth = _selectedDay!.day;
                   final month = DateFormat.MMMM('es_ES').format(_selectedDay!);
                   final serviceName = widget.servicio.nombre;
@@ -239,28 +264,28 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
                   final tipoCategoria = widget.servicio.tipoCategoria;
                   final ubicacion = widget.servicio.ubicacion;
                   Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => CitaAgendada(
-     userId: FirebaseAuth.instance.currentUser!.uid,
-      dayOfWeek: dayOfWeek,
-      dayOfMonth: dayOfMonth,
-      month: month,
-      serviceName: serviceName,
-      schedule: schedule,
-      estado: 'disponible',
-      tipoServicio: 'Cita',
-      nombre: nombre,
-      total: total,
-      icono: icono,
-      domicilio: domicilio, // Pasar el valor de domicilio aquí
-      ubicacion: _ubicacion,
-      photoUrl: photoUrl,
-      tipoCategoria: tipoCategoria,
-    ),
-  ),
-);
-
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CitaAgendada(
+                        userId: FirebaseAuth.instance.currentUser!.uid,
+                        dayOfWeek: dayOfWeek,
+                        dayOfMonth: dayOfMonth,
+                        month: month,
+                        serviceName: serviceName,
+                        schedule: schedule,
+                        estado: 'disponible',
+                        tipoServicio: 'Cita',
+                        nombre: nombre,
+                        total: total,
+                        icono: icono,
+                        domicilio:
+                            domicilio, // Pasar el valor de domicilio aquí
+                        ubicacion: _ubicacion,
+                        photoUrl: photoUrl,
+                        tipoCategoria: tipoCategoria,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
                   'Agendar',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
 class DetallesCita extends StatefulWidget {
   final String servicio;
@@ -47,9 +48,12 @@ class DetallesCita extends StatefulWidget {
 }
 
 class DetallesCitaState extends State<DetallesCita> {
+  ClientStripePayment? _clientStripePayment;
+  String get citaId => widget.citaId;
+
   String? photoUrlEnfermera;
   String? nombreEnfermera;
-  DetallesCitaState? _detallesCitaState; // Instancia del estado
+  DetallesCitaState? detallesCitaState; // Instancia del estado
 
   // Función para cancelar la cita
   void cancelarCita(BuildContext context, String citaId) async {
@@ -57,7 +61,7 @@ class DetallesCitaState extends State<DetallesCita> {
       // Elimina la cita de la colección 'citas'
       await FirebaseFirestore.instance
           .collection('citas')
-          .doc(citaId) // No es necesario utilizar widget.citaId
+          .doc(citaId) // Puedes usar directamente citaId
           .delete();
 
       // Luego de eliminar la cita con éxito, navegamos atrás.
@@ -77,7 +81,8 @@ class DetallesCitaState extends State<DetallesCita> {
     super.initState();
     // Llamar a la función para obtener la información de la enfermera
     obtenerInfoEnfermera();
-    _detallesCitaState = this; // Asignar la instancia actual
+
+    // Crear una instancia de ClientStripePayment y asignar la referencia de DetallesCitaState
   }
 
   Future<void> obtenerInfoEnfermera() async {
@@ -105,7 +110,7 @@ class DetallesCitaState extends State<DetallesCita> {
 
   @override
   Widget build(BuildContext context) {
-    _detallesCitaState = this;
+    detallesCitaState = this;
 
     String servicioDisplay = widget.servicio.length > 30
         ? widget.servicio.substring(0, 30) + '...'
@@ -273,7 +278,7 @@ class DetallesCitaState extends State<DetallesCita> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Llama a la función para cancelar la cita cuando se presiona el botón
-                    _detallesCitaState?.cancelarCita(context, widget.citaId);
+                    detallesCitaState?.cancelarCita(context, widget.citaId);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),

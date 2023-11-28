@@ -5,11 +5,18 @@ import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
 import 'package:http/http.dart' as http;
 
 void showWaitingProgressDialog() {}
 
 class ClientStripePayment extends GetConnect {
+  DetallesCitaState? detallesCitaState;
+
+  void setDetallesCitaState(DetallesCitaState state) {
+    detallesCitaState = state;
+  }
+
   bool showWaitingDialog = false;
 
   String? createdServiceId;
@@ -71,6 +78,7 @@ class ClientStripePayment extends GetConnect {
           );
 
           print("_____________Servicio creado_____________");
+          print("_____SERVICIO CREADO CITA ID: $detallesCitaState!.citaId");
           onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
           Future.delayed(Duration(seconds: 2), () {
@@ -78,7 +86,7 @@ class ClientStripePayment extends GetConnect {
 
             // Llama a la función para mostrar el diálogo de espera
             if (showWaitingDialog) {
-              showWaitingProgressDialog(context, '6rCB8WGMNamyJopH4y99');
+              showWaitingProgressDialog(context);
             }
           });
         }).onError((error, stackTrace) {
@@ -128,7 +136,7 @@ class ClientStripePayment extends GetConnect {
     return a.toString();
   }
 
-  void showWaitingProgressDialog(BuildContext context, String citaId) {
+  void showWaitingProgressDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -166,21 +174,9 @@ class ClientStripePayment extends GetConnect {
                 onPressed: () async {
                   try {
                     // Eliminar el documento de Firestore
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser != null) {
-                      final citasRef =
-                          FirebaseFirestore.instance.collection('citas');
-// Cambiar la referencia a la colección "citas"
-
-                      await citasRef.doc(createdServiceId).delete();
-                      // Cambiar la referencia al documento
-
-                      Navigator.of(context).pop(); // Cerrar el diálogo
-                      Fluttertoast.showToast(
-                        msg: 'El servicio ha sido cancelado.',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                      );
+                    if (detallesCitaState != null) {
+                      detallesCitaState!
+                          .cancelarCita(context, detallesCitaState!.citaId);
                     }
 
                     // //COMISION DE PAGO
@@ -193,18 +189,21 @@ class ClientStripePayment extends GetConnect {
                     print(
                         "____________El valor del refund es de: $refundAmount");
                     print(
-                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()}');
+                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()} $detallesCitaState!.citaId');
                     // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
                     await refundPayment(
                         context, paymentIntentData!['id'], refundAmount);
                     //COMISION DE PAGO
                   } catch (error) {
                     Fluttertoast.showToast(
-                      msg: 'Hubo un error al cancelar el servicio.',
+                      msg:
+                          'Hubo un error al cancelar el servicio. - Desde client_stripe $error',
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                     );
-                    print(error);
+                    print("_______ERROR AL CANCELAR EL SERVICIO: $error");
+                    print(
+                        'ID del Servicio desde client_stripe_payment: ${getCreatedServiceId()}  $detallesCitaState!.citaId DESDE CANCELAR SERVICIO ERROR');
                   }
                 },
                 style: ElevatedButton.styleFrom(
