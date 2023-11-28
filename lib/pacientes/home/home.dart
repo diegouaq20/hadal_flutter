@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +9,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:hadal/main.dart';
+import 'package:http/http.dart' as http;
 
 import 'verMas.dart';
 
@@ -21,6 +30,152 @@ class _HomeState extends State<Home> {
   String tipoUsuario = "";
   String tipoCategoria = "";
 
+  ////////////////////////////////////////////////
+  GeoPoint? ubicacion;
+  String locationName = "Obteniendo nombre del lugar...";
+
+  late User _currentUser;
+
+  Timer? locationUpdateTimer;
+  @override
+  void dispose() {
+    locationUpdateTimer?.cancel();
+    super.dispose();
+  }
+
+  void startLocationUpdateTimer() {
+    const Duration updateInterval = const Duration(seconds: 60);
+    locationUpdateTimer = Timer.periodic(updateInterval, (Timer t) {
+      updateLocation();
+    });
+  }
+
+  Future<void> _getLocationName() async {
+    try {
+      final latitudesearch = ubicacion!.latitude.toString();
+      final longitudeSearch = ubicacion!.longitude.toString();
+
+      final response = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitudesearch&lon=$longitudeSearch'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        String displayName = data['display_name'];
+        locationName = displayName;
+      } else {
+        locationName = "Error al obtener el nombre del lugar.";
+      }
+    } catch (e) {
+      locationName = "Error: $e";
+    }
+  }
+
+  Future<GeoPoint?> _getUserLocation() async {
+    try {
+      final userEnfermeraSnapshot = await FirebaseFirestore.instance
+          .collection('usuariopaciente')
+          .doc(_currentUser.uid)
+          .get();
+
+      if (userEnfermeraSnapshot.exists) {
+        return userEnfermeraSnapshot.get('ubicacion') as GeoPoint?;
+      }
+    } catch (error) {
+      print('Error al obtener la ubicación del usuario paciente: $error');
+    }
+
+    return null;
+  }
+
+  double _calculateDistance(GeoPoint? point1, GeoPoint? point2) {
+    if (point1 == null || point2 == null) {
+      return double.infinity;
+    }
+
+    const radius = 6371;
+
+    final lat1 = point1.latitude * pi / 180;
+    final lon1 = point1.longitude * pi / 180;
+    final lat2 = point2.latitude * pi / 180;
+    final lon2 = point2.longitude * pi / 180;
+
+    final dLat = lat2 - lat1;
+    final dLon = lon2 - lon1;
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    final distance = radius * c;
+
+    return distance;
+  }
+
+  Future<void> updateLocation() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        LocationPermission permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
+          Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+
+          double latitude = position.latitude;
+          double longitude = position.longitude;
+
+          final enfermeraDoc = await FirebaseFirestore.instance
+              .collection('usuariopaciente')
+              .doc(user.uid)
+              .get();
+
+          if (enfermeraDoc.exists) {
+            await enfermeraDoc.reference.update({
+              'ubicacion': GeoPoint(latitude, longitude),
+            });
+          }
+        } else {
+          showDialog(
+            context: navigatorKey.currentState!.overlay!.context,
+            barrierDismissible: false,
+            builder: (context) {
+              return CustomAlertDialog(
+                title: 'Permisos de Ubicación',
+                content:
+                    'Se requiere acceso a la ubicación para utilizar esta aplicación. Por favor, conceda los permisos de ubicación en la configuración de su dispositivo y vuelva a iniciar la aplicación.',
+                borderColor: Colors.teal,
+                borderRadius: 20,
+                titleTextColor: Colors.teal,
+                contentTextColor: Colors.black,
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      print('Error actualizando la ubicación: $e');
+
+      showDialog(
+        context: navigatorKey.currentState!.overlay!.context,
+        barrierDismissible: false,
+        builder: (context) {
+          return CustomAlertDialog(
+            title: 'Encender GPS',
+            content:
+                'Para utilizar esta aplicación, debe encender el GPS de su dispositivo. Por favor, encienda el GPS y vuelva a iniciar la aplicación.',
+            borderColor: Colors.teal,
+            borderRadius: 20,
+            titleTextColor: Colors.teal,
+            contentTextColor: Colors.black,
+          );
+        },
+      );
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////
+
   List<QueryDocumentSnapshot> serviciosBasicosDocs = [];
   bool showContent = false;
 
@@ -35,6 +190,7 @@ class _HomeState extends State<Home> {
         primerApellido = documentSnapshot.get('primerApellido') ?? "";
         segundoApellido = documentSnapshot.get('segundoApellido') ?? "";
         tipoUsuario = documentSnapshot.get('tipoUsuario') ?? "";
+        ubicacion = documentSnapshot.get('ubicacion');
         showContent = true; // Mostrar contenido después de cargar los datos
       });
     }
@@ -45,6 +201,10 @@ class _HomeState extends State<Home> {
     super.initState();
     _getUserData();
     _loadServicios();
+    //servicios de geolocalizacion
+    _currentUser = FirebaseAuth.instance.currentUser!;
+    //_loadSavedState();
+    startLocationUpdateTimer();
   }
 
   void _loadServicios() async {
@@ -274,11 +434,33 @@ class _HomeState extends State<Home> {
                                                           Color(0xFF1FBAAF),
                                                     ),
                                                     onPressed: () {
-                                                      // Navegar a una ruta no diseñada
-                                                      // Aquí puedes agregar la lógica para la tercera opción
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DescripcionRealtime(
+                                                            servicio:
+                                                                servicioDoc,
+                                                          ),
+                                                        ),
+                                                      );
                                                     },
-                                                    child: Text(
-                                                        "Ubicación actual"),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "Ubicación actual",
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                        ),
+                                                        Text(
+                                                          "(Solo si se encuentra fuera de su domicilio registrado)",
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 Padding(
