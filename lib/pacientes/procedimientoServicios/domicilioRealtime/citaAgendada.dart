@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
@@ -45,27 +42,38 @@ class CitaAgendada extends StatefulWidget {
   });
 
   @override
-  _CitaAgendadaState createState() => _CitaAgendadaState();
+  CitaAgendadaState createState() => CitaAgendadaState();
 
-  void showWaitingProgressDialog() {}
+  // void showWaitingProgressDialog() {}
 }
 
-ClientStripePayment stripePayment = ClientStripePayment(
-  onPaymentSuccess: (bool) {},
-);
+ClientStripePayment stripePayment =
+    ClientStripePayment(onPaymentSuccess: (bool) {});
 
-class _CitaAgendadaState extends State<CitaAgendada> {
+class CitaAgendadaState extends State<CitaAgendada> {
   ClientStripePayment stripePayment =
       ClientStripePayment(onPaymentSuccess: (bool) {});
 
   bool showWaitingDialog = false;
   late final GlobalKey<NavigatorState> navigatorKey;
 
-  void showWaitingProgressDialog(BuildContext context, String citaId) {
+  CitaAgendadaState() {
+    stripePayment = ClientStripePayment(
+      onPaymentSuccess: (bool paymentSuccessful) {
+        if (paymentSuccessful) {
+          pagoConfirmadoCrearCita();
+        }
+      },
+    );
+  }
+
+  void showWaitingProgressDialog(String citaId, context) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        //pagoConfirmadoCrearCita();
+        _waitForCitaAceptada(citaId);
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -80,7 +88,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación',
+                'Esperando Aceptación - DESDE CITA AGENDADA TERCEROS',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,
@@ -97,35 +105,11 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  try {
-                    // Eliminar el documento de Firestore
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser != null) {
-                      final citasRef = FirebaseFirestore.instance.collection(
-                          'citas'); // Cambiar la referencia a la colección "citas"
-
-                      await citasRef
-                          .doc(citaId)
-                          .delete(); // Cambiar la referencia al documento
-
-                      Navigator.of(context).pop(); // Cerrar el diálogo
-                      Fluttertoast.showToast(
-                        msg: 'El servicio ha sido cancelado.',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                      );
-                    }
-                  } catch (error) {
-                    Fluttertoast.showToast(
-                      msg: 'Hubo un error al cancelar el servicio.',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                    );
-                    print(error);
-                  }
+                  cancelarServicio(context, citaId);
+                  refundPayment(citaId);
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Color rojo para indicar cancelación
+                  primary: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -142,6 +126,65 @@ class _CitaAgendadaState extends State<CitaAgendada> {
           ),
         );
       },
+    );
+  }
+
+  cancelarServicio(BuildContext context, String citaId) async {
+    try {
+      // Eliminar el documento de Firestore
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final citasRef = FirebaseFirestore.instance.collection('citas');
+
+        await citasRef.doc(citaId).delete();
+
+        // String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
+        // double refundAmount = stripePayment.getRefundAmount();
+        // // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+        // await stripePayment.refundPayment(
+        //   context,
+        //   paymentIntentId,
+        //   refundAmount,
+        // );
+        // // Llamada al método refundPayment
+        // print(
+        //     "___________VALOR DE PAYMENT INTENT ID: $paymentIntentId, $refundAmount");
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (BuildContext context) => Principal(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+
+        //Navigator.of(context, rootNavigator: true).pop();
+        //refundPayment(citaId);
+        Fluttertoast.showToast(
+          msg: 'El servicio ha sido cancelado y el pago reembolsado.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (error) {
+      Fluttertoast.showToast(
+        msg:
+            'Hubo un error al cancelar el servicio. - Desde Cita Agendada Registrado $error',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      print(error);
+    }
+  }
+
+  void refundPayment(String citaId) async {
+    // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
+    String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
+    double refundAmount = stripePayment.getRefundAmount();
+
+    // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+    await stripePayment.refundPayment(
+      context,
+      paymentIntentId,
+      refundAmount,
     );
   }
 
@@ -182,44 +225,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     try {
       // Lógica de pago con Stripe aquí
       await stripePayment.makePayment(context, widget.total);
-
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final citasRef = FirebaseFirestore.instance.collection('citas');
-
-        final newCitaRef = await citasRef.add({
-          'nombre': widget.nombre,
-          'dia': widget.dayOfWeek,
-          'diaDelMes': widget.dayOfMonth,
-          'mes': widget.month,
-          'hora': widget.schedule,
-          'servicio': widget.serviceName,
-          'total': widget.total,
-          'estado': 'disponible',
-          'domicilio': widget.domicilio,
-          'icono': widget.icono,
-          'photoUrl': widget.photoUrl,
-          'tipoServicio': widget.tipoServicio,
-          'tipoCategoria': widget.tipoCategoria,
-          'pacienteId': widget.userId,
-          'enfermeraId': "",
-          'ubicacionPaciente': widget.ubicacion,
-        });
-
-        // Muestra el SnackBar de pago exitoso
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
-        //   ),
-        // );
-
-        // Espera un momento antes de mostrar el WaitingProgressDialog
-        // await Future.delayed(Duration(
-        //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
-
-        // Muestra el WaitingProgressDialog
-        // showWaitingDialog = true;
-      }
+      print("Se inicia ventana de pago correctamente");
     } catch (error) {
       setState(() {
         showWaitingDialog = false;
@@ -230,6 +236,55 @@ class _CitaAgendadaState extends State<CitaAgendada> {
         gravity: ToastGravity.CENTER,
       );
       print(error);
+    }
+  }
+
+  pagoConfirmadoCrearCita() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final citasRef = FirebaseFirestore.instance.collection('citas');
+
+      final newCitaRef = await citasRef.add({
+        'nombre': widget.nombre,
+        'dia': widget.dayOfWeek,
+        'diaDelMes': widget.dayOfMonth,
+        'mes': widget.month,
+        'hora': widget.schedule,
+        'servicio': widget.serviceName,
+        'total': widget.total,
+        'estado': 'disponible',
+        'domicilio': widget.domicilio,
+        'icono': widget.icono,
+        'photoUrl': widget.photoUrl,
+        'tipoServicio': widget.tipoServicio,
+        'tipoCategoria': widget.tipoCategoria,
+        'pacienteId': widget.userId,
+        'enfermeraId': "",
+        'ubicacionPaciente': widget.ubicacion,
+      });
+
+      String servicioId = newCitaRef.id;
+      print(
+          "________EL ID DEL SERVICIO ES: $servicioId DESDE CITA AGENADA DOMICILIO REGISTRADO");
+
+      setState(() {
+        //showWaitingDialog = true;
+        showWaitingProgressDialog(newCitaRef.id, context);
+      });
+
+      // Muestra el SnackBar de pago exitoso
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Pago exitoso: Tu pago fue procesado correctamente'),
+      //   ),
+      // );
+
+      // Espera un momento antes de mostrar el WaitingProgressDialog
+      // await Future.delayed(Duration(
+      //     seconds: 10)); // Puedes ajustar la duración según tus necesidades
+
+      // Muestra el WaitingProgressDialog
+      // showWaitingDialog = true;
     }
   }
 
@@ -332,6 +387,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   setState(() {
+                    showWaitingDialog = true;
                     _realizarPagoYConfirmarCita();
                   });
 

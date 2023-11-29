@@ -69,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           margin: EdgeInsets.only(top: 30),
                           child: Image.asset(
                             'assets/LOGO.png',
-                            width: 200.0,
-                            height: 200.0,
+                            width: 150.0,
+                            height: 150.0,
                           ),
                         ),
                       ],
@@ -193,60 +193,84 @@ class _LoginScreenState extends State<LoginScreen> {
                           ElevatedButton(
                             onPressed: () async {
                               try {
-  final user = await _auth.signInWithEmailAndPassword(
-    email: _emailController.text.trim(),
-    password: _passwordController.text.trim(),
-  );
-  if (user != null) {
-    final userUid = user.user?.uid;
+                                final user =
+                                    await _auth.signInWithEmailAndPassword(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                );
+                                if (user != null) {
+                                  final userUid = user.user?.uid;
 
-    // Consultar la colección 'usuarioadministrador'
-    final userDocAdministrador = await FirebaseFirestore.instance
-        .collection('usuarioadministrador')
-        .doc(userUid)
-        .get();
+                                  // Consultar la colección 'usuarioadministrador'
+                                  final userDocAdministrador =
+                                      await FirebaseFirestore.instance
+                                          .collection('usuarioadministrador')
+                                          .doc(userUid)
+                                          .get();
 
-    // Consultar la colección 'usuariopaciente'
-    final userDocPaciente = await FirebaseFirestore.instance
-        .collection('usuariopaciente')
-        .doc(userUid)
-        .get();
+                                  // Consultar la colección 'usuariopaciente'
+                                  final userDocPaciente =
+                                      await FirebaseFirestore.instance
+                                          .collection('usuariopaciente')
+                                          .doc(userUid)
+                                          .get();
 
-    // Consultar la colección 'usuarioenfermera'
-    final userDocEnfermera = await FirebaseFirestore.instance
-        .collection('usuarioenfermera')
-        .doc(userUid)
-        .get();
+                                  // Consultar la colección 'usuarioenfermera'
+                                  final userDocEnfermera =
+                                      await FirebaseFirestore.instance
+                                          .collection('usuarioenfermera')
+                                          .doc(userUid)
+                                          .get();
 
-    //datos para el admin
-    final tipoUsuario = userDocAdministrador.data()?['tipoUsuario'];    
-    // Datos generales compartidos por ambos tipos de usuario
-    final tipoUsuarioPaciente = userDocPaciente.data()?['tipoUsuario'];
-    final tipoUsuarioEnfermera = userDocEnfermera.data()?['tipoUsuario'];
+                                  //datos para el admin
+                                  final tipoUsuario = userDocAdministrador
+                                      .data()?['tipoUsuario'];
+                                  // Datos generales compartidos por ambos tipos de usuario
+                                  final tipoUsuarioPaciente =
+                                      userDocPaciente.data()?['tipoUsuario'];
+                                  final tipoUsuarioEnfermera =
+                                      userDocEnfermera.data()?['tipoUsuario'];
 
-    final inePaciente = userDocPaciente.data()?['ine'];
-    final ineEnfermera = userDocEnfermera.data()?['ine'];
+                                  final inePaciente =
+                                      userDocPaciente.data()?['ine'];
+                                  final ineEnfermera =
+                                      userDocEnfermera.data()?['ine'];
 
-    final curpPaciente = userDocPaciente.data()?['curp'];
-    final curpEnfermera = userDocEnfermera.data()?['curp'];
+                                  final curpPaciente =
+                                      userDocPaciente.data()?['curp'];
+                                  final curpEnfermera =
+                                      userDocEnfermera.data()?['curp'];
 
-    final comprobanteDomicilioPaciente = userDocPaciente.data()?['comprobanteDomicilio'];
-    final comprobanteDomicilioEnfermera = userDocEnfermera.data()?['comprobanteDomicilio'];
+                                  final comprobanteDomicilioPaciente =
+                                      userDocPaciente
+                                          .data()?['comprobanteDomicilio'];
+                                  final comprobanteDomicilioEnfermera =
+                                      userDocEnfermera
+                                          .data()?['comprobanteDomicilio'];
 
-    final photoUrlPaciente = userDocPaciente.data()?['photoUrl'];
-    final photoUrlEnfermera = userDocEnfermera.data()?['photoUrl'];
+                                  final photoUrlPaciente =
+                                      userDocPaciente.data()?['photoUrl'];
+                                  final photoUrlEnfermera =
+                                      userDocEnfermera.data()?['photoUrl'];
 
-    final accesoPaciente = userDocPaciente.data()?['acceso'];
-    final accesoEnfermera = userDocEnfermera.data()?['acceso'];
+                                  final accesoPaciente =
+                                      userDocPaciente.data()?['acceso'];
+                                  final accesoEnfermera =
+                                      userDocEnfermera.data()?['acceso'];
 
-    // Datos específicos de paciente
-    final receta = userDocPaciente.data()?['receta'];
+                                  // Datos específicos de paciente
+                                  final receta =
+                                      userDocPaciente.data()?['receta'];
 
-    // Datos específicos de enfermera
-    final tituloProfecional = userDocEnfermera.data()?['tituloProfecional'];
-    final cedulaProfecional = userDocEnfermera.data()?['cedulaProfecional'];
-    final referenciaUno = userDocEnfermera.data()?['referenciaUno'];
-    final referenciaDos = userDocEnfermera.data()?['referenciaDos'];
+                                  // Datos específicos de enfermera
+                                  final tituloProfecional = userDocEnfermera
+                                      .data()?['tituloProfecional'];
+                                  final cedulaProfecional = userDocEnfermera
+                                      .data()?['cedulaProfecional'];
+                                  final referenciaUno =
+                                      userDocEnfermera.data()?['referenciaUno'];
+                                  final referenciaDos =
+                                      userDocEnfermera.data()?['referenciaDos'];
 
                                   if (tipoUsuarioPaciente == 'Paciente') {
                                     if (photoUrlPaciente == null) {
@@ -345,7 +369,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           );
                                         },
                                       );
-                                    } else if (comprobanteDomicilioPaciente == null) {
+                                    } else if (comprobanteDomicilioPaciente ==
+                                        null) {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -483,7 +508,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   }
                                   //condiciones para acceder a una cuenta de enfermera
-                                  else if (tipoUsuarioEnfermera == 'Enfermera') {
+                                  else if (tipoUsuarioEnfermera ==
+                                      'Enfermera') {
                                     if (photoUrlEnfermera == null) {
                                       showDialog(
                                         context: context,
@@ -580,7 +606,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           );
                                         },
                                       );
-                                    } else if (comprobanteDomicilioEnfermera == null) {
+                                    } else if (comprobanteDomicilioEnfermera ==
+                                        null) {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -847,8 +874,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CambiarContrasena()),
+                                    builder: (context) => CambiarContrasena()),
                               );
                             },
                             child: FittedBox(
@@ -861,10 +887,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          Text(
-                            _errorMessage,
-                            style: TextStyle(
-                              color: Colors.red,
+                          Center(
+                            child: Text(
+                              _errorMessage,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
                             ),
                           ),
                         ],

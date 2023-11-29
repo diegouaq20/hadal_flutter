@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/citaAgendada.dart';
 import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
 class DetallesCita extends StatefulWidget {
@@ -48,33 +48,46 @@ class DetallesCita extends StatefulWidget {
 }
 
 class DetallesCitaState extends State<DetallesCita> {
-  ClientStripePayment? _clientStripePayment;
+  // _CitaAgendadaState? _citaAgendadaState;
   String get citaId => widget.citaId;
 
   String? photoUrlEnfermera;
   String? nombreEnfermera;
   DetallesCitaState? detallesCitaState; // Instancia del estado
 
+  CitaAgendadaState citaAgendada = CitaAgendadaState();
+
+  ClientStripePayment stripePayment =
+      ClientStripePayment(onPaymentSuccess: (bool) {});
   // Función para cancelar la cita
-  void cancelarCita(BuildContext context, String citaId) async {
-    try {
-      // Elimina la cita de la colección 'citas'
-      await FirebaseFirestore.instance
-          .collection('citas')
-          .doc(citaId) // Puedes usar directamente citaId
-          .delete();
+  // void cancelarCita(BuildContext context, String citaId) async {
+  //   try {
+  //     // Elimina la cita de la colección 'citas'
+  //     await FirebaseFirestore.instance.collection('citas').doc(citaId).delete();
 
-      // Luego de eliminar la cita con éxito, navegamos atrás.
-      Navigator.of(context).pop();
+  //     Navigator.of(context).pop();
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Servicio cancelado con éxito.'),
-      ));
-    } catch (e) {
-      // Maneja cualquier error que pueda ocurrir al cancelar la cita.
-      print('Error al cancelar la cita: $e');
-    }
-  }
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //       content: Text('Servicio cancelado y reembolso realizado con éxito.'),
+  //     ));
+  //   } catch (e) {
+  //     // Maneja cualquier error que pueda ocurrir al cancelar la cita o realizar el reembolso.
+  //     print('Error al cancelar la cita y realizar el reembolso: $e');
+  //   }
+  // }
+
+  // void refundPayment(context, String citaId) async {
+  //   // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
+  //   String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
+  //   double refundAmount = stripePayment.getRefundAmount();
+
+  //   // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+  //   await stripePayment.refundPayment(
+  //     context,
+  //     paymentIntentId,
+  //     refundAmount,
+  //   );
+  // }
 
   @override
   void initState() {
@@ -276,9 +289,13 @@ class DetallesCitaState extends State<DetallesCita> {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Llama a la función para cancelar la cita cuando se presiona el botón
-                    detallesCitaState?.cancelarCita(context, widget.citaId);
+                    //detallesCitaState?.cancelarCita(context, widget.citaId);
+                    citaAgendada.cancelarServicio(context, citaId);
+                    //citaAgendada.showWaitingProgressDialog(citaId, context);
+                    //clientStripePayment.getRefundAmount();
+                    //refundPayment(context, citaId);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),

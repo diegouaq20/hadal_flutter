@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:hadal/pacientes/home/home.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/stripe/payment/client_stripe_payment.dart';
 
@@ -77,6 +73,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         //pagoConfirmadoCrearCita();
+        _waitForCitaAceptada(citaId);
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -108,54 +105,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  try {
-                    // Eliminar el documento de Firestore
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser != null) {
-                      final citasRef =
-                          FirebaseFirestore.instance.collection('citas');
-
-                      await citasRef.doc(citaId).delete();
-
-                      // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
-                      String paymentIntentId =
-                          stripePayment.getPaymentIntentId() ?? '';
-                      double refundAmount = stripePayment.getRefundAmount();
-
-                      // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
-                      await stripePayment.refundPayment(
-                        context,
-                        paymentIntentId,
-                        refundAmount,
-                      );
-                      // Llamada al método refundPayment
-
-                      Navigator.of(context, rootNavigator: true)
-                          .pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Principal(),
-                        ),
-                        (Route<dynamic> route) => false,
-                      );
-
-                      //Navigator.of(context, rootNavigator: true).pop();
-
-                      Fluttertoast.showToast(
-                        msg:
-                            'El servicio ha sido cancelado y el pago reembolsado.',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                      );
-                    }
-                  } catch (error) {
-                    Fluttertoast.showToast(
-                      msg:
-                          'Hubo un error al cancelar el servicio. - Desde Cita Agendada Registrado $error',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                    );
-                    print(error);
-                  }
+                  cancelarServicio(citaId);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red,
@@ -176,6 +126,53 @@ class _CitaAgendadaState extends State<CitaAgendada> {
         );
       },
     );
+  }
+
+  void cancelarServicio(String citaId) async {
+    try {
+      // Eliminar el documento de Firestore
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final citasRef = FirebaseFirestore.instance.collection('citas');
+
+        await citasRef.doc(citaId).delete();
+
+        // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
+        String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
+        double refundAmount = stripePayment.getRefundAmount();
+
+        // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
+        await stripePayment.refundPayment(
+          context,
+          paymentIntentId,
+          refundAmount,
+        );
+        // Llamada al método refundPayment
+
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (BuildContext context) => Principal(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+
+        //Navigator.of(context, rootNavigator: true).pop();
+
+        Fluttertoast.showToast(
+          msg: 'El servicio ha sido cancelado y el pago reembolsado.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (error) {
+      Fluttertoast.showToast(
+        msg:
+            'Hubo un error al cancelar el servicio. - Desde Cita Agendada Registrado $error',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      print(error);
+    }
   }
 
   void _waitForCitaAceptada(String citaId) {

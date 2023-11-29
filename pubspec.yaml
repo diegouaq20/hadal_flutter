@@ -41,6 +41,8 @@ dependencies:
   firebase_core: 
   geolocator:
   flutter_stripe: ^9.4.0
+  flutter_launcher_icons: ^0.11.0
+
 
 
   #intl
@@ -80,6 +82,8 @@ dependencies:
   flutter_web_browser: 
   image_picker: ^1.0.4
   get: ^4.6.6
+
+
 
 dev_dependencies:
   flutter_test:
@@ -144,3 +148,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo_hadal.png"

@@ -9,8 +9,6 @@ import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/registroUsuario/registerHome.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:hadal/services/notification_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -211,6 +209,8 @@ class CustomAlertDialog extends StatelessWidget {
   }
 }
 
+const color = Color.fromRGBO(149, 55, 55, 0.996);
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -219,7 +219,7 @@ class MyApp extends StatelessWidget {
       title: 'HADAL',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
       home: FutureBuilder<String?>(
         future: checkUserType(),

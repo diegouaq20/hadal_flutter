@@ -13,6 +13,8 @@ import 'package:http/http.dart' as http;
 void showWaitingProgressDialog() {}
 
 class ClientStripePayment extends GetConnect {
+  String? paymentIntentStatus;
+
   String? getPaymentIntentId() {
     return paymentIntentData?['id'];
   }
@@ -25,6 +27,10 @@ class ClientStripePayment extends GetConnect {
 
     return refundAmount;
   }
+
+  // void devolverPago(context, paymentIntentId, refundAmount){
+  //   refundPayment(context, paymentIntentId, refundAmount);
+  // }
 
   //  final totalAmount =
   //                       double.parse(paymentIntentData!['amount']) /
@@ -132,7 +138,8 @@ class ClientStripePayment extends GetConnect {
       Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
         'currency': currency,
-        'payment_method_types[]': 'card'
+        'payment_method_types[]': 'card',
+        'confirmation_method': 'automatic',
       };
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
