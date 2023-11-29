@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/pacientes/servicios/columnasAvanzados.dart';
 import 'package:hadal/pacientes/servicios/columnasBasicos.dart';
 import 'package:hadal/pacientes/servicios/columnasIntermedios.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class verMas extends StatelessWidget {
   @override
@@ -14,22 +13,14 @@ class verMas extends StatelessWidget {
       title: 'HADAL',
       home: MyHomePage(),
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF1FBAAF), // Cambia el color del AppBar
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24, // Cambia el tamaño del texto del AppBar
-          ),
-        ),
         tabBarTheme: TabBarTheme(
           indicator: BoxDecoration(
             color: Color(0xFFF4FCFB),
             borderRadius: BorderRadius.circular(0),
           ),
           labelColor: Color(0xFF235365),
-          unselectedLabelColor: Color(0xFF135571), // Cambia el color de los tabs no seleccionados
+          unselectedLabelColor:
+              Color(0xFF135571), // Cambia el color de los tabs no seleccionados
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -66,43 +57,84 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'HADAL',
-        ),
         backgroundColor: Color(0xFF1FBAAF),
-      ),
-      body: Column(
-        children: [
-          Container(
-            color: Color(0xFFE2E9E9), // Cambia el color de fondo del tabBar a gris
-            child: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(
-                  text: 'Básicos',
+        elevation: 0,
+        title: Container(
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Text(
+                'HADAL',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                Tab(
-                  text: 'Intermedios',
-                ),
-                Tab(
-                  text: 'Avanzados',
-                ),
-              ],
-              indicatorColor: Colors.black, // Cambia el color de la línea indicadora a negro
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                Center(child: ColumnasBasicos()),
-                Center(child: ColumnasIntermedios()),
-                Center(child: ColumnasAvanzados()),
-              ],
-            ),
+        ),
+        leading: Row(
+  children: [
+    IconButton(
+      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Principal()),
+        );
+      },
+    ),
+  ],
+),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.list, color: Colors.white),
+            onPressed: () {
+              // Acciones al presionar el ícono de lista
+              // Puedes navegar a otra pantalla aquí
+            },
           ),
         ],
       ),
+      body: Column(
+  children: [
+    Container(
+      color: Color(0xFFE2E9E9),
+      child: TabBar(
+        controller: _tabController,
+        tabs: [
+          Tab(
+            text: 'Básicos',
+          ),
+          Tab(
+            text: 'Intermedios',
+          ),
+          Tab(
+            text: 'Avanzados',
+          ),
+        ],
+        indicator: BoxDecoration(
+          color: Color(0xFFF4FCFB), // Cambia el color del indicador a blanco
+        ),
+        indicatorSize: TabBarIndicatorSize.tab, // Hace que el indicador ocupe todo el tamaño del contenedor
+      ),
+    ),
+    Expanded(
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          Center(child: ColumnasBasicos()),
+          Center(child: ColumnasIntermedios()),
+          Center(child: ColumnasAvanzados()),
+        ],
+      ),
+    ),
+  ],
+),
+
     );
   }
 }
