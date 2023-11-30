@@ -12,12 +12,10 @@ import 'package:file_picker/file_picker.dart';
 
 class TituloProfecional extends StatefulWidget {
   @override
-  _TituloProfecionalState createState() =>
-      _TituloProfecionalState();
+  _TituloProfecionalState createState() => _TituloProfecionalState();
 }
 
-class _TituloProfecionalState
-    extends State<TituloProfecional> {
+class _TituloProfecionalState extends State<TituloProfecional> {
   void _getCurrentUserPhotoUrl() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final userData = await FirebaseFirestore.instance
@@ -190,8 +188,8 @@ class _TituloProfecionalState
             .doc(userId)
             .update(dataToUpdate);
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CedulaProfecional()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => CedulaProfecional()));
       }
     } catch (e) {
       print(e.toString());
@@ -244,7 +242,7 @@ class _TituloProfecionalState
                         padding: EdgeInsets.only(
                             left: 20.0, top: 20.0, bottom: 20.0, right: 20),
                         child: Text(
-                          "Título Profesional",
+                          "Título profesional",
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
@@ -317,7 +315,7 @@ class _TituloProfecionalState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         color: Color(0xFFF4FCFB),
                         child: Text(
-                          "Se solicita este documento de documentación oficial para corroborar la validez de sus servicios.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
+                          "Se solicita este documento oficial para corroborar la validez de sus servicios.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
                           style: TextStyle(fontSize: 18.0),
                           textAlign: TextAlign.justify,
                         ),
@@ -327,8 +325,8 @@ class _TituloProfecionalState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: _uploadDocument,
-                          child:
-                              Text('Siguiente', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Siguiente',
+                              style: TextStyle(fontSize: 18.0)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(

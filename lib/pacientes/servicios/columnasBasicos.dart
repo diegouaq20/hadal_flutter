@@ -44,7 +44,9 @@ class MyHomePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               FutureBuilder<QuerySnapshot>(
-                future: FirebaseFirestore.instance.collection('serviciosbasicos').get(),
+                future: FirebaseFirestore.instance
+                    .collection('serviciosbasicos')
+                    .get(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -80,8 +82,8 @@ class MyHomePage extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
                                       title: Center(
                                         child: Text(
                                           "Selecciona una opción",
@@ -94,63 +96,86 @@ class MyHomePage extends StatelessWidget {
                                         child: ListBody(
                                           children: <Widget>[
                                             Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
                                               child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10.0),
-                                                  ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
                                                   primary: Color(0xFF1FBAAF),
+                                                  minimumSize: Size(
+                                                      double.infinity, 45.0),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => Descripcion(
+                                                      builder: (context) =>
+                                                          Descripcion(
                                                         servicio: servicioDoc,
                                                       ),
                                                     ),
                                                   );
                                                 },
-                                                child: Text("Domicilio registrado"),
+                                                child: Text(
+                                                  "Domicilio registrado",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
                                               child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10.0),
-                                                  ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
                                                   primary: Color(0xFF1FBAAF),
+                                                  minimumSize: Size(
+                                                      double.infinity, 45.0),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => DescripcionParaTerceros(
+                                                      builder: (context) =>
+                                                          DescripcionParaTerceros(
                                                         servicio: servicioDoc,
                                                       ),
                                                     ),
                                                   );
                                                 },
-                                                child: Text("Para alguien más"),
+                                                child: Text(
+                                                  "Para alguien más",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
                                               child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10.0),
-                                                  ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
                                                   primary: Color(0xFF1FBAAF),
+                                                  minimumSize: Size(
+                                                      double.infinity, 45.0),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => DescripcionRealtime(
+                                                      builder: (context) =>
+                                                          DescripcionRealtime(
                                                         servicio: servicioDoc,
                                                       ),
                                                     ),
@@ -159,30 +184,46 @@ class MyHomePage extends StatelessWidget {
                                                 child: Column(
                                                   children: [
                                                     Text(
-                                                      "Ubicación actual",
-                                                      style: TextStyle(fontSize: 16),
+                                                      "Mi ubicación",
+                                                      style: TextStyle(
+                                                          fontSize: 16),
                                                     ),
                                                     Text(
-                                                      "(Solo si se encuentra fuera de su domicilio registrado)",
-                                                      style: TextStyle(fontSize: 12, color: Colors.white),
+                                                      "(Fuera de su domicilio registrado)",
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          color: Colors.white),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
                                               child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10.0),
-                                                  ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
                                                   primary: Colors.red,
+                                                  minimumSize: Size(
+                                                      double.infinity, 40.0),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancelar"),
+                                                child: Text(
+                                                  "Cancelar",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0,
+                                                      color: Colors.white),
+                                                ),
                                               ),
                                             ),
                                           ],

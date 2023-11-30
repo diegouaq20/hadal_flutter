@@ -1,28 +1,32 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:hadal/enfermeras/perfilDatos/curpEnfermera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:hadal/pacientes/perfilDatos/inePaciente.dart';
+import 'package:file_picker/file_picker.dart';
 
-class PerfilPaciente extends StatefulWidget {
+class Ine2Enfermera extends StatefulWidget {
   @override
-  _PerfilPacienteState createState() => _PerfilPacienteState();
+  _Ine2EnfermeraState createState() => _Ine2EnfermeraState();
 }
 
-class _PerfilPacienteState extends State<PerfilPaciente> {
+class _Ine2EnfermeraState extends State<Ine2Enfermera> {
   void _getCurrentUserPhotoUrl() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    final userData = await FirebaseFirestore.instance
-        .collection('usuariopaciente')
+    await FirebaseFirestore.instance
+        .collection('usuarioenfermera')
         .doc(userId)
         .get();
     setState(() {});
   }
 
-  File? _image;
+  File? _selectedFile;
+  String _selectedFileType =
+      ''; // Variable para almacenar el tipo de archivo seleccionado
 
   @override
   void initState() {
@@ -55,7 +59,7 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
-                    "Subir imagen desde:",
+                    "Subir archivo desde:",
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -81,7 +85,8 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                                 quality: 20,
                               );
                               setState(() {
-                                _image = compressedFile;
+                                _selectedFile = compressedFile;
+                                _selectedFileType = 'Imagen';
                               });
                             }
                             Navigator.of(context).pop();
@@ -106,7 +111,8 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                                 quality: 20,
                               );
                               setState(() {
-                                _image = compressedFile;
+                                _selectedFile = compressedFile;
+                                _selectedFileType = 'Imagen';
                               });
                             }
                             Navigator.of(context).pop();
@@ -114,6 +120,29 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                           icon: Icon(Icons.camera_alt, color: Colors.teal),
                         ),
                         Text("Cámara", style: TextStyle(color: Colors.teal)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf'],
+                            );
+
+                            if (result != null) {
+                              setState(() {
+                                _selectedFile = File(result.files.single.path!);
+                                _selectedFileType = 'PDF';
+                              });
+                            }
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.picture_as_pdf, color: Colors.teal),
+                        ),
+                        Text("Subir PDF", style: TextStyle(color: Colors.teal)),
                       ],
                     ),
                   ],
@@ -126,24 +155,43 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
     );
   }
 
-  void _uploadImage() async {
+  void _uploadFile(dynamic file) async {
     try {
-      final userId = FirebaseAuth.instance.currentUser!.uid;
-      Reference storageReference = FirebaseStorage.instance
-          .ref("usuarios/pacientes")
-          .child(userId)
-          .child("photoUrl");
-      UploadTask uploadTask = storageReference.putFile(_image!);
-      await uploadTask.whenComplete(() => null);
-      final String downloadUrl = await storageReference.getDownloadURL();
-      await FirebaseFirestore.instance
-          .collection('usuariopaciente')
-          .doc(userId)
-          .update({'photoUrl': downloadUrl});
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => InePaciente()));
+      if (file != null) {
+        final userId = FirebaseAuth.instance.currentUser!.uid;
+        final fileName = "INE2"; // Nombre base del archivo
+
+        Reference storageReference = FirebaseStorage.instance
+            .ref("usuarios/enfermeras")
+            .child(userId)
+            .child("$fileName");
+
+        final extension = file is File ? file.path.split('.').last : 'pdf';
+
+        UploadTask uploadTask = storageReference.putFile(file);
+        TaskSnapshot taskSnapshot = await uploadTask;
+
+        final url = await taskSnapshot.ref.getDownloadURL();
+
+        // Actualiza la URL del archivo en el nodo "ine" en Firestore
+        await FirebaseFirestore.instance
+            .collection('usuarioenfermera')
+            .doc(userId)
+            .update({'ine2': url});
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CurpEnfermera()),
+        );
+
+        // Actualiza la interfaz de usuario para reflejar el cambio en _selectedFile
+        setState(() {
+          _selectedFile = file;
+        });
+      }
     } catch (e) {
       print(e.toString());
+      // Manejar el error de manera adecuada
     }
   }
 
@@ -154,7 +202,7 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
-          'Perfil',
+          'Documentos',
           style: TextStyle(
             color: Color(0xFF235365),
             fontSize: 20,
@@ -193,7 +241,7 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                         padding: EdgeInsets.only(
                             left: 20.0, top: 20.0, bottom: 20.0, right: 20),
                         child: Text(
-                          "Perfil",
+                          "INE",
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
@@ -204,18 +252,41 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
-                        child: CircleAvatar(
-                          radius: 70.0,
-                          backgroundColor: Colors.grey,
-                          child: _image == null
-                              ? Icon(
-                                  Icons.camera_alt,
-                                  size: 40.0,
-                                  color: Colors.white,
-                                )
-                              : null,
-                          backgroundImage:
-                              _image == null ? null : FileImage(_image!),
+                        child: Container(
+                          width: 140,
+                          height: 140,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.black12,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _selectedFile != null
+                                  ? Icon(
+                                      Icons.check_circle_outline,
+                                      size: 70.0,
+                                      color: Color(0xFF1FBAAF),
+                                    )
+                                  : Icon(
+                                      Icons.folder,
+                                      size: 70.0,
+                                      color: Color(0xFF1FBAAF),
+                                    ),
+                              SizedBox(height: 8),
+                              Text(
+                                _selectedFileType,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF1FBAAF),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
@@ -243,7 +314,7 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         color: Color(0xFFF4FCFB),
                         child: Text(
-                          "Esta fotografía aparecerá en tu perfil y será con la que te conocerán los y las enfermeras.\n\nEncuentra un lugar con buena iluminación y toma en cuenta los siguientes requisitos:\n\n- Fondo liso de color claro\n- Cara descubierta\n- Sin accesorios (anillos, collares, aretes, pasadores)",
+                          "AQUÍ DEBE SUBIR LA PARTE TRASERA DE SU INE. \n\nSe solicita este documento de identificación oficial para corroborar su identidad y evitar la creación de perfiles falsos.\n\nFormato JPG, PNG O PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
                           style: TextStyle(fontSize: 18.0),
                           textAlign: TextAlign.justify,
                         ),
@@ -252,7 +323,7 @@ class _PerfilPacienteState extends State<PerfilPaciente> {
                         padding: EdgeInsets.only(
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
-                          onPressed: _uploadImage,
+                          onPressed: () => _uploadFile(_selectedFile),
                           child: Text('Siguiente',
                               style: TextStyle(fontSize: 18.0)),
                           style: ElevatedButton.styleFrom(

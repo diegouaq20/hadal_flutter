@@ -57,12 +57,12 @@ class _RegistroPacienteState extends State<RegistroPaciente> {
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (selectedEstado.isEmpty || selectedMunicipio.isEmpty) {
-    // Verificar si selectedEstado o selectedMunicipio están vacíos
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Por favor, seleccione un estado y un municipio.'),
-    ));
-    return; // No permite el registro si falta la selección
-  }
+      // Verificar si selectedEstado o selectedMunicipio están vacíos
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Por favor, seleccione un estado y un municipio.'),
+      ));
+      return; // No permite el registro si falta la selección
+    }
 
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
@@ -106,6 +106,7 @@ class _RegistroPacienteState extends State<RegistroPaciente> {
           'email': _emailController.text.trim(),
           'tipoUsuario': "Paciente",
           'ine': null,
+          'ine2': null,
           'curp': null,
           'comprobanteDomicilio': null,
           'receta': null,

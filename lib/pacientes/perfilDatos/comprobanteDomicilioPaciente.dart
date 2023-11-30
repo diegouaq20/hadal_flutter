@@ -243,7 +243,7 @@ class _ComprobanteDomicilioPacienteState
                         padding: EdgeInsets.only(
                             left: 20.0, top: 20.0, bottom: 20.0, right: 20),
                         child: Text(
-                          "Comprobante de Domicilio",
+                          "Comprobante de domicilio",
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _ComprobanteDomicilioPacienteState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         color: Color(0xFFF4FCFB),
                         child: Text(
-                          "Se solicita este documento de documentación oficial para corroborar su domicilio y evitar la creación de perfiles falsos.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
+                          "Se solicita este documento para corroborar su domicilio y evitar la creación de perfiles falsos.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
                           style: TextStyle(fontSize: 18.0),
                           textAlign: TextAlign.justify,
                         ),
@@ -326,8 +326,8 @@ class _ComprobanteDomicilioPacienteState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: _uploadDocument,
-                          child:
-                              Text('Siguiente', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Siguiente',
+                              style: TextStyle(fontSize: 18.0)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(

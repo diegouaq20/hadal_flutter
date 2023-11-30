@@ -57,12 +57,12 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (selectedEstado.isEmpty || selectedMunicipio.isEmpty) {
-    // Verificar si selectedEstado o selectedMunicipio están vacíos
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Por favor, seleccione un estado y un municipio.'),
-    ));
-    return; // No permite el registro si falta la selección
-  }
+      // Verificar si selectedEstado o selectedMunicipio están vacíos
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Por favor, seleccione un estado y un municipio.'),
+      ));
+      return; // No permite el registro si falta la selección
+    }
 
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
@@ -105,6 +105,7 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
           'domicilio': _addressController.text.trim(),
           'email': _emailController.text.trim(),
           'ine': null,
+          'ine2': null,
           'curp': null,
           'comprobanteDomicilio': null,
           'photoUrl': null,
@@ -478,6 +479,7 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
       showNotAvailableDialog();
     }
   }
+
   ///////////////fin de estados y municipios////////////////////
   @override
   Widget build(BuildContext context) {
@@ -490,7 +492,6 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
             key: _formKey,
             child: Column(
               children: [
-                
                 Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

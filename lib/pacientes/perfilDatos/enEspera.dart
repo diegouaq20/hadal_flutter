@@ -23,7 +23,8 @@ class _EnEsperaState extends State<EnEspera> {
       backgroundColor: Color(0xFFF4FCFB),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.only(left: 35.0, top: 80.0, bottom: 35.0, right: 35),
+          padding:
+              EdgeInsets.only(left: 35.0, top: 80.0, bottom: 35.0, right: 35),
           child: Card(
             color: Color(0xFFF4FCFB),
             elevation: 5,
@@ -35,7 +36,7 @@ class _EnEsperaState extends State<EnEspera> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(left: 35.0,right: 35),
+                  padding: EdgeInsets.only(left: 35.0, right: 35),
                   child: Icon(
                     Icons.check_circle_sharp,
                     color: Color(0xFF1FBAAF),
@@ -43,7 +44,7 @@ class _EnEsperaState extends State<EnEspera> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 35.0,bottom: 20.0, right: 35),
+                  padding: EdgeInsets.only(left: 35.0, bottom: 20.0, right: 35),
                   child: Text(
                     "¡LISTO!",
                     style: TextStyle(
@@ -54,12 +55,12 @@ class _EnEsperaState extends State<EnEspera> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 35.0,bottom: 35.0, right: 35),
+                  padding: EdgeInsets.only(left: 35.0, bottom: 35.0, right: 35),
                   color: Color(0xFFF4FCFB),
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
-                      "Se validarán tus documentos y se te notificará en un plazo de 48 horas por medio del correo proporcionado cuando tu cuenta sea aprobada.",
+                      "Se validarán tus documentos. Por favor, intenta ingresar de nuevo en 24hrs.",
                       style: TextStyle(fontSize: 18.0),
                       textAlign: TextAlign.justify,
                     ),
@@ -69,14 +70,14 @@ class _EnEsperaState extends State<EnEspera> {
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                   child: ElevatedButton(
                     onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                    child: Text('Aceptar', style: TextStyle(fontSize: 18.0)),
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                    child: Text('Aceptar', style: TextStyle(fontSize: 20.0)),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.only(left: 35.0,right: 35),
+                      padding: EdgeInsets.only(left: 35.0, right: 35),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

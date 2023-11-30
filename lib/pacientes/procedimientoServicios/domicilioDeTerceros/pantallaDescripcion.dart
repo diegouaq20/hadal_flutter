@@ -48,7 +48,6 @@ class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
         .doc(currentUser!.uid)
         .get();
     setState(() {
-      
       _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
     });
   }
@@ -155,7 +154,8 @@ class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
                             _domicilio = value;
                           });
                         },
-                        style: TextStyle(fontSize: 16.0, color: Color(0xFF245366)),
+                        style:
+                            TextStyle(fontSize: 16.0, color: Color(0xFF245366)),
                         decoration: InputDecoration(
                           hintText: "Ingrese su domicilio",
                           border: InputBorder.none,
@@ -208,7 +208,8 @@ class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
                     ),
                     SizedBox(height: 20),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       decoration: BoxDecoration(
                         border: Border.all(color: Color(0xFF1FBAAF)),
                         borderRadius: BorderRadius.circular(10),
@@ -301,7 +302,7 @@ class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
                           minimumSize: Size(135, 50.0),
                           textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 24.0,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -332,11 +333,11 @@ class _DescripcionParaTercerosState extends State<DescripcionParaTerceros> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          primary: Color(0xFF1FBAAF),
+                          primary: Colors.red,
                           minimumSize: Size(135, 50.0),
                           textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 24.0,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -77,18 +77,18 @@ class _MyHomePageState extends State<MyHomePage>
           ),
         ),
         leading: Row(
-  children: [
-    IconButton(
-      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-      onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Principal()),
-        );
-      },
-    ),
-  ],
-),
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Principal()),
+                );
+              },
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.list, color: Colors.white),
@@ -100,41 +100,42 @@ class _MyHomePageState extends State<MyHomePage>
         ],
       ),
       body: Column(
-  children: [
-    Container(
-      color: Color(0xFFE2E9E9),
-      child: TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(
-            text: 'Básicos',
-          ),
-          Tab(
-            text: 'Intermedios',
-          ),
-          Tab(
-            text: 'Avanzados',
-          ),
-        ],
-        indicator: BoxDecoration(
-          color: Color(0xFFF4FCFB), // Cambia el color del indicador a blanco
-        ),
-        indicatorSize: TabBarIndicatorSize.tab, // Hace que el indicador ocupe todo el tamaño del contenedor
-      ),
-    ),
-    Expanded(
-      child: TabBarView(
-        controller: _tabController,
         children: [
-          Center(child: ColumnasBasicos()),
-          Center(child: ColumnasIntermedios()),
-          Center(child: ColumnasAvanzados()),
+          Container(
+            color: Color(0xFFE2E9E9),
+            child: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: 'Básicos',
+                ),
+                Tab(
+                  text: 'Intermedios',
+                ),
+                Tab(
+                  text: 'Avanzados',
+                ),
+              ],
+              indicator: BoxDecoration(
+                color:
+                    Color(0xFFF4FCFB), // Cambia el color del indicador a blanco
+              ),
+              indicatorSize: TabBarIndicatorSize
+                  .tab, // Hace que el indicador ocupe todo el tamaño del contenedor
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                Center(child: ColumnasBasicos()),
+                Center(child: ColumnasIntermedios()),
+                Center(child: ColumnasAvanzados()),
+              ],
+            ),
+          ),
         ],
       ),
-    ),
-  ],
-),
-
     );
   }
 }

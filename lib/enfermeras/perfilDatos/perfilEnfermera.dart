@@ -243,7 +243,7 @@ class _PerfilEnfermeraState extends State<PerfilEnfermera> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         color: Color(0xFFF4FCFB),
                         child: Text(
-                          "Esta fotografía aparecerá en tu perfil y será con la que te conozcan los enfermeros.\n\nEncuentra un lugar con buena iluminación y toma en cuenta los siguientes requisitos:\n\n- Fondo liso de color claro\n- Cara descubierta\n-Sin accesorios (anillos, collares, aretes, pasadores)",
+                          "Esta fotografía aparecerá en tu perfil y será con la que te conozcan los y las pacientes.\n\nEncuentra un lugar con buena iluminación y toma en cuenta los siguientes requisitos:\n\n- Fondo liso de color claro\n- Cara descubierta\n-Sin accesorios (anillos, collares, aretes, pasadores)",
                           style: TextStyle(fontSize: 18.0),
                           textAlign: TextAlign.justify,
                         ),

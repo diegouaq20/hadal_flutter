@@ -63,7 +63,19 @@ class _PrincipalState extends State<Principal> {
             ),
           ),
           Container(
-            color: Color.fromARGB(255, 235, 235, 235),
+            height: 50,
+            margin: EdgeInsets.only(top: 1.0),
+            decoration: BoxDecoration(
+              color: Color(0xE2E9E9),
+              border: Border(
+                top: BorderSide(
+                  color: Color.fromARGB(255, 32, 204, 193).withOpacity(
+                      0.1), // Puedes ajustar el color según tus necesidades
+                  width:
+                      2.0, // Puedes ajustar el ancho del borde según tus necesidades
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -94,7 +106,7 @@ class _PrincipalState extends State<Principal> {
             alignment: Alignment.center,
             children: [
               Container(
-                height: 40, // Alto del tab
+                height: 50, // Alto del tab
                 decoration: BoxDecoration(
                   color: _selectedIndex == index
                       ? Color.fromARGB(255, 32, 204, 193)
@@ -108,7 +120,7 @@ class _PrincipalState extends State<Principal> {
                   SvgPicture.asset(
                     iconPath,
                     width: 28,
-                    height: 28,
+                    height: 40,
                     color: _selectedIndex == index
                         ? Colors.white
                         : Color(0xFF7C7F83),

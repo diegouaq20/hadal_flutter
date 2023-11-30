@@ -330,7 +330,7 @@ class _DescripcionRealtimeState extends State<DescripcionRealtime> {
                           minimumSize: Size(135, 50.0),
                           textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 24.0,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -361,11 +361,11 @@ class _DescripcionRealtimeState extends State<DescripcionRealtime> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          primary: Color(0xFF1FBAAF),
+                          primary: Colors.red,
                           minimumSize: Size(135, 50.0),
                           textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 24.0,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

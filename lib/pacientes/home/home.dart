@@ -174,7 +174,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////
 
   List<QueryDocumentSnapshot> serviciosBasicosDocs = [];
   bool showContent = false;
@@ -196,6 +196,7 @@ class _HomeState extends State<Home> {
     }
   }
 
+/////////////////////////////////////////////////////////////////////////
   @override
   void initState() {
     super.initState();
@@ -254,17 +255,25 @@ class _HomeState extends State<Home> {
                       Column(
                         children: [
                           for (String field in [
-                            'BIENVENIDO',
+                            'Bienvenido',
                             '$nombre $primerApellido $segundoApellido',
                             '$tipoUsuario'
                           ])
-                            FittedBox(
+                            SizedBox(
+                              height: 30.0,
                               child: Text(
                                 field,
                                 style: TextStyle(
-                                    fontSize:
-                                        field.contains('BIENVENIDO') ? 18 : 28,
-                                    color: Color(0xFF245366)),
+                                  fontSize: field.contains('Bienvenido') ||
+                                          field.contains('$tipoUsuario')
+                                      ? 18
+                                      : 24,
+                                  color: Color(0xFF245366),
+                                  fontWeight: field.contains(
+                                          '$nombre $primerApellido $segundoApellido')
+                                      ? FontWeight.w500
+                                      : FontWeight.w400,
+                                ),
                               ),
                             ),
                         ],
@@ -370,6 +379,9 @@ class _HomeState extends State<Home> {
                                                                           10.0)),
                                                       primary:
                                                           Color(0xFF1FBAAF),
+                                                      minimumSize: Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -384,7 +396,10 @@ class _HomeState extends State<Home> {
                                                       );
                                                     },
                                                     child: Text(
-                                                        "Domicilio registrado"),
+                                                      "Domicilio registrado",
+                                                      style: TextStyle(
+                                                          fontSize: 18),
+                                                    ),
                                                   ),
                                                 ),
                                                 Padding(
@@ -401,6 +416,9 @@ class _HomeState extends State<Home> {
                                                                           10.0)),
                                                       primary:
                                                           Color(0xFF1FBAAF),
+                                                      minimumSize: Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -415,7 +433,10 @@ class _HomeState extends State<Home> {
                                                       );
                                                     },
                                                     child: Text(
-                                                        "Para alguien más"),
+                                                      "Para alguien más",
+                                                      style: TextStyle(
+                                                          fontSize: 18),
+                                                    ),
                                                   ),
                                                 ),
                                                 Padding(
@@ -432,6 +453,9 @@ class _HomeState extends State<Home> {
                                                                           10.0)),
                                                       primary:
                                                           Color(0xFF1FBAAF),
+                                                      minimumSize: Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -448,14 +472,17 @@ class _HomeState extends State<Home> {
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          "Ubicación actual",
+                                                          "Mi ubicación",
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
                                                         Text(
-                                                          "(Solo si se encuentra fuera de su domicilio registrado)",
+                                                          "(Fuera de su domicilio registrado)",
                                                           style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
                                                               color:
                                                                   Colors.white),
                                                         ),
@@ -476,12 +503,22 @@ class _HomeState extends State<Home> {
                                                                       .circular(
                                                                           10.0)),
                                                       primary: Colors.red,
+                                                      minimumSize: Size(
+                                                          double.infinity,
+                                                          40.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
-                                                    child: Text("Cancelar"),
+                                                    child: Text(
+                                                      "Cancelar",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18.0,
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                               ],

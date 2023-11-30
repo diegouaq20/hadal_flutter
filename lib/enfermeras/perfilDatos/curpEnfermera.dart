@@ -17,7 +17,10 @@ class CurpEnfermera extends StatefulWidget {
 class _CurpEnfermeraState extends State<CurpEnfermera> {
   void _getCurrentUserPhotoUrl() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    await FirebaseFirestore.instance.collection('usuarioenfermera').doc(userId).get();
+    await FirebaseFirestore.instance
+        .collection('usuarioenfermera')
+        .doc(userId)
+        .get();
     setState(() {});
   }
 
@@ -71,8 +74,8 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                         IconButton(
                           onPressed: () async {
                             final ImagePicker _picker = ImagePicker();
-                            final XFile? pickedFile =
-                                await _picker.pickImage(source: ImageSource.gallery);
+                            final XFile? pickedFile = await _picker.pickImage(
+                                source: ImageSource.gallery);
                             if (pickedFile != null) {
                               final File file = File(pickedFile.path);
                               final File compressedFile =
@@ -97,8 +100,8 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                         IconButton(
                           onPressed: () async {
                             final ImagePicker _picker = ImagePicker();
-                            final XFile? pickedFile =
-                                await _picker.pickImage(source: ImageSource.camera);
+                            final XFile? pickedFile = await _picker.pickImage(
+                                source: ImageSource.camera);
                             if (pickedFile != null) {
                               final File file = File(pickedFile.path);
                               final File compressedFile =
@@ -122,7 +125,8 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            FilePickerResult? result = await FilePicker.platform.pickFiles(
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles(
                               type: FileType.custom,
                               allowedExtensions: ['pdf'],
                             );
@@ -166,13 +170,15 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
 
         final url = await taskSnapshot.ref.getDownloadURL();
 
-        await FirebaseFirestore.instance.collection('usuarioenfermera').doc(userId).update({
-          'curp': url
-        });
+        await FirebaseFirestore.instance
+            .collection('usuarioenfermera')
+            .doc(userId)
+            .update({'curp': url});
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ComprobanteDomicilioEnfermera()),
+          MaterialPageRoute(
+              builder: (context) => ComprobanteDomicilioEnfermera()),
         );
 
         setState(() {
@@ -283,7 +289,8 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: _selectImage,
-                          child: Text('Subir', style: TextStyle(fontSize: 18.0)),
+                          child:
+                              Text('Subir', style: TextStyle(fontSize: 18.0)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(
@@ -302,7 +309,7 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         color: Color(0xFFF4FCFB),
                         child: Text(
-                          "Se solicita este documento de documentación oficial para corroborar su identidad así como corroborar la autenticidad de los demás documentos proporcionados.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
+                          "Se solicita este documento de identificación oficial para corroborar la autenticidad de los demás documentos proporcionados.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
                           style: TextStyle(fontSize: 18.0),
                           textAlign: TextAlign.justify,
                         ),
@@ -312,7 +319,8 @@ class _CurpEnfermeraState extends State<CurpEnfermera> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: () => _uploadFile(_selectedFile),
-                          child: Text('Siguiente', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Siguiente',
+                              style: TextStyle(fontSize: 18.0)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(

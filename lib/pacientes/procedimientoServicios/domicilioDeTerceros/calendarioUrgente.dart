@@ -204,7 +204,7 @@ class _CalendarioUrgenteTercerosState extends State<CalendarioUrgenteTerceros> {
             SizedBox(height: 5.0),
             Container(
               width: double.infinity,
-              height: 40.0,
+              height: 50.0,
               margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
