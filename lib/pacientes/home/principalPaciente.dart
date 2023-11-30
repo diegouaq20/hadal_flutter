@@ -28,7 +28,11 @@ class _PrincipalState extends State<Principal> {
               Text(
                 'HADAL',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white, // Color blanco
+                  fontWeight: FontWeight.bold, // Texto en negrita
+                ),
               ),
             ],
           ),
