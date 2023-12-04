@@ -43,7 +43,7 @@ class DetallesServiciosPage extends StatelessWidget {
     required this.tipoCategoria,
     required this.idCita,
     required this.pacienteId,
-    required this.enfermeraId, 
+    required this.enfermeraId,
     required this.ubicacionPaciente,
   });
 
@@ -54,7 +54,7 @@ class DetallesServiciosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del Servicio'),
+        title: Text('Detalles del servicio'),
         backgroundColor: Color(0xFF1FBAAF),
       ),
       backgroundColor: Color(0xFFF4FCFB),
@@ -79,6 +79,7 @@ class DetallesServiciosPage extends StatelessWidget {
                       '$nombre',
                       style: TextStyle(
                         fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xFF000328),
                       ),
                     ),
@@ -196,13 +197,17 @@ class DetallesServiciosPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('citas').doc(idCita).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('citas')
+            .doc(idCita)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtiene el estado.
           }
 
-          Map<String, dynamic> citaData = snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> citaData =
+              snapshot.data!.data() as Map<String, dynamic>;
 
           // Verifica si el estado es "aceptado" y deshabilita los botones si es así.
           bool estadoAceptado = citaData['estado'] == 'aceptado';
@@ -227,67 +232,69 @@ class BottomButtons extends StatelessWidget {
   });
 
   Future<void> _aceptarCita(BuildContext context) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    try {
-      await FirebaseFirestore.instance.collection('citas').doc(idCita).update({
-        'estado': 'aceptado',
-        'enfermeraId': user.uid,
-      });
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('citas')
+            .doc(idCita)
+            .update({
+          'estado': 'aceptado',
+          'enfermeraId': user.uid,
+        });
 
-      Fluttertoast.showToast(
-        msg: 'Cita aceptada con éxito.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    } catch (error) {
-      Fluttertoast.showToast(
-        msg: 'Error al aceptar la cita: $error',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+        Fluttertoast.showToast(
+          msg: 'Cita aceptada con éxito.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } catch (error) {
+        Fluttertoast.showToast(
+          msg: 'Error al aceptar la cita: $error',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
     }
   }
-}
 
   @override
-Widget build(BuildContext context) {
-  return Container(
-    color: Color(0xFFF4FCFB),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ElevatedButton(
-            onPressed: estadoAceptado
-                ? null // Deshabilita el botón si el estado es "aceptado".
-                : () {
-                    _aceptarCita(context);
-                    Navigator.pop(context); // Cierra la pantalla actual
-                  },
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xFF1FBAAF),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color(0xFFF4FCFB),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: estadoAceptado
+                  ? null // Deshabilita el botón si el estado es "aceptado".
+                  : () {
+                      _aceptarCita(context);
+                      Navigator.pop(context); // Cierra la pantalla actual
+                    },
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF1FBAAF),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(300, 40),
               ),
-              minimumSize: Size(300, 40),
+              child: Text('Aceptar'),
             ),
-            child: Text('Aceptar'),
-          ),
-          SizedBox(height: 10),
-        ],
+            SizedBox(height: 10),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

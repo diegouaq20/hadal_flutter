@@ -44,15 +44,18 @@ class _PrincipalState extends State<Principal> {
             child: IndexedStack(
               index: _selectedIndex,
               children: [
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await NotificationService.showNotification(
-                        title: "Title of the notification",
-                        body: "Body of the notification",
-                      );
-                    },
-                    child: Text('Notificación'),
+                Container(
+                  color: Color(0xFFF4FCFB), // Puedes cambiar a tu color deseado
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await NotificationService.showNotification(
+                          title: "Title of the notification",
+                          body: "Body of the notification",
+                        );
+                      },
+                      child: Text('Notificaciónopopop'),
+                    ),
                   ),
                 ),
                 SalasPrivadasPacientes(),
@@ -66,13 +69,13 @@ class _PrincipalState extends State<Principal> {
             height: 50,
             margin: EdgeInsets.only(top: 1.0),
             decoration: BoxDecoration(
-              color: Color(0xE2E9E9),
+              color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
               border: Border(
                 top: BorderSide(
                   color: Color.fromARGB(255, 32, 204, 193).withOpacity(
                       0.1), // Puedes ajustar el color según tus necesidades
                   width:
-                      2.0, // Puedes ajustar el ancho del borde según tus necesidades
+                      0.4, // Puedes ajustar el ancho del borde según tus necesidades
                 ),
               ),
             ),

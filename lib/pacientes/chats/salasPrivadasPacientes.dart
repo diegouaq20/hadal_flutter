@@ -7,8 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class SalasPrivadasPacientes extends StatefulWidget {
   @override
-  _SalasPrivadasPacientesState createState() =>
-      _SalasPrivadasPacientesState();
+  _SalasPrivadasPacientesState createState() => _SalasPrivadasPacientesState();
 }
 
 class _SalasPrivadasPacientesState extends State<SalasPrivadasPacientes> {
@@ -160,14 +159,15 @@ class _SalasPrivadasPacientesState extends State<SalasPrivadasPacientes> {
                         if (enfermeraSnapshot.connectionState ==
                             ConnectionState.waiting) {
                           // Muestra un indicador de carga mientras se espera la consulta.
-                          
                         }
 
                         final enfermeraPhotoUrl =
                             enfermeraSnapshot.data?.get('photoUrl');
 
                         // Verificar si enfermeraId no está vacío o nulo.
-                        if (enfermeraId != null && enfermeraId.isNotEmpty && enfermeraId != "") {
+                        if (enfermeraId != null &&
+                            enfermeraId.isNotEmpty &&
+                            enfermeraId != "") {
                           return GestureDetector(
                             onTap: () {
                               if (estado == 'disponible' ||

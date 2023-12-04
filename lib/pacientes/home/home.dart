@@ -211,7 +211,7 @@ class _HomeState extends State<Home> {
   void _loadServicios() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('serviciosbasicos')
-        .limit(4)
+        .limit(3)
         .get();
 
     setState(() {
