@@ -80,7 +80,7 @@ class DetallesServiciosPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF000328),
+                        color: Color(0xFF245366),
                       ),
                     ),
                   ],
@@ -89,108 +89,183 @@ class DetallesServiciosPage extends StatelessWidget {
 
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
-                child: Row(
-                  children: [
-                    SvgPicture.network(
-                      icono,
-                      width: 24,
-                      height: 24,
-                    ),
-                    SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        '$servicioDisplay',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF000328),
+                child: Container(
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 32, 204, 193)
+                        .withOpacity(0.1), // Cambia a tu color específico
+                    borderRadius: BorderRadius.circular(
+                        10.0), // Ajusta el radio según tus necesidades
+                  ),
+                  // Cambia a tu color específico
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.network(
+                          icono,
+                          width: 45,
+                          height: 45,
+                          color: Color(0xFF245366),
                         ),
-                      ),
+                        SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            '$servicioDisplay',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF245366),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Categoría: $tipoCategoria',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
                   ),
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Fecha: $fecha',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Horario: $hora',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Domicilio: $domicilio',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Tipo de Servicio: $tipoServicio',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Tipo de Servicio: $ubicacionPaciente',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Total: \$', // Agregamos el signo de pesos
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF000328),
-                      ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Nivel de servicio:',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '$tipoCategoria',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '$total', // Mostramos el total
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF000328),
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Fecha:',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '$fecha',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Hora:',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '$hora',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Domicilio:',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '$domicilio',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tipo de servicio:',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '$tipoServicio',
+                          style: TextStyle(
+                            color: Color(0xFF000328),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 150),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total: ', // Agregamos el signo de pesos
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF000328),
+                          ),
+                        ),
+                        Text(
+                          '\$ $total', // Mostramos el total
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xFF000328),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -287,9 +362,15 @@ class BottomButtons extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                minimumSize: Size(300, 40),
+                minimumSize: Size(300, 50),
               ),
-              child: Text('Aceptar'),
+              child: Text(
+                'Aceptar',
+                style: TextStyle(
+                  fontSize: 20, // Tamaño de letra 20
+                  fontWeight: FontWeight.bold, // Negritas
+                ),
+              ),
             ),
             SizedBox(height: 10),
           ],

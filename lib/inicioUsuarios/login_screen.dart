@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            'INICIO DE SESIÓN',
+                            'INICIO DE SESIÓNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 24.0,

@@ -100,7 +100,7 @@ class DetallesServiciosAceptados extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del Servicio'),
+        title: Text('Detalles del servicio'),
         backgroundColor: Color(0xFF1FBAAF),
       ),
       backgroundColor: Color(0xFFF4FCFB),
@@ -234,44 +234,46 @@ class DetallesServiciosAceptados extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Row(
-  children: [
-    Expanded(
-      child: FutureBuilder<void>(
-        future: _getLocationName(), // Llama a _getLocationName
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Text(
-              '$latitude, $longitude\n\n$locationName', // Utiliza el resultado en lugar de la función
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF000328),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text(
-              'Error: ${snapshot.error}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red, // Color rojo para errores
-              ),
-            );
-          } else {
-            return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtiene el nombre del lugar
-          }
-        },
-      ),
-    ),
-    IconButton(
-      icon: Icon(
-        Icons.location_on,
-        color: Color(0xFF1FBAAF),
-      ),
-      onPressed: () {
-        _openInGoogleMapsRealtime();
-      },
-    ),
-  ],
-),
+                    children: [
+                      Expanded(
+                        child: FutureBuilder<void>(
+                          future:
+                              _getLocationName(), // Llama a _getLocationName
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return Text(
+                                '$latitude, $longitude\n\n$locationName', // Utiliza el resultado en lugar de la función
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF000328),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text(
+                                'Error: ${snapshot.error}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red, // Color rojo para errores
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtiene el nombre del lugar
+                            }
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.location_on,
+                          color: Color(0xFF1FBAAF),
+                        ),
+                        onPressed: () {
+                          _openInGoogleMapsRealtime();
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
 

@@ -368,16 +368,25 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             '$nombre $primerApellido $segundoApellido',
                             '$tipoUsuario'
                           ])
-                            FittedBox(
+                            SizedBox(
+                              height: 31,
                               child: Text(
                                 field,
                                 style: TextStyle(
-                                    fontSize:
-                                        field.contains('Bienvenido') ? 18 : 28,
-                                    color: Color(0xFF245366)),
+                                  fontSize: field.contains('Bienvenido') ||
+                                          field.contains('$tipoUsuario')
+                                      ? 18
+                                      : 24,
+                                  color: Color(0xFF245366),
+                                  fontWeight: field.contains(
+                                          '$nombre $primerApellido $segundoApellido')
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
                               ),
                             ),
-                          if (ubicacion !=
+
+                          /*if (ubicacion !=
                               null) // Verifica si la ubicación no es nula
                             StreamBuilder<DocumentSnapshot>(
                               stream: FirebaseFirestore.instance
@@ -405,7 +414,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                                 }
                                 return CircularProgressIndicator();
                               },
-                            )
+                            )*/
                         ],
                       ),
                     ],
@@ -451,7 +460,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                         'Ubicación actual',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Color(0xFF245366),
+                          color: Color(0xFF1FBAAF),
                         ),
                       ),
                     ),

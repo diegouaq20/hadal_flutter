@@ -271,7 +271,7 @@ class _HomeState extends State<Home> {
                                   color: Color(0xFF245366),
                                   fontWeight: field.contains(
                                           '$nombre $primerApellido $segundoApellido')
-                                      ? FontWeight.w500
+                                      ? FontWeight.w600
                                       : FontWeight.w400,
                                 ),
                               ),
@@ -750,31 +750,112 @@ class _HomeState extends State<Home> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Usuario: $nombre',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              TextSpan(
+                                                text: 'Usuario: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$nombre',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Fecha: $dia, $diaDelMes de $mes',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              TextSpan(
+                                                text: 'Fecha: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    '$dia, $diaDelMes de $mes',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Hora: $hora',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              TextSpan(
+                                                text: 'Hora: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$hora',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Estado: $estado',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              TextSpan(
+                                                text: 'Estado: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$estado',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Total: \$${total}',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              TextSpan(
+                                                text: 'Total: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '\$${total}',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(height: 10),
                                         Center(
