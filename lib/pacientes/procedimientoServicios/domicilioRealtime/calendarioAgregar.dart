@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/citaAgendada.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/citaAgendada.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -74,7 +74,7 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
-          'Agendar Cita',
+          'Agendar cita',
           style: TextStyle(
             color: Color(0xFF235365),
             fontSize: 20,

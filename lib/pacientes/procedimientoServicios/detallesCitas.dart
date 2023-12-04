@@ -389,7 +389,7 @@ class DetallesCitaState extends State<DetallesCita> {
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   child: Text(
-                    'Cancelar Servicio',
+                    'Cancelar Servicioojojoj',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
