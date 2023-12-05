@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart'; // Importa Geolocator
 import 'package:http/http.dart' as http; // Importa http
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetallesServiciosAceptados extends StatelessWidget {
   final String servicio;
@@ -282,7 +283,7 @@ class DetallesServiciosAceptados extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ubicación actual sdfsdfgfdapoco:',
+                    'Ubicación actual:',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(0xFF000328),
@@ -379,11 +380,13 @@ class DetallesServiciosAceptados extends StatelessWidget {
                   ),
                 ],
               ),
+              BottomButtons(idCita: idCita), // botones fluidos
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomButtons(idCita: idCita),
+
+      //BottomButtons(idCita: idCita), // botones estaticos
     );
   }
 }
@@ -498,6 +501,51 @@ class BottomButtons extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(height: 5),
+            ElevatedButton(
+              onPressed: () async {
+                await launch("tel:911");
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      200), // Ajusta el valor para hacer el botón más redondo
+                ),
+                minimumSize: Size(150, 150),
+              ),
+              child: Text(
+                'BOTÓN DE \nPÁNICO',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                _servicioAtendido(context);
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF1FBAAF),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(300, 50),
+              ),
+              child: Text(
+                'Servicio terminado',
+                style: TextStyle(
+                  fontSize:
+                      20, // Ajusta el tamaño de la fuente según tus preferencias
+                  fontWeight: FontWeight
+                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
+                ),
+              ),
+            ),
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
@@ -514,29 +562,6 @@ class BottomButtons extends StatelessWidget {
               ),
               child: Text(
                 'Cancelar servicio',
-                style: TextStyle(
-                  fontSize:
-                      20, // Ajusta el tamaño de la fuente según tus preferencias
-                  fontWeight: FontWeight
-                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                _servicioAtendido(context);
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFF1FBAAF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                minimumSize: Size(300, 50),
-              ),
-              child: Text(
-                'Servicio terminado',
                 style: TextStyle(
                   fontSize:
                       20, // Ajusta el tamaño de la fuente según tus preferencias

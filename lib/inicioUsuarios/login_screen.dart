@@ -441,7 +441,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           return AlertDialog(
                                             title: Text('En Revisión'),
                                             content: Text(
-                                                'Su perfil esta siendo revisado, resivirá un correo despues de 48 horas despues de haber subido todos sus documentos.'),
+                                                'Su perfil esta siendo revisado. Por favor, vuelva a intentar ingresar en 24hrs.'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
