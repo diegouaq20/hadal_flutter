@@ -265,7 +265,7 @@ class MyHomePage extends StatelessWidget {
                               style: TextStyle(
                                 color: Color(0xFF235365),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
+                                fontSize: 13.0,
                               ),
                               textAlign: TextAlign.center,
                             ),

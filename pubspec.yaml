@@ -45,6 +45,7 @@ dependencies:
 
 
 
+
   #intl
   intl: ^0.18.1
   #guarda los datos en dispositivo
@@ -152,3 +153,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/logo_hadal.png"
+
+

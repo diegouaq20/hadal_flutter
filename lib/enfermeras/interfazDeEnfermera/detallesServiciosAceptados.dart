@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart'; // Importa Geolocator
 import 'package:http/http.dart' as http; // Importa http
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetallesServiciosAceptados extends StatelessWidget {
   final String servicio;
@@ -123,63 +124,118 @@ class DetallesServiciosAceptados extends StatelessWidget {
                     '$nombre',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF245366),
                     ),
                   ),
                 ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0, top: 20.0),
+                child: Container(
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 32, 204, 193)
+                        .withOpacity(0.1), // Cambia a tu color específico
+                    borderRadius: BorderRadius.circular(
+                        10.0), // Ajusta el radio según tus necesidades
+                  ),
+                  // Cambia a tu color específico
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.network(
+                          icono,
+                          width: 24,
+                          height: 24,
+                          color: Color(0xFF245366),
+                        ),
+                        SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            '$servicioDisplay',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF245366),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
 
               SizedBox(height: 16),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SvgPicture.network(
-                    icono,
-                    width: 24,
-                    height: 24,
+                  Text(
+                    'Nivel de servicio: ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                    ),
                   ),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      '$servicioDisplay',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF000328),
-                      ),
+                  Text(
+                    '$tipoCategoria',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 16),
+              SizedBox(height: 8),
 
-              Text(
-                'Categoría: $tipoCategoria',
-                style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente 13
-                  color: Color(0xFF000328),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Fecha: ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                    ),
+                  ),
+                  Text(
+                    '$fecha',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
 
               SizedBox(height: 8),
 
-              Text(
-                'Fecha: $fecha',
-                style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente 13
-                  color: Color(0xFF000328),
-                ),
-              ),
-
-              SizedBox(height: 8),
-
-              Text(
-                'Horario: $hora',
-                style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente 13
-                  color: Color(0xFF000328),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Hora: ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                    ),
+                  ),
+                  Text(
+                    '$hora',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
 
               SizedBox(height: 16),
@@ -202,6 +258,7 @@ class DetallesServiciosAceptados extends StatelessWidget {
                           '$domicilio',
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.bold,
                             color: Color(0xFF000328),
                           ),
                         ),
@@ -226,7 +283,7 @@ class DetallesServiciosAceptados extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ubicacion actual:',
+                    'Ubicación actual:',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(0xFF000328),
@@ -246,6 +303,7 @@ class DetallesServiciosAceptados extends StatelessWidget {
                                 '$latitude, $longitude\n\n$locationName', // Utiliza el resultado en lugar de la función
                                 style: TextStyle(
                                   fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: Color(0xFF000328),
                                 ),
                               );
@@ -277,41 +335,58 @@ class DetallesServiciosAceptados extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 16),
+              SizedBox(height: 8),
 
-              Text(
-                'Tipo de Servicio: $tipoServicio',
-                style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente 13
-                  color: Color(0xFF000328),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '\nTipo de servicio: ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                    ),
+                  ),
+                  Text(
+                    '$tipoServicio',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
 
               SizedBox(height: 16),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total: \$', // Agregamos el signo de pesos
+                    'Total: ', // Agregamos el signo de pesos
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xFF000328),
                     ),
                   ),
                   Text(
-                    '$total', // Mostramos el total
+                    '\$$total', // Mostramos el total
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xFF000328),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
+              BottomButtons(idCita: idCita), // botones fluidos
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomButtons(idCita: idCita),
+
+      //BottomButtons(idCita: idCita), // botones estaticos
     );
   }
 }
@@ -426,23 +501,29 @@ class BottomButtons extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () {
-                _cancelarServicio(
-                    context); // Llama a la función para cancelar el servicio
-                Navigator.pop(context); // Cierra la pantalla actual
+              onPressed: () async {
+                await launch("tel:911");
               },
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFFF19162),
+                primary: Colors.red,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(
+                      200), // Ajusta el valor para hacer el botón más redondo
                 ),
-                minimumSize: Size(300, 40),
+                minimumSize: Size(150, 150),
               ),
-              child: Text('Cancelar Servicio'),
+              child: Text(
+                'BOTÓN DE \nPÁNICO',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 _servicioAtendido(context);
@@ -453,9 +534,41 @@ class BottomButtons extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                minimumSize: Size(300, 40),
+                minimumSize: Size(300, 50),
               ),
-              child: Text('Servicio atendido'),
+              child: Text(
+                'Servicio terminado',
+                style: TextStyle(
+                  fontSize:
+                      20, // Ajusta el tamaño de la fuente según tus preferencias
+                  fontWeight: FontWeight
+                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _cancelarServicio(
+                    context); // Llama a la función para cancelar el servicio
+                Navigator.pop(context); // Cierra la pantalla actual
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(300, 50),
+              ),
+              child: Text(
+                'Cancelar servicio',
+                style: TextStyle(
+                  fontSize:
+                      20, // Ajusta el tamaño de la fuente según tus preferencias
+                  fontWeight: FontWeight
+                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
+                ),
+              ),
             ),
           ],
         ),

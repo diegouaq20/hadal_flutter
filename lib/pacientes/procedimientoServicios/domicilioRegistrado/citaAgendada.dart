@@ -88,7 +88,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación - DESDE CITA AGENDADA TERCEROS',
+                'Esperando Aceptación - DESDE CITA AGENDADA',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,
@@ -304,7 +304,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   height: 80,
                   child: SvgPicture.network(
                     widget.icono,
-                    color: Colors.grey,
+                    color: Color(0xFF235365),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -330,6 +330,25 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                             ),
                             TextSpan(
                               text: '${widget.serviceName}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Nivel de servicio: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.tipoCategoria}',
                             ),
                           ],
                         ),
@@ -426,44 +445,6 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                             ),
                             TextSpan(
                               text: '\$${widget.total.toStringAsFixed(2)}',
-                            ),
-                          ],
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Color(0xFF235365),
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Categoría: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Servicio ${widget.tipoCategoria}',
-                            ),
-                          ],
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Color(0xFF235365),
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Ubicacion: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '${widget.ubicacion}',
                             ),
                           ],
                         ),
@@ -593,7 +574,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
               height: 80,
               child: SvgPicture.network(
                 widget.icono,
-                color: Colors.grey,
+                color: Color(0xFF235365),
               ),
             ),
 
@@ -612,27 +593,54 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     Text(
                       'Servicio',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10), // Espacio entre etiqueta y valor
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '${widget.serviceName}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
+                            text: '${widget.serviceName}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+// Categoría
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Nivel de servicio',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.tipoCategoria}',
                           ),
                         ),
                       ),
@@ -641,34 +649,30 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
 
                 // Nombre
-                SizedBox(height: 20),
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Nombre',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '${widget.nombre}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
+                            text: '${widget.nombre}',
                           ),
                         ),
                       ),
@@ -677,34 +681,29 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
 
                 // Domicilio
-                SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Domicilio',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '${widget.domicilio}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
+                            text: '${widget.domicilio}',
                           ),
                         ),
                       ),
@@ -713,34 +712,30 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
 
                 // Fecha
-                SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Fecha',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text:
-                                  '${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
+                            text:
+                                '${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
                           ),
                         ),
                       ),
@@ -749,34 +744,29 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
 
                 // Hora
-                SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Hora',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '${widget.schedule}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
+                            text: '${widget.schedule}',
                           ),
                         ),
                       ),
@@ -785,105 +775,30 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 ),
 
                 // TOTAL
-                SizedBox(height: 20),
+                SizedBox(height: 60),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Total',
                       style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
-                      textAlign: TextAlign.start,
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '\$${widget.total.toStringAsFixed(2)}',
-                            ),
-                          ),
-                        ),
+                        fontSize: 20.0,
+                        color: Color(0xFF245366),
                       ),
-                    ),
-                  ],
-                ),
-
-                // CATEGORIA
-                SizedBox(height: 20),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Categoría',
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: 'Servicio ${widget.tipoCategoria}',
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // UBICACION
-                SizedBox(height: 20),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Ubicación',
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF245366)),
-                      textAlign: TextAlign.start,
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFF1FBAAF)),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.all(10),
-                        child: SingleChildScrollView(
-                          child: RichText(
-                            textAlign: TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF245366)),
-                              text: '${widget.ubicacion}',
-                            ),
+                            text: '\$${widget.total.toStringAsFixed(2)}',
                           ),
                         ),
                       ),

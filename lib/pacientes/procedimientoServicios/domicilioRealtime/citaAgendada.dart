@@ -88,7 +88,7 @@ class CitaAgendadaState extends State<CitaAgendada> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Esperando Aceptación - DESDE CITA AGENDADA TERCEROS',
+                'Esperando Aceptación - DESDE CITA AGENDADA TIEMPO REAL',
                 style: TextStyle(
                   color: Color.fromARGB(255, 20, 107, 101),
                   fontSize: 16,
@@ -298,117 +298,196 @@ class CitaAgendadaState extends State<CitaAgendada> {
             side: BorderSide(color: Color(0xFF1FBAAF)),
           ),
           title: Text(
-            'Confirmar Cita',
+            'Confirmar cita',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
               color: Color(0xFF1FBAAF),
             ),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                child: SvgPicture.network(
-                  widget.icono,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Servicio: ${widget.serviceName}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Nombre: ${widget.nombre}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Domicilio: ${widget.domicilio}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Día: ${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Hora: ${widget.schedule}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Total: \$${widget.total.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Categoría: Servicio ${widget.tipoCategoria}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                    Text(
-                      'Ubicacion: Servicio ${widget.ubicacion}',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF235365),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30.0),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    showWaitingDialog = true;
-                    _realizarPagoYConfirmarCita();
-                  });
-
-                  await Future.delayed(Duration(seconds: 10));
-
-                  // Puedes ajustar la duración según tus necesidades
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF1FBAAF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  child: SvgPicture.network(
+                    widget.icono,
+                    color: Color(0xFF235365),
                   ),
                 ),
-                child: Text(
-                  'Proceder al pago',
-                  style: TextStyle(
-                    fontSize: 16,
+                SizedBox(height: 20.0),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Servicio: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.serviceName}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Nivel de servicio: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.tipoCategoria}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Nombre: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.nombre}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Domicilio: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.domicilio}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Día: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Hora: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.schedule}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Total: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '\$${widget.total.toStringAsFixed(2)}',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 30.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      showWaitingDialog = true;
+                      _realizarPagoYConfirmarCita();
+                    });
+
+                    await Future.delayed(Duration(seconds: 10));
+
+                    // Puedes ajustar la duración según tus necesidades
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF1FBAAF),
+                    minimumSize: Size(double.infinity, 50.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'Proceder al pago',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -464,7 +543,7 @@ class CitaAgendadaState extends State<CitaAgendada> {
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
-          'Detalles de la cita',
+          'Detalles',
           style: TextStyle(
             color: Color(0xFF235365),
             fontSize: 20,
@@ -482,14 +561,14 @@ class CitaAgendadaState extends State<CitaAgendada> {
         ),
         elevation: 2.0,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Detalles de la Cita',
+              'DETALLES DE LA CITA',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -502,112 +581,269 @@ class CitaAgendadaState extends State<CitaAgendada> {
               height: 80,
               child: SvgPicture.network(
                 widget.icono,
-                color: Colors.grey,
+                color: Color(0xFF235365),
               ),
             ),
-            SizedBox(height: 20.0),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Servicio: ${widget.serviceName}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
+            Column(
+              children: [
+                SizedBox(height: 20), // Espacio para separar
+
+                // Servicio
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Servicio',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
                     ),
-                  ),
-                  Text(
-                    'Nombre: ${widget.nombre}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.serviceName}',
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Domicilio: ${widget.domicilio}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                  Text(
-                    'Día: ${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                  Text(
-                    'Hora: ${widget.schedule}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                  Text(
-                    'Total: \$${widget.total.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                  Text(
-                    'Categoría: Servicio ${widget.tipoCategoria}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                  Text(
-                    'Ubicacion: Servicio ${widget.ubicacion}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF235365),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 30.0),
-            ElevatedButton(
-              onPressed: _confirmarCita,
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFF1FBAAF),
-                minimumSize: Size(double.infinity, 50.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  ],
                 ),
-              ),
-              child: Text(
-                'Confirmar Cita',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.white,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Nivel de servicio',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.tipoCategoria}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+
+                // Nombre
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Nombre',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.nombre}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Ubicación actual',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.domicilio}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Fecha
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Fecha',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text:
+                                '${widget.dayOfWeek}, ${widget.dayOfMonth} de ${widget.month}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Hora
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Hora',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '${widget.schedule}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // TOTAL
+                SizedBox(height: 60),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Total',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Color(0xFF245366),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF245366),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            text: '\$${widget.total.toStringAsFixed(2)}',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 30.0),
+                ElevatedButton(
+                  onPressed: _confirmarCita,
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF1FBAAF),
+                    minimumSize: Size(double.infinity, 50.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: Text(
+                    'Confirmar cita',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15.0),
+                // ElevatedButton(
+                //   onPressed: _agregarAlCarrito,
+                //   style: ElevatedButton.styleFrom(
+                //     primary: Color(0xFFF4FCFB),
+                //     onPrimary: Color(0xFF1FBAAF),
+                //     minimumSize: Size(double.infinity, 50.0),
+                //     shape: RoundedRectangleBorder(
+                //       side: BorderSide(color: Color(0xFF1FBAAF)),
+                //       borderRadius: BorderRadius.circular(10.0),
+                //     ),
+                //   ),
+                //   child: Text(
+                //     'Añadir al carrito',
+                //     style: TextStyle(
+                //       fontSize: 18.0,
+                //       color: Color(0xFF1FBAAF),
+                //     ),
+                //   ),
+                // ),
+              ],
             ),
-            SizedBox(height: 15.0),
-            // ElevatedButton(
-            //   onPressed: _agregarAlCarrito,
-            //   style: ElevatedButton.styleFrom(
-            //     primary: Color(0xFFF4FCFB),
-            //     onPrimary: Color(0xFF1FBAAF),
-            //     minimumSize: Size(double.infinity, 50.0),
-            //     shape: RoundedRectangleBorder(
-            //       side: BorderSide(color: Color(0xFF1FBAAF)),
-            //       borderRadius: BorderRadius.circular(10.0),
-            //     ),
-            //   ),
-            //   child: Text(
-            //     'Añadir al carrito',
-            //     style: TextStyle(
-            //       fontSize: 18.0,
-            //       color: Color(0xFF1FBAAF),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

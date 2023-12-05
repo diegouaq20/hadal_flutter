@@ -54,7 +54,7 @@ class _PrincipalState extends State<Principal> {
                           body: "Body of the notification",
                         );
                       },
-                      child: Text('Notificaciónopopop'),
+                      child: Text('Notificación'),
                     ),
                   ),
                 ),

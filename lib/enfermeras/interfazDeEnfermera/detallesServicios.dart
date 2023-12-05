@@ -208,12 +208,17 @@ class DetallesServiciosPage extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          '$domicilio',
-                          style: TextStyle(
-                            color: Color(0xFF000328),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        Expanded(
+                          // o Flexible si necesitas más control sobre la expansión
+                          child: Text(
+                            '$domicilio',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Color(0xFF000328),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            // Puedes agregar esto si deseas que se muestre "..." si el texto es muy largo
                           ),
                         ),
                       ],

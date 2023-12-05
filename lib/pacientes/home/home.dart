@@ -227,7 +227,7 @@ class _HomeState extends State<Home> {
       child: Column(
         children: [
           Container(
-            color: Color(0xFFCFE3E1),
+            color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
             width: double.infinity,
             child: nombre != "" &&
                     primerApellido != "" &&
