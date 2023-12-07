@@ -54,8 +54,21 @@ class DetallesServiciosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del servicio'),
+        title: Text(
+          'Detalles del servicio',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Color(0xFF1FBAAF),
+        toolbarHeight: kToolbarHeight - 10,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
       ),
       backgroundColor: Color(0xFFF4FCFB),
       body: SingleChildScrollView(
@@ -113,7 +126,7 @@ class DetallesServiciosPage extends StatelessWidget {
                           child: Text(
                             '$servicioDisplay',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF245366),
                             ),
@@ -363,7 +376,7 @@ class BottomButtons extends StatelessWidget {
                       Navigator.pop(context); // Cierra la pantalla actual
                     },
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFF1FBAAF),
+                backgroundColor: Color(0xFF1FBAAF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -372,9 +385,9 @@ class BottomButtons extends StatelessWidget {
               child: Text(
                 'Aceptar',
                 style: TextStyle(
-                  fontSize: 20, // Tamaño de letra 20
-                  fontWeight: FontWeight.bold, // Negritas
-                ),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
             SizedBox(height: 10),

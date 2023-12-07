@@ -101,10 +101,25 @@ class DetallesServiciosAceptados extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del servicio'),
+        title: Text(
+          'Detalles del servicio',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: Color(0xFF1FBAAF),
+        toolbarHeight: kToolbarHeight - 10,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        elevation: 2.0,
       ),
-      backgroundColor: Color(0xFFF4FCFB),
+
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -495,7 +510,7 @@ class BottomButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFF4FCFB),
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -518,9 +533,9 @@ class BottomButtons extends StatelessWidget {
                 'BOTÓN DE \nPÁNICO',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
             SizedBox(height: 40),
@@ -539,11 +554,12 @@ class BottomButtons extends StatelessWidget {
               child: Text(
                 'Servicio terminado',
                 style: TextStyle(
-                  fontSize:
-                      20, // Ajusta el tamaño de la fuente según tus preferencias
-                  fontWeight: FontWeight
-                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
-                ),
+                    fontSize:
+                        20, // Ajusta el tamaño de la fuente según tus preferencias
+                    fontWeight: FontWeight.bold,
+                    color: Colors
+                        .white // Puedes agregar negrita u otras propiedades según tus necesidades
+                    ),
               ),
             ),
             SizedBox(height: 10),
@@ -563,11 +579,12 @@ class BottomButtons extends StatelessWidget {
               child: Text(
                 'Cancelar servicio',
                 style: TextStyle(
-                  fontSize:
-                      20, // Ajusta el tamaño de la fuente según tus preferencias
-                  fontWeight: FontWeight
-                      .bold, // Puedes agregar negrita u otras propiedades según tus necesidades
-                ),
+                    fontSize:
+                        20, // Ajusta el tamaño de la fuente según tus preferencias
+                    fontWeight: FontWeight.bold,
+                    color: Colors
+                        .white // Puedes agregar negrita u otras propiedades según tus necesidades
+                    ),
               ),
             ),
           ],

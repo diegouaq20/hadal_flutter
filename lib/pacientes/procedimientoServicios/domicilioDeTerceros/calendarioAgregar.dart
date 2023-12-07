@@ -72,13 +72,12 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFF4FCFB),
         title: Text(
-          'Agendar Cita',
+          'Agendar cita',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Color(0xFF235365),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
@@ -92,7 +91,7 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
         ),
         elevation: 2.0,
       ),
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -122,7 +121,7 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
             ),
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: Color(0xFF1BC0B2),
+                color: Color(0xFF1FBAAF),
                 shape: BoxShape.circle,
               ),
               todayDecoration: BoxDecoration(
@@ -151,7 +150,7 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
               ),
               itemBuilder: (context, index) {
                 return ListTile(
-                  tileColor: Color(0xFFEFF4F4),
+                  tileColor: Colors.white,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -160,7 +159,7 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
                           horarios[index],
                           style: TextStyle(
                             color: _selectedHorarioIndex == index
-                                ? Color(0xFF245366)
+                                ? Color(0xFF1FBAAF)
                                 : null,
                           ),
                         ),
@@ -169,7 +168,7 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.77,
                               decoration: BoxDecoration(
-                                color: Color(0xFF8CA6A3),
+                                color: Color.fromARGB(255, 124, 191, 187),
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                               padding: EdgeInsets.symmetric(
@@ -216,7 +215,12 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Selecciona una fecha y un horario'),
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        title: Text(
+                          'Selecciona una fecha y un horario',
+                          style: TextStyle(fontSize: 18),
+                        ),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Aceptar'),
@@ -237,8 +241,12 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title:
-                            Text('No puedes agendar citas en fechas pasadas'),
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        title: Text(
+                          'No puedes agendar citas en fechas pasadas',
+                          style: TextStyle(fontSize: 18),
+                        ),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Aceptar'),

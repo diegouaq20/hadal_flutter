@@ -149,21 +149,19 @@ class _PerfilPacienteFaltanteState extends State<PerfilPacienteFaltante> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Color(0xFFF4FFFE),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF4FCFB),
+        backgroundColor: Color(0xFF1FBAAF),
         title: Text(
           'Perfil',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Color(0xFF235365),
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.pop(context, false);
@@ -174,7 +172,7 @@ class _PerfilPacienteFaltanteState extends State<PerfilPacienteFaltante> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          color: Color(0xFFF4FCFB),
+          surfaceTintColor: Colors.white,
           margin: EdgeInsets.all(35),
           elevation: 5,
           shadowColor: Colors.grey,
@@ -222,8 +220,9 @@ class _PerfilPacienteFaltanteState extends State<PerfilPacienteFaltante> {
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: _selectImage,
-                          child:
-                              Text('Subir', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Subir',
+                              style: TextStyle(
+                                  fontSize: 18.0, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(
@@ -240,7 +239,7 @@ class _PerfilPacienteFaltanteState extends State<PerfilPacienteFaltante> {
                       Container(
                         padding: EdgeInsets.only(
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
-                        color: Color(0xFFF4FCFB),
+                        color: Colors.white,
                         child: Text(
                           "Esta fotografía aparecerá en tu perfil y será con la que te conozcan los enfermeros.\n\nEncuentra un lugar con buena iluminación y toma en cuenta los siguientes requisitos:\n\n- Fondo liso de color claro\n- Cara descubierta\n- Sin accesorios (anillos, collares, aretes, pasadores)",
                           style: TextStyle(fontSize: 18.0),
@@ -253,7 +252,8 @@ class _PerfilPacienteFaltanteState extends State<PerfilPacienteFaltante> {
                         child: ElevatedButton(
                           onPressed: _uploadImage,
                           child: Text('Aceptar',
-                              style: TextStyle(fontSize: 18.0)),
+                              style: TextStyle(
+                                  fontSize: 18.0, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(

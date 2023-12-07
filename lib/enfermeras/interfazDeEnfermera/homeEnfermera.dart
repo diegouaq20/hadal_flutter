@@ -327,7 +327,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: AnimatedOpacity(
         opacity: showContent ? 1.0 : 0.0,
         duration: Duration(milliseconds: 700),
@@ -340,7 +340,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                   segundoApellido.isNotEmpty &&
                   tipoUsuario.isNotEmpty)
                 Container(
-                  color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.background,
                   width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -460,6 +460,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                         'Ubicación actual',
                         style: TextStyle(
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                           color: Color(0xFF1FBAAF),
                         ),
                       ),
@@ -472,7 +473,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                   padding: EdgeInsets.only(left: 25, bottom: 10),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Servicios Disponibles',
+                    'Servicios disponibles',
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xFF245366),
@@ -480,6 +481,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                     ),
                   ),
                 ),
+              SizedBox(height: 0),
               if (recepcionActivada)
                 StreamBuilder<List<QueryDocumentSnapshot<Object?>>>(
                   stream: _getCitasStream('disponible'),
@@ -590,55 +592,60 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                               }
                             },
                             child: Card(
-                              elevation: 3,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              surfaceTintColor: Colors.white,
+                              elevation: 5,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               margin: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
                               child: Container(
-                                width: 170,
-                                height: 160,
+                                width: 165,
+                                height: 152,
                                 padding: EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 48,
-                                      height: 48,
+                                      width: 40,
+                                      height: 40,
                                       child: iconoUrl != null
                                           ? SvgPicture.network(
                                               iconoUrl,
                                               width: 48,
                                               height: 48,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                             )
                                           : Icon(Icons.info_outline, size: 48),
                                     ),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 2),
                                     Text(
                                       servicioRecortado,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF235365),
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 5),
                                     Text(
                                       '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.grey,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 5),
                                     Expanded(
                                       child: Container(
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: 30, vertical: 4),
+                                            horizontal: 20, vertical: 4),
                                         color: tipoServicio == "Urgente"
                                             ? Colors.red
                                             : Color(0xFF1FBAAF),
@@ -646,7 +653,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                                           child: Text(
                                             tipoServicio,
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
                                             ),
@@ -669,7 +676,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                 padding: EdgeInsets.only(left: 25, top: 10, bottom: 10),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Mis Citas Aceptadas',
+                  'Mis citas aceptadas',
                   style: TextStyle(
                     fontSize: 20,
                     color: Color(0xFF245366),
@@ -693,7 +700,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             vertical:
                                 50), // Ajusta el valor del padding vertical
                         child: Text(
-                          'No hay servicios aceptados.',
+                          'No hay servicios aceptados',
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ),
@@ -788,55 +795,60 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             }
                           },
                           child: Card(
-                            elevation: 3,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            surfaceTintColor: Colors.white,
+                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             margin: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
                             child: Container(
-                              width: 170,
-                              height: 160,
+                              width: 165,
+                              height: 152,
                               padding: EdgeInsets.all(10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    width: 48,
-                                    height: 48,
+                                    width: 40,
+                                    height: 40,
                                     child: iconoUrl != null
                                         ? SvgPicture.network(
                                             iconoUrl,
                                             width: 48,
                                             height: 48,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           )
                                         : Icon(Icons.info_outline, size: 48),
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 2),
                                   Text(
                                     servicioRecortado,
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF235365),
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 5),
                                   Text(
                                     '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 5),
                                   Expanded(
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 30, vertical: 4),
+                                          horizontal: 20, vertical: 4),
                                       color: tipoServicio == "Urgente"
                                           ? Colors.red
                                           : Color(0xFF1FBAAF),
@@ -844,7 +856,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                                         child: Text(
                                           tipoServicio,
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white,
                                           ),

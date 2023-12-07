@@ -201,9 +201,7 @@ class _Ine2PacienteFaltanteState extends State<Ine2PacienteFaltante> {
         title: Text(
           'Documentos',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(

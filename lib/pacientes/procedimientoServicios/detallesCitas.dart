@@ -131,8 +131,22 @@ class DetallesCitaState extends State<DetallesCita> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles de mi servicio'),
         backgroundColor: Color(0xFF1FBAAF),
+        title: Text(
+          'Detalles de mi servicio',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        toolbarHeight: kToolbarHeight - 10,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        elevation: 2.0,
       ),
       backgroundColor: Color(0xFFF4FCFB),
       body: SingleChildScrollView(
@@ -292,12 +306,15 @@ class DetallesCitaState extends State<DetallesCita> {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          '${widget.domicilio}',
-                          style: TextStyle(
-                            color: Color(0xFF000328),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        Flexible(
+                          child: Text(
+                            '${widget.domicilio}',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Color(0xFF000328),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
@@ -376,24 +393,29 @@ class DetallesCitaState extends State<DetallesCita> {
               // Agrega un botón para cancelar el servicio
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // Llama a la función para cancelar la cita cuando se presiona el botón
-                    //detallesCitaState?.cancelarCita(context, widget.citaId);
-                    citaAgendada.cancelarServicio(context, citaId);
-                    //citaAgendada.showWaitingProgressDialog(citaId, context);
-                    //clientStripePayment.getRefundAmount();
-                    //refundPayment(context, citaId);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
-                  ),
-                  child: Text(
-                    'Cancelar Servicioojojoj',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // Llama a la función para cancelar la cita cuando se presiona el botón
+                      //detallesCitaState?.cancelarCita(context, widget.citaId);
+                      citaAgendada.cancelarServicio(context, citaId);
+                      //citaAgendada.showWaitingProgressDialog(citaId, context);
+                      //clientStripePayment.getRefundAmount();
+                      //refundPayment(context, citaId);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: Size(300, 50.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.red),
+                    child: Text(
+                      'Cancelar servicio',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),

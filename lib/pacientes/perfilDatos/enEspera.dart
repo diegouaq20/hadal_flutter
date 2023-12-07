@@ -20,13 +20,14 @@ class _EnEsperaState extends State<EnEspera> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Color(0xFFF4FFFE),
       body: Center(
         child: Padding(
           padding:
               EdgeInsets.only(left: 35.0, top: 80.0, bottom: 35.0, right: 35),
           child: Card(
-            color: Color(0xFFF4FCFB),
+            color: Colors.white,
+            surfaceTintColor: Colors.white,
             elevation: 5,
             shadowColor: Colors.grey,
             shape: RoundedRectangleBorder(
@@ -56,7 +57,7 @@ class _EnEsperaState extends State<EnEspera> {
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 35.0, bottom: 35.0, right: 35),
-                  color: Color(0xFFF4FCFB),
+                  color: Colors.white,
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
@@ -75,7 +76,8 @@ class _EnEsperaState extends State<EnEspera> {
                         MaterialPageRoute(builder: (context) => LoginScreen()),
                       );
                     },
-                    child: Text('Aceptar', style: TextStyle(fontSize: 20.0)),
+                    child: Text('Aceptar',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.only(left: 35.0, right: 35),
                       shape: RoundedRectangleBorder(
