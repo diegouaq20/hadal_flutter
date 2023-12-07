@@ -40,7 +40,6 @@ dependencies:
   firebase_database: 
   firebase_core: 
   geolocator:
-  flutter_stripe: ^9.4.0
   flutter_launcher_icons: ^0.11.0
 
 
@@ -83,7 +82,7 @@ dependencies:
   flutter_web_browser: 
   image_picker: ^1.0.4
   get: ^4.6.6
-
+  flutter_stripe:  ^9.4.0
 
 
 dev_dependencies:
