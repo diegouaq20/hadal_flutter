@@ -5,7 +5,6 @@ import 'package:hadal/registroUsuario/registroPaciente.dart';
 import 'package:hadal/registroUsuario/registroEnfermera.dart';
 //import 'package:flutter/animation.dart';
 
-
 class RegisterHome extends StatefulWidget {
   const RegisterHome({super.key});
 
@@ -33,6 +32,7 @@ class _RegisterHomeState extends State<RegisterHome>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         //backgroundColor: Colors.transparent,
@@ -40,22 +40,23 @@ class _RegisterHomeState extends State<RegisterHome>
         toolbarHeight: 35,
         //shadowColor: const Color(0xFFe6eff8),
         leading: IconButton(
-  icon: Icon(
-    Icons.arrow_back_ios_new,
-    color: Color(0xFF1FBAAF), // Cambia el color aquí
-  ),
-  onPressed: () {
-    Navigator.pop(context);
-  },
-),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xFF1FBAAF),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
 
         title: const Text(
-  'CREAR PERFIL',
-  style: TextStyle(
-    fontSize: 20,
-    color: Color(0xFF1FBAAF), // Cambia el color aquí
-  ),
-),
+          'CREAR PERFIL',
+          style: TextStyle(
+              fontSize: 20,
+              color: Color(0xFF1FBAAF),
+              fontWeight: FontWeight.bold // Cambia el color aquí
+              ),
+        ),
 
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -63,7 +64,7 @@ class _RegisterHomeState extends State<RegisterHome>
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFF6FFFE),      
+                Color(0xFFF6FFFE),
                 Color(0xFFF6FFFE),
               ],
             ),
@@ -76,7 +77,7 @@ class _RegisterHomeState extends State<RegisterHome>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFF6FFFE),      
+              Color(0xFFF6FFFE),
               Color(0xFFF6FFFE),
             ],
           ),
@@ -93,7 +94,7 @@ class _RegisterHomeState extends State<RegisterHome>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xFFF6FFFE),      
+                      Color(0xFFF6FFFE),
                       Color(0xFFF6FFFE),
                     ],
                   ),
@@ -122,17 +123,18 @@ class _RegisterHomeState extends State<RegisterHome>
                       ),
                     ),
                   ],
+                  labelColor: Colors.white,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.topCenter,
-                        colors: [
-                            Color(0xFF1FBAAF), 
-                            Color(0xFF1FBAAF),
-                        ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Color(0xFF1FBAAF),
+                        Color(0xFF1FBAAF),
+                      ],
                     ),
-                ),
+                  ),
                   indicatorWeight: 2,
                   indicatorSize: TabBarIndicatorSize.tab,
                   unselectedLabelColor: const Color(0xFF676f77),
@@ -147,7 +149,7 @@ class _RegisterHomeState extends State<RegisterHome>
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0xFFF6FFFE),      
+                        Color(0xFFF6FFFE),
                         Color(0xFFF6FFFE),
                       ],
                     ),

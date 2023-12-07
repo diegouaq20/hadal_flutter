@@ -91,11 +91,11 @@ class _CalendarioState extends State<Calendario> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  _editingIndex == -1 ? 'Agregar Nota' : 'Editar Nota',
+                  _editingIndex == -1 ? 'Agregar nota' : 'Editar nota',
                   style: TextStyle(
-                    color: Color(0xFF245366),
-                    fontSize: 20,
-                  ),
+                      color: Color(0xFF245366),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 16),
                 TextFormField(
@@ -180,7 +180,15 @@ class _CalendarioState extends State<Calendario> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Borrar Nota'),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          title: Text(
+            'Borrar nota',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
           content: Text('¿Estás seguro de que quieres borrar esta nota?'),
           actions: [
             TextButton(
@@ -224,8 +232,11 @@ class _CalendarioState extends State<Calendario> {
 
   @override
   Widget build(BuildContext context) {
+    Intl.defaultLocale = 'es_ES';
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      //backgroundColor: Color(0xFFF4FFFE),
+
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +247,7 @@ class _CalendarioState extends State<Calendario> {
                 vertical: 20,
               ),
               child: Text(
-                'Mi Calendario',
+                'Mi calendario',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -245,37 +256,45 @@ class _CalendarioState extends State<Calendario> {
               ),
             ),
             Padding(
-  padding: const EdgeInsets.symmetric(
-    horizontal: 0,
-  ),
-  child: TableCalendar(
-    locale: 'es_ES',
-    firstDay: DateTime.utc(2000),
-    lastDay: DateTime.utc(2050),
-    focusedDay: _focusedDay,
-    calendarFormat: _calendarFormat,
-    onFormatChanged: (format) {
-      setState(() {
-        _calendarFormat = format;
-      });
-    },
-    selectedDayPredicate: (day) {
-      return isSameDay(_selectedDay, day);
-    },
-    onDaySelected: _onDaySelected,
-    calendarStyle: CalendarStyle(
-      selectedDecoration: BoxDecoration(
-        color: Color(0xFF1FBAAF),
-        shape: BoxShape.circle,
-      ),
-      markersMaxCount: 1, // Establece siempre el markersMaxCount en 1
-    ),
-    // Utiliza eventLoader para cargar los eventos en cada fecha
-    eventLoader: _getEventsForDay,
-  ),
-),
-
-            SizedBox(height: 10),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 0,
+              ),
+              child: TableCalendar(
+                locale: 'es_ES',
+                firstDay: DateTime.utc(2000),
+                lastDay: DateTime.utc(2050),
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: _onDaySelected,
+                calendarStyle: CalendarStyle(
+                  selectedDecoration: BoxDecoration(
+                    color: Color(0xFF1FBAAF),
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: Color.fromARGB(255, 91, 255,
+                        241), // Cambia el color según tus preferencias
+                    shape: BoxShape.circle,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: Colors.black,
+                  ),
+                  markersMaxCount:
+                      1, // Establece siempre el markersMaxCount en 1
+                ),
+                // Utiliza eventLoader para cargar los eventos en cada fecha
+                eventLoader: _getEventsForDay,
+              ),
+            ),
+            SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
@@ -289,6 +308,7 @@ class _CalendarioState extends State<Calendario> {
                 ),
               ),
             ),
+            SizedBox(height: 15),
             Column(
               children: List.generate(
                 _events[_selectedDay]?.length ?? 0,
@@ -353,8 +373,8 @@ class _CalendarioState extends State<Calendario> {
                     onPressed: _saveEditedEvent,
                     child: Text('Guardar'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF1FBAAF),
-                      onPrimary: Colors.white,
+                      backgroundColor: Color(0xFF1FBAAF),
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],

@@ -69,6 +69,8 @@ class _AjustesState extends State<Ajustes> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -630,7 +632,7 @@ class _AjustesState extends State<Ajustes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -1143,7 +1145,7 @@ class _AjustesState extends State<Ajustes> {
                   ),
                   child: Text(
                     'Cerrar sesión',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onPressed: () {
                     _showLogoutDialog();
@@ -1161,10 +1163,15 @@ class _AjustesState extends State<Ajustes> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        title: Text('Cerrar sesión'),
+        title: Text(
+          'Cerrar sesión',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         content: Text('¿Está seguro de que desea cerrar sesión?'),
         actions: [
           TextButton(

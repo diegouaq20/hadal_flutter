@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
+import 'package:hadal/main.dart';
 
 void main() => runApp(ColumnasBasicos());
 
@@ -81,6 +82,7 @@ class MyHomePage extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
+                                      surfaceTintColor: Colors.white,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10.0)),
@@ -88,8 +90,9 @@ class MyHomePage extends StatelessWidget {
                                         child: Text(
                                           "Selecciona una opción",
                                           style: TextStyle(
-                                            color: Color(0xFF235365),
-                                          ),
+                                              color: Color(0xFF245366),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
                                         ),
                                       ),
                                       content: SingleChildScrollView(
@@ -121,8 +124,9 @@ class MyHomePage extends StatelessWidget {
                                                 },
                                                 child: Text(
                                                   "Domicilio registrado",
-                                                  style:
-                                                      TextStyle(fontSize: 18),
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white),
                                                 ),
                                               ),
                                             ),
@@ -152,8 +156,9 @@ class MyHomePage extends StatelessWidget {
                                                 },
                                                 child: Text(
                                                   "Para alguien más",
-                                                  style:
-                                                      TextStyle(fontSize: 18),
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white),
                                                 ),
                                               ),
                                             ),
@@ -186,10 +191,13 @@ class MyHomePage extends StatelessWidget {
                                                     Text(
                                                       "Mi ubicación",
                                                       style: TextStyle(
-                                                          fontSize: 16),
+                                                          fontSize: 16,
+                                                          color: Colors.white),
                                                     ),
                                                     Text(
                                                       "(Fuera de su domicilio registrado)",
+                                                      textAlign:
+                                                          TextAlign.center,
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           fontWeight:

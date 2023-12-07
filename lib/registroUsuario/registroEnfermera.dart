@@ -213,6 +213,8 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -224,7 +226,7 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const Padding(
                   padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
                   child: Text(
-                    "Seleccionar Estado",
+                    "Seleccionar estado",
                     style: TextStyle(
                       color: Color(0xFF245366),
                       fontSize: 20.0,
@@ -302,7 +304,7 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                   const Padding(
                     padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
                     child: Text(
-                      "Seleccionar Municipio",
+                      "Seleccionar municipio",
                       style: TextStyle(
                         color: Color(0xFF245366),
                         fontSize: 20.0,
@@ -358,9 +360,14 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           title: const Text(
             "Estado no disponible",
-            style: TextStyle(color: Color(0xFF245366)),
+            style: TextStyle(
+                color: Color(0xFF245366),
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
           ),
           content: const Text(
             "En este momento, lamentamos informarle que la aplicación no se encuentra disponible en este estado.",
@@ -369,7 +376,7 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
           actions: <Widget>[
             TextButton(
               child: const Text("Cerrar",
-                  style: TextStyle(color: Color(0xFF245366))),
+                  style: TextStyle(color: Color(0xFF1FBAAF))),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -496,125 +503,76 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(0.0),
-                            child: TextFormField(
-                              controller: estadoSearchController,
-                              decoration: InputDecoration(
-                                labelText: 'Buscar Estado',
-                                labelStyle: const TextStyle(
-                                  color: Color(0xFF245366),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xFF90b1af),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xFF90b1af),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search,
-                                      color: const Color(0xFF90b1af)),
-                                  onPressed: () {
-                                    searchEstados(estadoSearchController.text);
-                                  },
-                                ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Color.fromARGB(255, 171, 209, 207),
+                              width:
+                                  2.0 // Puedes ajustar el ancho del borde según tus preferencias
                               ),
-                              onChanged: (text) {
-                                // No hacer nada aquí
-                              },
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Puedes ajustar el radio de la esquina según tus preferencias
+                        ),
+                        child: ListTile(
+                          title: const Text(
+                            "Estado: ",
+                            style: TextStyle(
+                              color: Color(0xFF245366),
+                              fontSize: 14.0,
                             ),
                           ),
-                          ListTile(
-                            title: const Text(
-                              "Estado Seleccionado: ",
-                              style: TextStyle(
-                                  color: Color(0xFF245366), fontSize: 14.0),
-                            ),
-                            subtitle: Text(
-                              selectedEstado,
-                              style: const TextStyle(
-                                  color: Color(0xFF245366), fontSize: 18.0),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.arrow_drop_down,
-                                  color: const Color(0xFF90b1af)),
-                              onPressed: () {
-                                showEstadoList();
-                              },
+                          subtitle: Text(
+                            selectedEstado,
+                            style: const TextStyle(
+                              color: Color(0xFF245366),
+                              fontSize: 18.0,
                             ),
                           ),
-                        ],
+                          trailing: IconButton(
+                            icon: const Icon(Icons.arrow_drop_down,
+                                color:
+                                    const Color.fromARGB(255, 171, 209, 207)),
+                            onPressed: () {
+                              showEstadoList();
+                            },
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16.0),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(0.0),
-                            child: TextFormField(
-                              controller: municipioSearchController,
-                              decoration: InputDecoration(
-                                labelText: 'Buscar Municipio',
-                                labelStyle: const TextStyle(
-                                  color: Color(0xFF245366),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xFF90b1af),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xFF90b1af),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search,
-                                      color: const Color(0xFF90b1af)),
-                                  onPressed: () {
-                                    searchMunicipios(
-                                        municipioSearchController.text);
-                                  },
-                                ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 171, 209, 207),
+                              width:
+                                  2.0 // Puedes ajustar el ancho del borde según tus preferencias
                               ),
-                              onChanged: (text) {
-                                // No hacer nada aquí
-                              },
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Puedes ajustar el radio de la esquina según tus preferencias
+                        ),
+                        child: ListTile(
+                          title: const Text(
+                            "Municipio: ",
+                            style: TextStyle(
+                              color: Color(0xFF245366),
+                              fontSize: 14.0,
                             ),
                           ),
-                          ListTile(
-                            title: const Text(
-                              "Municipio Seleccionado: ",
-                              style: TextStyle(
-                                  color: Color(0xFF245366), fontSize: 14.0),
-                            ),
-                            subtitle: Text(
-                              selectedMunicipio,
-                              style: const TextStyle(
-                                  color: Color(0xFF245366), fontSize: 18.0),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.arrow_drop_down,
-                                  color: const Color(0xFF90b1af)),
-                              onPressed: () {
-                                showMunicipioList();
-                              },
+                          subtitle: Text(
+                            selectedEstado,
+                            style: const TextStyle(
+                              color: Color(0xFF245366),
+                              fontSize: 18.0,
                             ),
                           ),
-                        ],
+                          trailing: IconButton(
+                            icon: const Icon(Icons.arrow_drop_down,
+                                color:
+                                    const Color.fromARGB(255, 171, 209, 207)),
+                            onPressed: () {
+                              showMunicipioList();
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -622,8 +580,9 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
@@ -651,14 +610,15 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
                     controller: _fatherLastNameController,
                     decoration: const InputDecoration(
-                      labelText: 'Apellido Paterno',
+                      labelText: 'Apellido paterno',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -673,14 +633,15 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
                     controller: _motherLastNameController,
                     decoration: const InputDecoration(
-                      labelText: 'Apellido Materno',
+                      labelText: 'Apellido materno',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -695,8 +656,9 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
@@ -727,8 +689,9 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
@@ -755,14 +718,15 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
-                      labelText: 'Correo Electrónico',
+                      labelText: 'Correo electrónico',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -789,8 +753,9 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
@@ -842,8 +807,9 @@ class _RegistroEnfermeraState extends State<RegistroEnfermera> {
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFF90b1af), width: 2.0),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 171, 209, 207),
+                        width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(

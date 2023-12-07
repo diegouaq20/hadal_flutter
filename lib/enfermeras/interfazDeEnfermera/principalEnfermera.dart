@@ -4,6 +4,7 @@ import 'package:hadal/enfermeras/interfazDeEnfermera/ajustesEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/calendarioEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/homeEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/salasPrivadasEnfermeras.dart';
+import 'package:hadal/main.dart';
 
 class PrincipalEnfermeras extends StatefulWidget {
   @override
@@ -45,7 +46,7 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
               index: _selectedIndex,
               children: [
                 Container(
-                  color: Color(0xFFF4FCFB), // Cambia esto al color que desees
+                  //color: Color(0xFFF4FCFB), // Cambia esto al color que desees
                   child: Center(child: Text('Notifications')),
                 ),
                 SalasPrivadasEnfermeras(),
@@ -59,11 +60,10 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
             height: 50,
             margin: EdgeInsets.only(top: 1.0),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
+              //color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
               border: Border(
                 top: BorderSide(
-                  color: Color.fromARGB(255, 32, 204, 193).withOpacity(
-                      0.1), // Puedes ajustar el color según tus necesidades
+                  color: c4, // Puedes ajustar el color según tus necesidades
                   width:
                       0.4, // Puedes ajustar el ancho del borde según tus necesidades
                 ),

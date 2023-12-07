@@ -15,7 +15,7 @@ class verMas extends StatelessWidget {
       theme: ThemeData(
         tabBarTheme: TabBarTheme(
           indicator: BoxDecoration(
-            color: Color(0xFFF4FCFB),
+            color: Color(0xFFF4FFFE),
             borderRadius: BorderRadius.circular(0),
           ),
           labelColor: Color(0xFF235365),

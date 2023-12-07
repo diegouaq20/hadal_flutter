@@ -79,7 +79,7 @@ class _SalasPrivadasPacientesState extends State<SalasPrivadasPacientes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

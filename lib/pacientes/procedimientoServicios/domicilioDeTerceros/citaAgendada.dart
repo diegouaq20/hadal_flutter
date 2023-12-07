@@ -75,6 +75,8 @@ class _CitaAgendadaState extends State<CitaAgendada> {
         //pagoConfirmadoCrearCita();
         _waitForCitaAceptada(citaId);
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(color: Color(0xFF1FBAAF)),
@@ -280,6 +282,8 @@ class _CitaAgendadaState extends State<CitaAgendada> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(color: Color(0xFF1FBAAF)),
@@ -329,6 +333,25 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                             ),
                             TextSpan(
                               text: '${widget.serviceName}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF235365),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Nivel del servicio: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Servicio ${widget.tipoCategoria}',
                             ),
                           ],
                         ),
@@ -429,25 +452,6 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                           ],
                         ),
                       ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Color(0xFF235365),
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Categoría: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Servicio ${widget.tipoCategoria}',
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -465,7 +469,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                     // Puedes ajustar la duración según tus necesidades
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF1FBAAF),
+                    backgroundColor: Color(0xFF1FBAAF),
                     minimumSize: Size(double.infinity, 50.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -473,7 +477,10 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                   ),
                   child: Text(
                     'Proceder al pago',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ],
@@ -529,15 +536,15 @@ class _CitaAgendadaState extends State<CitaAgendada> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
           'Detalles',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Color(0xFF235365),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
@@ -565,54 +572,51 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 color: Color(0xFF235365),
               ),
             ),
-            SizedBox(height: 20.0),
-            Container(
-              width: 80,
-              height: 80,
-              child: SvgPicture.network(
-                widget.icono,
-                color: Color(0xFF235365),
+            SizedBox(height: 40),
+//inicio de modificacion
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Container(
+                height: 70,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 32, 204, 193)
+                      .withOpacity(0.1), // Cambia a tu color específico
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Ajusta el radio según tus necesidades
+                ),
+                // Cambia a tu color específico
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.network(
+                        widget.icono,
+                        width: 45,
+                        height: 45,
+                        color: Color(0xFF245366),
+                      ),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          '${widget.serviceName}',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF245366),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-
-//inicio de modificacion
 
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20), // Espacio para separar
-
-                // Servicio
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Servicio',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF245366),
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: RichText(
-                          textAlign: TextAlign.right,
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Color(0xFF245366),
-                              fontWeight: FontWeight.bold,
-                            ),
-                            text: '${widget.serviceName}',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
 
 // Categoría
                 Row(

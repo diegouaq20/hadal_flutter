@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hadal/main.dart';
 import 'package:hadal/pacientes/calendario/calendario.dart';
 import 'package:hadal/pacientes/chats/salasPrivadasPacientes.dart';
 import 'package:hadal/pacientes/home/home.dart';
@@ -30,8 +31,8 @@ class _PrincipalState extends State<Principal> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
-                  color: Colors.white, // Color blanco
-                  fontWeight: FontWeight.bold, // Texto en negrita
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -45,7 +46,7 @@ class _PrincipalState extends State<Principal> {
               index: _selectedIndex,
               children: [
                 Container(
-                  color: Color(0xFFF4FCFB), // Puedes cambiar a tu color deseado
+                  //color: Color.fromARGB(255, 244, 252, 251), // Puedes cambiar a tu color deseado
                   child: Center(
                     child: ElevatedButton(
                       onPressed: () async {
@@ -69,13 +70,11 @@ class _PrincipalState extends State<Principal> {
             height: 50,
             margin: EdgeInsets.only(top: 1.0),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
               border: Border(
                 top: BorderSide(
-                  color: Color.fromARGB(255, 32, 204, 193).withOpacity(
-                      0.1), // Puedes ajustar el color según tus necesidades
+                  color: c4, // Puedes ajustar el color según tus necesidades
                   width:
-                      0.4, // Puedes ajustar el ancho del borde según tus necesidades
+                      0.5, // Puedes ajustar el ancho del borde según tus necesidades
                 ),
               ),
             ),

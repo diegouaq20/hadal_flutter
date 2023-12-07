@@ -105,39 +105,41 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
   Future<void> _onSelectNotification(String? payload) async {}
 
   Future<void> _loadSalasChatData() async {
-  final citasRef = FirebaseFirestore.instance.collection('citas');
-  final citaDoc = await citasRef.doc(widget.idCita).get();
+    final citasRef = FirebaseFirestore.instance.collection('citas');
+    final citaDoc = await citasRef.doc(widget.idCita).get();
 
-  if (citaDoc.exists) {
-    final salasChatCollection = citaDoc.reference.collection('salasChat');
+    if (citaDoc.exists) {
+      final salasChatCollection = citaDoc.reference.collection('salasChat');
 
-    // Observador de Firebase Firestore
-    salasChatCollection
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .listen((QuerySnapshot querySnapshot) {
-      final salasChatData =
-          querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      // Observador de Firebase Firestore
+      salasChatCollection
+          .orderBy('timestamp', descending: true)
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        final salasChatData = querySnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
 
-      setState(() {
-        _salasChatData = salasChatData;
-      });
+        setState(() {
+          _salasChatData = salasChatData;
+        });
 
-      // Agregar notificación local aquí cuando llegue un nuevo mensaje
-      if (querySnapshot.docChanges.isNotEmpty &&
-          querySnapshot.docChanges.first.type == DocumentChangeType.added) {
-        final nuevoMensaje = querySnapshot.docChanges.first.doc.data();
-        final idDelRemitente = (nuevoMensaje as Map<String, dynamic>)['id'] as String?;
+        // Agregar notificación local aquí cuando llegue un nuevo mensaje
+        if (querySnapshot.docChanges.isNotEmpty &&
+            querySnapshot.docChanges.first.type == DocumentChangeType.added) {
+          final nuevoMensaje = querySnapshot.docChanges.first.doc.data();
+          final idDelRemitente =
+              (nuevoMensaje as Map<String, dynamic>)['id'] as String?;
 
-        // Añadir condición para mostrar la notificación solo si el mensaje es de la enfermera
-        if (idDelRemitente != widget.pacienteId) {
-          _showNotification("Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
+          // Añadir condición para mostrar la notificación solo si el mensaje es de la enfermera
+          if (idDelRemitente != widget.pacienteId) {
+            _showNotification(
+                "Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
+          }
         }
-      }
-    });
+      });
+    }
   }
-}
-
 
   void _showNotification(String title, String body) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -192,7 +194,7 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
         backgroundColor: Color(0xFF1FBAAF),
         centerTitle: true,
       ),
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(

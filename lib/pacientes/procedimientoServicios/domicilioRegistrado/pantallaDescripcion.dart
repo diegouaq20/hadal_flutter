@@ -64,15 +64,15 @@ class _DescripcionState extends State<Descripcion> {
     _total = double.parse(widget.servicio['precio']) + _costoServicio;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
           'Agregar servicio',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Color(0xFF235365),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 10,
         leading: IconButton(
@@ -305,7 +305,7 @@ class _DescripcionState extends State<Descripcion> {
             ),
           ),
           Container(
-            color: Color(0xFFF4FCFB),
+            color: Colors.white,
             padding: EdgeInsets.all(10),
             child: Column(
               children: [
@@ -336,7 +336,7 @@ class _DescripcionState extends State<Descripcion> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          primary: Color(0xFF1FBAAF),
+                          backgroundColor: Color(0xFF1FBAAF),
                           minimumSize: Size(135, 50.0),
                           textStyle: TextStyle(
                             color: Colors.white,
@@ -344,7 +344,12 @@ class _DescripcionState extends State<Descripcion> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        child: Text('Agregar'),
+                        child: Text(
+                          'Agregar',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 20),
@@ -379,7 +384,12 @@ class _DescripcionState extends State<Descripcion> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        child: Text('Urgente'),
+                        child: Text(
+                          'Urgente',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ],

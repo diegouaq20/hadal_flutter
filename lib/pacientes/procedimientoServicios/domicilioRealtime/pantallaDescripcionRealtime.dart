@@ -109,15 +109,15 @@ class _DescripcionRealtimeState extends State<DescripcionRealtime> {
     _total = double.parse(widget.servicio['precio']) + _costoServicio;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFFF4FCFB),
         title: Text(
           'Agregar servicio',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Color(0xFF235365),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 10,
         leading: IconButton(
@@ -384,7 +384,12 @@ class _DescripcionRealtimeState extends State<DescripcionRealtime> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        child: Text('Agregar'),
+                        child: Text(
+                          'Agregar',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 20),
@@ -419,7 +424,12 @@ class _DescripcionRealtimeState extends State<DescripcionRealtime> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        child: Text('Urgente'),
+                        child: Text(
+                          'Urgente',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ],
