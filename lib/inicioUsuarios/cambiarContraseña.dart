@@ -32,37 +32,40 @@ class _CambiarContrasenaState extends State<CambiarContrasena> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-  title: Text('Correo enviado'),
-  content: Text(
-    'Se ha enviado un correo electrónico de restablecimiento de contraseña a $email. Por favor, revise su correo electrónico para continuar. Si no recibe ningún correo, por favor ingrese a su correo y revise manualmente.'
-  ),
-  actions: [
-    TextButton(
-      onPressed: () async {
-        // Cierra la sesión del usuario
-        await FirebaseAuth.instance.signOut();
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+            title: Text(
+              'Correo enviado',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+                'Se ha enviado un correo electrónico de restablecimiento de contraseña a $email. Por favor, revise su correo electrónico para continuar. Si no recibe ningún correo, por favor ingrese a su correo y revise manualmente.'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  // Cierra la sesión del usuario
+                  await FirebaseAuth.instance.signOut();
 
-        // Cierra el AlertDialog y navega a LoginScreen
-        Navigator.of(context).pop();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginScreen(),
-          ),
-        );
-      },
-      child: Text(
-        'OK',
-        style: TextStyle(color: Colors.teal),
-      ),
-    ),
-  ],
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(20),
-    side: BorderSide(color: Colors.teal),
-  ),
-);
-
+                  // Cierra el AlertDialog y navega a LoginScreen
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.teal),
+                ),
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: Colors.teal),
+            ),
+          );
         },
       );
     } catch (e) {
@@ -70,6 +73,8 @@ class _CambiarContrasenaState extends State<CambiarContrasena> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
             title: Text('Error'),
             content: Text(
                 'No se pudo enviar el correo electrónico de restablecimiento de contraseña. Por favor, verifique su correo electrónico y vuelva a intentarlo.'),
@@ -97,21 +102,19 @@ class _CambiarContrasenaState extends State<CambiarContrasena> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Color(0xFFF4FFFE),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF4FCFB),
+        backgroundColor: Color(0xFF1FBAAF),
         title: Text(
           'Cambiar Contraseña',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Color(0xFF235365),
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.pop(context, false);
@@ -121,7 +124,8 @@ class _CambiarContrasenaState extends State<CambiarContrasena> {
       ),
       body: Center(
         child: Card(
-          color: Color(0xFFF4FCFB),
+          color: Colors.white,
+          surfaceTintColor: Colors.white,
           margin: EdgeInsets.all(35),
           elevation: 10,
           shape: RoundedRectangleBorder(
@@ -191,7 +195,10 @@ class _CambiarContrasenaState extends State<CambiarContrasena> {
                       width: double
                           .infinity, // Ancho igual al de los campos de entrada
                       child: Center(
-                        child: Text('Enviar correo'),
+                        child: Text(
+                          'Enviar correo',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(

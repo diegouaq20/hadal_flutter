@@ -261,7 +261,7 @@ class MyHomePage extends StatelessWidget {
                                     SvgPicture.network(
                                       serviceIconUrl,
                                       height: 60.0,
-                                      color: Color(0xFF7C7F83),
+                                      color: Color(0xFF1FBAAF),
                                     ),
                                   ],
                                 ),
