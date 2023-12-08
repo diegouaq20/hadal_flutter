@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hadal/pacientes/home/verMas/listaServiciosBasicos/basicos/listaServiciosBasicos.dart';
+import 'package:hadal/pacientes/home/verMas/listaServiciosBasicos/intermedios/listaServiciosIntermedios.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/pantallaDescripcion.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRegistrado/pantallaDescripcion.dart';
@@ -32,14 +34,52 @@ class MyHomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 13),
-                child: Text(
-                  'Servicios Intermedios',
-                  style: TextStyle(
-                    color: Color(0xFF235365),
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                padding: EdgeInsets.only(right: 13), // Cambiado a right
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Servicios Intermedios',
+                      style: TextStyle(
+                        color: Color(0xFF235365),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.list, color: Colors.black),
+                      onPressed: () {
+                        // Mostrar el BottomSheet con tamaño vertical personalizado
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled:
+                              true, // Permite el desplazamiento vertical
+                          builder: (BuildContext context) {
+                            return Stack(
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height *
+                                      1, // Ajusta el tamaño vertical según tus necesidades
+                                  child: ListaServiciosIntermedios(),
+                                ),
+                                Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: IconButton(
+                                    icon: Icon(Icons.close),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Cierra el BottomSheet
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 20),
