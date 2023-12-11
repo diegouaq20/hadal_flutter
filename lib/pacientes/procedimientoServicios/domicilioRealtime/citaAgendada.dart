@@ -296,22 +296,25 @@ class CitaAgendadaState extends State<CitaAgendada> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(color: Color(0xFF1FBAAF)),
           ),
           title: Text(
-            'Confirmar cita',
+            'CONFIRMAR CITA',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
               color: Color(0xFF1FBAAF),
             ),
+            textAlign: TextAlign.center,
           ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 80,
@@ -486,7 +489,10 @@ class CitaAgendadaState extends State<CitaAgendada> {
                   ),
                   child: Text(
                     'Proceder al pago',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ],
