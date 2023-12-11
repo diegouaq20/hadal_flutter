@@ -21,7 +21,7 @@ class _AjustesEnfermeraState extends State<AjustesEnfermera> {
   String _userPhone = "";
   String _userAddress = "";
   String _categoria = "";
-  double _userDistance = 0.0;
+  double _userDistance = 0;
   final _picker = ImagePicker();
 
   ////////////////parte de estados y municipios////////////////
@@ -346,7 +346,7 @@ class _AjustesEnfermeraState extends State<AjustesEnfermera> {
         .doc(userId)
         .get();
     final userPhone = userData.get('telefono') ?? 'N/A';
-    final userDistance = userData.get('distancia')?.toDouble() ?? 0.0;
+    final userDistance = userData.get('distancia')?.toDouble() ?? 0;
     final userAddress = userData.get('domicilio') ?? 'S/D';
     final userState = userData.get('estado') ?? 'S/S';
     final userMunicipality = userData.get('municipio') ?? 'S/M';

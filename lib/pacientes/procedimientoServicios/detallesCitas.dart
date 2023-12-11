@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/citaAgendada.dart';
-import 'package:hadal/stripe/payment/client_stripe_payment.dart';
+import 'package:hadal/stripe/payment/client_stripe_detallesCitas.dart';
 
 class DetallesCita extends StatefulWidget {
   final String servicio;
@@ -22,26 +22,27 @@ class DetallesCita extends StatefulWidget {
   final String enfermeraId;
   final String pacienteId;
   final String citaId;
+  final Map paymentIntent;
 
-  DetallesCita({
-    required this.servicio,
-    required this.fecha,
-    required this.categoria,
-    required this.tipoServicio,
-    required this.total,
-    required this.dia,
-    required this.diaDelMes,
-    required this.domicilio,
-    required this.estado,
-    required this.hora,
-    required this.icono,
-    required this.mes,
-    required this.nombre,
-    required this.tipoCategoria,
-    required this.enfermeraId,
-    required this.pacienteId,
-    required this.citaId,
-  });
+  DetallesCita(
+      {required this.servicio,
+      required this.fecha,
+      required this.categoria,
+      required this.tipoServicio,
+      required this.total,
+      required this.dia,
+      required this.diaDelMes,
+      required this.domicilio,
+      required this.estado,
+      required this.hora,
+      required this.icono,
+      required this.mes,
+      required this.nombre,
+      required this.tipoCategoria,
+      required this.enfermeraId,
+      required this.pacienteId,
+      required this.citaId,
+      required this.paymentIntent});
 
   @override
   DetallesCitaState createState() => DetallesCitaState();
@@ -57,16 +58,16 @@ class DetallesCitaState extends State<DetallesCita> {
 
   CitaAgendadaState citaAgendada = CitaAgendadaState();
 
-  ClientStripePayment stripePayment =
-      ClientStripePayment(onPaymentSuccess: (bool) {});
+  ClientStripePaymentDetallesCitas stripePayment =
+      ClientStripePaymentDetallesCitas(onPaymentSuccess: (bool) {});
   // Función para cancelar la cita
   // void cancelarCita(BuildContext context, String citaId) async {
   //   try {
   //     // Elimina la cita de la colección 'citas'
-  //     await FirebaseFirestore.instance.collection('citas').doc(citaId).delete();
+  //     // await FirebaseFirestore.instance.collection('citas').doc(citaId).delete();
 
-  //     Navigator.of(context).pop();
-
+  //     // Navigator.of(context).pop();
+  //     refundPayment(context, widget.total);
   //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
   //       content: Text('Servicio cancelado y reembolso realizado con éxito.'),
   //     ));
@@ -74,19 +75,6 @@ class DetallesCitaState extends State<DetallesCita> {
   //     // Maneja cualquier error que pueda ocurrir al cancelar la cita o realizar el reembolso.
   //     print('Error al cancelar la cita y realizar el reembolso: $e');
   //   }
-  // }
-
-  // void refundPayment(context, String citaId) async {
-  //   // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
-  //   String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
-  //   double refundAmount = stripePayment.getRefundAmount();
-
-  //   // Llama a la función refundPayment pasando el contexto, el ID del Payment Intent y el monto del reembolso.
-  //   await stripePayment.refundPayment(
-  //     context,
-  //     paymentIntentId,
-  //     refundAmount,
-  //   );
   // }
 
   @override
@@ -396,9 +384,27 @@ class DetallesCitaState extends State<DetallesCita> {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
+                      // Obtener el monto total del servicio
+                      double totalAmount = double.parse(widget.total);
+
+                      // Llamar a la función para realizar el reembolso
+                      await stripePayment.refundPayment(
+                        context,
+                        widget.citaId,
+                        totalAmount,
+                      );
+                      print(
+                          '__________PAYMENT INTENT: ${widget.paymentIntent['id']}');
+                      // Aquí puedes agregar cualquier otra lógica que necesites después de cancelar el servicio.
+
                       // Llama a la función para cancelar la cita cuando se presiona el botón
                       //detallesCitaState?.cancelarCita(context, widget.citaId);
-                      citaAgendada.cancelarServicio(context, citaId);
+                      // cancelarCita(context, citaId);
+                      //citaAgendada.cancelarServicio(context, citaId);
+                      //refundPayment(context, widget.total);
+                      //print("MONTO DEL REFUND___________________");
+                      // print(widget.total);
+                      // //print(stripePayment.getRefundAmount());
                       //citaAgendada.showWaitingProgressDialog(citaId, context);
                       //clientStripePayment.getRefundAmount();
                       //refundPayment(context, citaId);

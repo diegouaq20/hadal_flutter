@@ -672,6 +672,7 @@ class _HomeState extends State<Home> {
                             //final photoUrl = citaData['photoUrl'];
                             final tipoCategoria = citaData['tipoCategoria'];
                             final total = citaData['total'].toString();
+                            final paymentIntent = citaData['paymentIntent'];
                             //final distancia = citaData['distancia'];
 
                             return Card(
@@ -912,7 +913,8 @@ class _HomeState extends State<Home> {
                                                     pacienteId: pacienteId,
                                                     enfermeraId: enfermeraId,
                                                     citaId:
-                                                        citaId, // Agregado citaId aquí
+                                                        citaId,
+                                                        paymentIntent: paymentIntent  // Agregado citaId aquí
                                                   ),
                                                 ),
                                               );

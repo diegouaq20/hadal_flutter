@@ -108,7 +108,7 @@ class CitaAgendadaState extends State<CitaAgendada> {
               ElevatedButton(
                 onPressed: () async {
                   cancelarServicio(context, citaId);
-                  refundPayment(citaId);
+                  refundPayment(context, citaId);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red,
@@ -177,7 +177,7 @@ class CitaAgendadaState extends State<CitaAgendada> {
     }
   }
 
-  void refundPayment(String citaId) async {
+  void refundPayment(context, String citaId) async {
     // Obtener el paymentIntentId y refundAmount desde ClientStripePayment
     String paymentIntentId = stripePayment.getPaymentIntentId() ?? '';
     double refundAmount = stripePayment.getRefundAmount();
@@ -263,6 +263,7 @@ class CitaAgendadaState extends State<CitaAgendada> {
         'pacienteId': widget.userId,
         'enfermeraId': "",
         'ubicacionPaciente': widget.ubicacion,
+        'paymentIntent': stripePayment.paymentIntentData,
       });
 
       String servicioId = newCitaRef.id;

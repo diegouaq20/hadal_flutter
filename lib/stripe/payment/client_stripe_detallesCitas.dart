@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 void showWaitingProgressDialog() {}
 
-class ClientStripePayment extends GetConnect {
+class ClientStripePaymentDetallesCitas extends GetConnect {
   String? paymentIntentStatus;
 
   String? getPaymentIntentId() {
@@ -52,7 +52,8 @@ class ClientStripePayment extends GetConnect {
 
   Function(bool) onPaymentSuccess;
 
-  ClientStripePayment({required this.onPaymentSuccess, this.createdServiceId});
+  ClientStripePaymentDetallesCitas(
+      {required this.onPaymentSuccess, this.createdServiceId});
 
   String? getCreatedServiceId() {
     return createdServiceId;
