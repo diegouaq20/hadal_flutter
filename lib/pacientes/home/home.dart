@@ -16,7 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hadal/main.dart';
 import 'package:http/http.dart' as http;
 
-import 'verMas.dart';
+import 'verMas/verMas.dart';
 
 class Home extends StatefulWidget {
   @override

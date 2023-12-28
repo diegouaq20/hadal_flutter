@@ -60,22 +60,23 @@ class DetallesCitaState extends State<DetallesCita> {
 
   ClientStripePaymentDetallesCitas stripePayment =
       ClientStripePaymentDetallesCitas(onPaymentSuccess: (bool) {});
-  // Función para cancelar la cita
-  // void cancelarCita(BuildContext context, String citaId) async {
-  //   try {
-  //     // Elimina la cita de la colección 'citas'
-  //     // await FirebaseFirestore.instance.collection('citas').doc(citaId).delete();
 
-  //     // Navigator.of(context).pop();
-  //     refundPayment(context, widget.total);
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text('Servicio cancelado y reembolso realizado con éxito.'),
-  //     ));
-  //   } catch (e) {
-  //     // Maneja cualquier error que pueda ocurrir al cancelar la cita o realizar el reembolso.
-  //     print('Error al cancelar la cita y realizar el reembolso: $e');
-  //   }
-  // }
+  // Función para cancelar la cita
+  void cancelarCita(String citaId) async {
+    try {
+      // Elimina la cita de la colección 'citas'
+      await FirebaseFirestore.instance.collection('citas').doc(citaId).delete();
+
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Servicio cancelado y reembolso realizado con éxito.'),
+      ));
+    } catch (e) {
+      // Maneja cualquier error que pueda ocurrir al cancelar la cita o realizar el reembolso.
+      print('Error al cancelar la cita y realizar el reembolso: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -331,27 +332,6 @@ class DetallesCitaState extends State<DetallesCita> {
                       ],
                     ),
                   ),
-
-                  /*
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'ID Enfermera: ${widget.enfermeraId.isNotEmpty ? widget.enfermeraId : 'En espera...'}',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'ID Paciente: ${widget.pacienteId}',
-                  style: TextStyle(
-                    color: Color(0xFF000328),
-                  ),
-                ),
-              ),*/
-
                   SizedBox(height: 150),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
@@ -384,30 +364,19 @@ class DetallesCitaState extends State<DetallesCita> {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      // Obtener el monto total del servicio
+                      // Obtener el monto total del servicio y calcular la tarifa de cancelación
                       double totalAmount = double.parse(widget.total);
+                      final cancellationFee = (totalAmount * 0.10) + 3;
+                      final refundAmount = totalAmount - cancellationFee;
 
                       // Llamar a la función para realizar el reembolso
-                      await stripePayment.refundPayment(
-                        context,
-                        widget.citaId,
-                        totalAmount,
-                      );
                       print(
                           '__________PAYMENT INTENT: ${widget.paymentIntent['id']}');
-                      // Aquí puedes agregar cualquier otra lógica que necesites después de cancelar el servicio.
+                      await stripePayment.refundPayment(
+                          widget.paymentIntent['id'], refundAmount);
 
-                      // Llama a la función para cancelar la cita cuando se presiona el botón
-                      //detallesCitaState?.cancelarCita(context, widget.citaId);
-                      // cancelarCita(context, citaId);
-                      //citaAgendada.cancelarServicio(context, citaId);
-                      //refundPayment(context, widget.total);
-                      //print("MONTO DEL REFUND___________________");
-                      // print(widget.total);
-                      // //print(stripePayment.getRefundAmount());
-                      //citaAgendada.showWaitingProgressDialog(citaId, context);
-                      //clientStripePayment.getRefundAmount();
-                      //refundPayment(context, citaId);
+                      //Cancelar la cita
+                      detallesCitaState?.cancelarCita(widget.citaId);
                     },
                     style: ElevatedButton.styleFrom(
                         minimumSize: Size(300, 50.0),

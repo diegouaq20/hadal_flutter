@@ -177,16 +177,18 @@ class _CitaAgendadaState extends State<CitaAgendada> {
     }
   }
 
-  void _realizarPagoConStripe() async {
+  void _realizarPagoYConfirmarCita() async {
     try {
       // Lógica de pago con Stripe aquí
-      await stripePayment.makePayment(context, widget.total);
+      await stripePayment.makePayment(context, widget.total, widget.nombre,
+          widget.userId, widget.serviceName);
+      print("Se inició la ventana de pago correctamente");
     } catch (error) {
       setState(() {
-        showWaitingDialog = true;
+        showWaitingDialog = false;
       });
       Fluttertoast.showToast(
-        msg: 'Hubo un error al realizar el pago.',
+        msg: 'Hubo un error al confirmar la cita.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
       );
@@ -331,7 +333,7 @@ class _CitaAgendadaState extends State<CitaAgendada> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   setState(() {
-                    _realizarPagoConStripe();
+                    // _realizarPagoConStripe();
                   });
 
                   await Future.delayed(Duration(seconds: 10));

@@ -1,13 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hadal/pacientes/home/home.dart';
-import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/citaAgendada.dart';
 import 'package:http/http.dart' as http;
 
 void showWaitingProgressDialog() {}
@@ -22,7 +21,7 @@ class ClientStripePayment extends GetConnect {
   double getRefundAmount() {
     final totalAmount = double.parse(paymentIntentData?['amount']) /
         100.0; // Convierte centavos a dólares
-    final cancellationFee = totalAmount * 0.10;
+    final cancellationFee = (totalAmount * 0.10) + 3;
     final refundAmount = totalAmount - cancellationFee;
 
     return refundAmount;
@@ -58,7 +57,8 @@ class ClientStripePayment extends GetConnect {
     return createdServiceId;
   }
 
-  Future<void> makePayment(BuildContext context, double _total) async {
+  Future<void> makePayment(BuildContext context, double _total, String nombre,
+      String userId, String serviceName) async {
     print('_________________Valor de total: $_total');
 
     var gpay = PaymentSheetGooglePay(
@@ -69,9 +69,11 @@ class ClientStripePayment extends GetConnect {
 
     try {
       paymentIntentData = await createPaymentIntent(
-        double.parse(_total.toStringAsFixed(2)),
-        'MXN',
-      );
+          double.parse(_total.toStringAsFixed(2)),
+          'MXN',
+          nombre,
+          userId,
+          serviceName);
 
       await Stripe.instance
           .initPaymentSheet(
@@ -140,18 +142,30 @@ class ClientStripePayment extends GetConnect {
     return commissionAmount;
   }
 
-  String enfermeraConnect = "acct_1OKWMkPDcItwZiqp";
-
+  //String enfermeraConnect = "acct_1OKWMkPDcItwZiqp";
   Future<Map<String, dynamic>?> createPaymentIntent(
-      double amount, String currency) async {
+      double amount,
+      String currency,
+      String customerName,
+      String userId,
+      String serviceName) async {
     try {
+      // Generar números aleatorios de hasta 8 caracteres
+      final random = Random();
+      final randomNumbers = List.generate(8, (_) => random.nextInt(10)).join();
+
+      // Crear el order_id combinando el nombre del cliente y los números aleatorios
+      final orderId = '${customerName.replaceAll(" ", "_")}_$randomNumbers';
+
       Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
         'currency': currency,
         'confirmation_method': 'automatic',
-        'application_fee_amount': calculateAmount(amount * 0.20),
-        'transfer_data[destination]': enfermeraConnect,
+        'metadata[order_id]': orderId,
+        'description': serviceName, // Agregar la descripción del pago
+        'customer': await createStripeCustomer(customerName, userId),
       };
+
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,
@@ -167,9 +181,32 @@ class ClientStripePayment extends GetConnect {
 
       return responseBody..['amount'] = amountStr;
     } catch (err) {
-      print('Error: ${err} ');
+      print('Error: $err');
 
       return null; // Devuelve null en caso de error
+    }
+  }
+
+  Future<String?> createStripeCustomer(
+      String customerName, String usuarioId) async {
+    try {
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/customers'),
+        body: {'name': customerName, 'metadata[usuario_id]': usuarioId},
+        headers: {
+          'Authorization':
+              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+
+      final responseBody = jsonDecode(response.body);
+      final customerId = responseBody['id'];
+
+      return customerId;
+    } catch (err) {
+      print('Error al crear el cliente en Stripe: ${err}');
+      return null;
     }
   }
 

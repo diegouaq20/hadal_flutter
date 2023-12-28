@@ -226,8 +226,9 @@ class CitaAgendadaState extends State<CitaAgendada> {
   void _realizarPagoYConfirmarCita() async {
     try {
       // Lógica de pago con Stripe aquí
-      await stripePayment.makePayment(context, widget.total);
-      print("Se inicia ventana de pago correctamente");
+      await stripePayment.makePayment(context, widget.total, widget.nombre,
+          widget.userId, widget.serviceName);
+      print("Se inició la ventana de pago correctamente");
     } catch (error) {
       setState(() {
         showWaitingDialog = false;

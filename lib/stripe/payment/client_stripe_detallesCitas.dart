@@ -150,8 +150,8 @@ class ClientStripePaymentDetallesCitas extends GetConnect {
         'amount': calculateAmount(amount),
         'currency': currency,
         'confirmation_method': 'automatic',
-        'application_fee_amount': calculateAmount(amount * 0.20),
-        'transfer_data[destination]': enfermeraConnect,
+        // 'application_fee_amount': calculateAmount(amount * 0.20),
+        // 'transfer_data[destination]': enfermeraConnect,
       };
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
@@ -271,41 +271,31 @@ class ClientStripePaymentDetallesCitas extends GetConnect {
   // }
 
   Future<void> refundPayment(
-      BuildContext context, String paymentIntentId, double refundAmount) async {
+      String paymentIntentId, double refundAmount) async {
     try {
-      // Convierte el monto de reembolso a una cadena
-      final refundAmountStr = calculateAmount(refundAmount);
-
-      var response = await http
-          .post(Uri.parse('https://api.stripe.com/v1/refunds'), body: {
-        'payment_intent': paymentIntentId,
-        'amount':
-            refundAmountStr, // Utiliza la cadena refundAmountStr en lugar de refundAmount
-      }, headers: {
-        'Authorization':
-            'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      });
+      // Lógica para realizar la solicitud de reembolso utilizando Stripe
+      // Puedes utilizar http.post o cualquier otro método que prefieras
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/refunds'),
+        body: {
+          'payment_intent': paymentIntentId,
+          'amount': calculateAmount(refundAmount),
+        },
+        headers: {
+          'Authorization':
+              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
 
       if (response.statusCode == 200) {
         // Reembolso exitoso
-        Home();
-        Navigator.of(context).pop(); // Cierra el diálogo de espera
-        Fluttertoast.showToast(
-          msg: 'El reembolso se ha procesado correctamente.',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
+        // Puedes agregar lógica adicional si es necesario
       } else {
-        // Error en el reembolso
-        Fluttertoast.showToast(
-          msg:
-              'Hubo un error al procesar el reembolso. El valor del reembolso es de: ${refundAmount.toStringAsFixed(2)}',
-          gravity: ToastGravity.CENTER,
-        );
+        // Manejar el error en el reembolso
       }
     } catch (error) {
-      print(error);
+      // Manejar cualquier error durante el proceso
     }
   }
 }
