@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -52,6 +54,7 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
   late TextEditingController _mensajeController = TextEditingController();
   final _firestore = FirebaseFirestore.instance;
   final ScrollController _scrollController = ScrollController();
+
   String _formatTimestamp(Timestamp timestamp) {
     final dateTime = timestamp.toDate().toLocal();
     int hour = dateTime.hour;
@@ -105,63 +108,68 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
   Future<void> _onSelectNotification(String? payload) async {}
 
   Future<void> _loadSalasChatData() async {
-  final citasRef = FirebaseFirestore.instance.collection('citas');
-  final citaDoc = await citasRef.doc(widget.idCita).get();
+    final citasRef = FirebaseFirestore.instance.collection('citas');
+    final citaDoc = await citasRef.doc(widget.idCita).get();
 
-  if (citaDoc.exists) {
-    final salasChatCollection = citaDoc.reference.collection('salasChat');
+    if (citaDoc.exists) {
+      final salasChatCollection = citaDoc.reference.collection('salasChat');
 
-    // Observador de Firebase Firestore
-    salasChatCollection
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .listen((QuerySnapshot querySnapshot) {
-      final salasChatData =
-          querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      salasChatCollection
+          .orderBy('timestamp', descending: true)
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        final salasChatData =
+            querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-      setState(() {
-        _salasChatData = salasChatData;
-      });
+        setState(() {
+          _salasChatData = salasChatData;
+        });
 
-      // Agregar notificación local aquí cuando llegue un nuevo mensaje
-      if (querySnapshot.docChanges.isNotEmpty &&
-          querySnapshot.docChanges.first.type == DocumentChangeType.added) {
-        final nuevoMensaje = querySnapshot.docChanges.first.doc.data();
-        final idDelRemitente = (nuevoMensaje as Map<String, dynamic>)['id'] as String?;
+        if (querySnapshot.docChanges.isNotEmpty &&
+            querySnapshot.docChanges.first.type == DocumentChangeType.added) {
+          final nuevoMensaje = querySnapshot.docChanges.first.doc.data();
+          final idDelRemitente = (nuevoMensaje as Map<String, dynamic>)['id'] as String?;
 
-        // Añadir condición para mostrar la notificación solo si el mensaje es de la enfermera
-        if (idDelRemitente != widget.pacienteId) {
-          _showNotification("Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
+          if (idDelRemitente != widget.pacienteId) {
+            _showNotification("Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
+          }
         }
-      }
-    });
+      });
+    }
   }
-}
-
 
   void _showNotification(String title, String body) async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'chat_channel_id',
-      'Chat Channel',
-      'Notificaciones de chat',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'chat_channel_id',
+    'Chat Channel',
+    'Notificaciones de chat',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
 
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: 'new_message',
-    );
-  }
+  androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'chat_channel_id',
+    'Chat Channel',
+    'Notificaciones de chat',
+    importance: Importance.max,
+    priority: Priority.high,
+    additionalFlags: Int32List.fromList(<int>[4]), // 4 es el valor de FLAG_IMMUTABLE
+  );
 
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  /*await flutterLocalNotificationsPlugin.show(
+    0,
+    title,
+    body,
+    platformChannelSpecifics,
+    payload: 'new_message',
+  );*/
+}
   Future<void> _enviarMensaje() async {
     String mensajeTexto = _mensajeController.text.trim();
     if (mensajeTexto.isNotEmpty) {
