@@ -19,6 +19,8 @@ class CalendarioAgregarRealtime extends StatefulWidget {
 
 class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
   late String nombre;
+  late String primerApellido;
+  late String segundoApellido;
   late GeoPoint _ubicacion;
   late String photoUrl;
 
@@ -41,6 +43,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
       photoUrl = userDoc['photoUrl'] ?? "";
     });
@@ -283,6 +287,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                       estado: 'disponible',
                       tipoServicio: 'Cita',
                       nombre: nombre,
+                      primerApellido: primerApellido,
+                      segundoApellido: segundoApellido,
                       total: total,
                       icono: icono,
                       domicilio: _domicilioController.text,

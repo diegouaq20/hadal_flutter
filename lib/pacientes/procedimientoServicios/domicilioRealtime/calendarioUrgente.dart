@@ -19,6 +19,8 @@ class CalendarioUrgenteRealtime extends StatefulWidget {
 
 class _CalendarioUrgenteRealtimeState extends State<CalendarioUrgenteRealtime> {
   late String nombre;
+  late String primerApellido;
+  late String segundoApellido;
   late GeoPoint _ubicacion;
   late String photoUrl;
 
@@ -41,6 +43,8 @@ class _CalendarioUrgenteRealtimeState extends State<CalendarioUrgenteRealtime> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
       photoUrl = userDoc['photoUrl'] ?? "";
     });
@@ -257,6 +261,8 @@ class _CalendarioUrgenteRealtimeState extends State<CalendarioUrgenteRealtime> {
                       estado: 'disponible',
                       tipoServicio: 'Urgente',
                       nombre: nombre,
+                      primerApellido: primerApellido,
+                      segundoApellido: segundoApellido,
                       total: total,
                       icono: icono,
                       domicilio: _domicilioController.text,

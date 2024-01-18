@@ -18,6 +18,8 @@ class CalendarioUrgente extends StatefulWidget {
 
 class _CalendarioUrgenteState extends State<CalendarioUrgente> {
   late String nombre;
+  late String primerApellido;
+  late String segundoApellido;
   late String domicilio;
   late GeoPoint _ubicacion;
   late String photoUrl;
@@ -255,6 +257,8 @@ class _CalendarioUrgenteState extends State<CalendarioUrgente> {
                       estado: 'disponible',
                       tipoServicio: 'Urgente',
                       nombre: nombre,
+                      primerApellido: primerApellido,
+                      segundoApellido: segundoApellido,
                       total: total,
                       icono: icono,
                       domicilio: domicilio,

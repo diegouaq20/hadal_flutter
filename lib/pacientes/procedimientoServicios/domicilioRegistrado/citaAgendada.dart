@@ -15,6 +15,8 @@ class CitaAgendada extends StatefulWidget {
   final String schedule;
   final String estado;
   final String nombre;
+  final String primerApellido;
+  final String segundoApellido;
   final double total;
   final String icono;
   final String domicilio;
@@ -32,6 +34,8 @@ class CitaAgendada extends StatefulWidget {
     required this.schedule,
     required this.estado,
     required this.nombre,
+    required this.primerApellido,
+    required this.segundoApellido,
     required this.total,
     required this.icono,
     required this.domicilio,
@@ -213,8 +217,14 @@ class _CitaAgendadaState extends State<CitaAgendada> {
   void _realizarPagoYConfirmarCita() async {
     try {
       // Lógica de pago con Stripe aquí
-      await stripePayment.makePayment(context, widget.total, widget.nombre,
-          widget.userId, widget.serviceName);
+      await stripePayment.makePayment(
+          context,
+          widget.total,
+          widget.nombre,
+          widget.primerApellido,
+          widget.segundoApellido,
+          widget.userId,
+          widget.serviceName);
       print("Se inició la ventana de pago correctamente");
     } catch (error) {
       setState(() {

@@ -59,7 +59,6 @@ dependencies:
 
 
   #por si se requiere animar
-  animated_widgets: ^1.1.0
   
 
 

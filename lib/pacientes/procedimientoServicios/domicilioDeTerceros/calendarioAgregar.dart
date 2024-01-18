@@ -19,6 +19,8 @@ class CalendarioAgregarTerceros extends StatefulWidget {
 
 class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
   late String nombre;
+  late String primerApellido;
+  late String segundoApellido;
   late GeoPoint _ubicacion;
   late String photoUrl;
 
@@ -282,6 +284,8 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
                       estado: 'disponible',
                       tipoServicio: 'Cita',
                       nombre: nombre,
+                      primerApellido: primerApellido,
+                      segundoApellido: segundoApellido,
                       total: total,
                       icono: icono,
                       domicilio: _domicilioController.text,

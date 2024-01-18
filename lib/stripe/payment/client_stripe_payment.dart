@@ -57,9 +57,16 @@ class ClientStripePayment extends GetConnect {
     return createdServiceId;
   }
 
-  Future<void> makePayment(BuildContext context, double _total, String nombre,
-      String userId, String serviceName) async {
+  Future<void> makePayment(
+      BuildContext context,
+      double _total,
+      String nombre,
+      String primerApellido,
+      String segundoApellido,
+      String userId,
+      String serviceName) async {
     print('_________________Valor de total: $_total');
+    print("_____SERVICIO CREADO PARA EL PACIENTE  ID: $userId");
 
     var gpay = PaymentSheetGooglePay(
       merchantCountryCode: "MX",
@@ -72,6 +79,8 @@ class ClientStripePayment extends GetConnect {
           double.parse(_total.toStringAsFixed(2)),
           'MXN',
           nombre,
+          primerApellido,
+          segundoApellido,
           userId,
           serviceName);
 
@@ -108,6 +117,7 @@ class ClientStripePayment extends GetConnect {
 
           print("_____________Servicio creado_____________");
           print("_____SERVICIO CREADO CITA ID: $detallesCitaState!.citaId");
+
           onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
           Future.delayed(Duration(seconds: 2), () {
@@ -144,11 +154,14 @@ class ClientStripePayment extends GetConnect {
 
   //String enfermeraConnect = "acct_1OKWMkPDcItwZiqp";
   Future<Map<String, dynamic>?> createPaymentIntent(
-      double amount,
-      String currency,
-      String customerName,
-      String userId,
-      String serviceName) async {
+    double amount,
+    String currency,
+    String customerName,
+    String primerApellido,
+    String segundoApellido,
+    String userId,
+    String serviceName,
+  ) async {
     try {
       // Generar números aleatorios de hasta 8 caracteres
       final random = Random();
@@ -163,7 +176,8 @@ class ClientStripePayment extends GetConnect {
         'confirmation_method': 'automatic',
         'metadata[order_id]': orderId,
         'description': serviceName, // Agregar la descripción del pago
-        'customer': await createStripeCustomer(customerName, userId),
+        'customer': await createStripeCustomer(
+            userId, customerName, primerApellido, segundoApellido),
       };
 
       var response = await http.post(
@@ -187,12 +201,24 @@ class ClientStripePayment extends GetConnect {
     }
   }
 
-  Future<String?> createStripeCustomer(
-      String customerName, String usuarioId) async {
+  Future<String?> createStripeCustomer(String userId, String customerName,
+      String primerApellido, String segundoApellido) async {
     try {
+      // Verifica si ya existe un cliente con el usuario_id
+      final existingCustomer = await findExistingStripeCustomer(userId);
+
+      if (existingCustomer != null) {
+        return existingCustomer;
+      }
+
+      // Si no existe, crea un nuevo cliente
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/customers'),
-        body: {'name': customerName, 'metadata[usuario_id]': usuarioId},
+        body: {
+          'metadata[usuario_id]': userId,
+          'name':
+              '$customerName $primerApellido $segundoApellido', // Concatenate name, primerApellido, and segundoApellido
+        },
         headers: {
           'Authorization':
               'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
@@ -205,7 +231,33 @@ class ClientStripePayment extends GetConnect {
 
       return customerId;
     } catch (err) {
-      print('Error al crear el cliente en Stripe: ${err}');
+      print('Error al crear/obtener el cliente en Stripe: ${err}');
+      return null;
+    }
+  }
+
+  Future<String?> findExistingStripeCustomer(String userId) async {
+    try {
+      var response = await http.get(
+        Uri.parse('https://api.stripe.com/v1/customers'),
+        headers: {
+          'Authorization':
+              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+
+      final responseBody = jsonDecode(response.body);
+
+      // Busca un cliente con el usuario_id
+      final existingCustomer = responseBody['data'].firstWhere(
+        (customer) => customer['metadata']['usuario_id'] == userId,
+        orElse: () => null,
+      );
+
+      return existingCustomer != null ? existingCustomer['id'] : null;
+    } catch (err) {
+      print('Error al buscar el cliente en Stripe: ${err}');
       return null;
     }
   }
