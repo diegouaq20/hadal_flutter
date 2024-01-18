@@ -11,6 +11,7 @@ import 'package:hadal/enfermeras/perfilDatos/perfilEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/principalEnfermera.dart';
 import 'package:hadal/inicioUsuarios/administracion.dart';
 import 'package:hadal/inicioUsuarios/restablecerContrase%C3%B1a.dart';
+import 'package:hadal/main.dart';
 import 'package:hadal/pacientes/ajustes/ajustes.dart';
 import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/pacientes/perfilDatos/documentosFaltantes/comprobanteDomicilioPacienteFaltante.dart';
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFF4FCFB),
+          color: Theme.of(context).colorScheme.onPrimary,
         ),
         child: Center(
           child: SingleChildScrollView(
@@ -82,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 45.0),
                   child: Card(
                     elevation: 5.0,
-                    shadowColor: Colors.grey.withOpacity(0.5),
-                    color: Color(0xFFF6FFFE),
+                    //shadowColor: Colors.grey.withOpacity(0.5),
+                    surfaceTintColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
@@ -278,7 +279,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio una foto de perfil, es importante que suba una, ya que validaremos su identidad.'),
                                             actions: [
@@ -310,7 +318,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su INE, no podremos validar sus datos completos.'),
                                             actions: [
@@ -342,7 +357,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su CURP, no podremos validar sus datos completos.'),
                                             actions: [
@@ -375,7 +397,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su comprobante de domicilio, no podremos validar sus datos completos.'),
                                             actions: [
@@ -407,7 +436,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su receta, este documento es importante para evaluar su estado.'),
                                             actions: [
@@ -439,9 +475,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('En Revisión'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'En revisión',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
-                                                'Su perfil esta siendo revisado, resivirá un correo despues de 48 horas despues de haber subido todos sus documentos.'),
+                                                'Su perfil esta siendo revisado. Por favor, vuelva a intentar ingresar en 24hrs.'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
@@ -515,7 +558,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio una foto de perfil, es importante que suba una, ya que validaremos su identidad.'),
                                             actions: [
@@ -547,7 +597,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su INE, no podremos validar sus datos completos.'),
                                             actions: [
@@ -579,7 +636,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su CURP, no podremos validar sus datos completos.'),
                                             actions: [
@@ -612,7 +676,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su comprobante de domicilio, no podremos validar sus datos completos.'),
                                             actions: [
@@ -644,7 +715,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su titulo profesional, no podremos validar sus datos completos.'),
                                             actions: [
@@ -676,7 +754,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su cedula profesional, no podremos validar sus datos completos.'),
                                             actions: [
@@ -708,7 +793,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su primer referencia, no podremos validar sus datos completos.'),
                                             actions: [
@@ -740,7 +832,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Error'),
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            title: Text(
+                                              'Error',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             content: Text(
                                                 'No subio su segunda referencia, no podremos validar sus datos completos.'),
                                             actions: [
@@ -772,6 +871,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
                                             title: Text('En Revisión'),
                                             content: Text(
                                                 'Su perfil esta siendo revisado, resivirá un correo despues de 48 horas despues de haber subido todos sus documentos.'),
@@ -826,6 +927,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
                                             title: Text(
                                                 'Es necesario que agregues una foto de perfil'),
                                             actions: [
@@ -862,7 +965,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               }
                             },
-                            child: Text('Iniciar Sesión'),
+                            child: Text(
+                              'Iniciar Sesión',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             style: ElevatedButton.styleFrom(
                                 primary: Color(0xFF1FBAAF),
                                 shape: RoundedRectangleBorder(

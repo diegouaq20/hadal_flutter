@@ -69,6 +69,8 @@ class _AjustesState extends State<Ajustes> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -214,6 +216,8 @@ class _AjustesState extends State<Ajustes> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           title: const Text(
             "Estado no disponible",
             style: TextStyle(color: Color(0xFF245366)),
@@ -365,6 +369,8 @@ class _AjustesState extends State<Ajustes> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -496,10 +502,19 @@ class _AjustesState extends State<Ajustes> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        title: Text('Modificar teléfono'),
+        title: Text(
+          'Modificar teléfono',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Color(0xFF245366),
+          ),
+        ),
         content: TextFormField(
           controller: controller,
           keyboardType: TextInputType.phone,
@@ -538,10 +553,19 @@ class _AjustesState extends State<Ajustes> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        title: Text('Modificar Domicilio'),
+        title: Text(
+          'Modificar domicilio',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Color(0xFF245366),
+          ),
+        ),
         content: TextFormField(
           controller: controller,
           keyboardType: TextInputType.multiline,
@@ -630,7 +654,7 @@ class _AjustesState extends State<Ajustes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -670,9 +694,9 @@ class _AjustesState extends State<Ajustes> {
                 child: Text(
                   "Cambiar foto",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.teal,
-                  ),
+                      fontSize: 16,
+                      color: Color(0xFF1FBAAF),
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -851,7 +875,7 @@ class _AjustesState extends State<Ajustes> {
                       // Aquí puedes personalizar el contenido del contenedor
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xFFF4FCFB),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Column(
@@ -860,140 +884,83 @@ class _AjustesState extends State<Ajustes> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(0.0),
-                                      child: TextFormField(
-                                        controller: estadoSearchController,
-                                        decoration: InputDecoration(
-                                          labelText: 'Buscar Estado',
-                                          labelStyle: const TextStyle(
-                                            color: Color(0xFF245366),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: const BorderSide(
-                                              color: const Color(0xFF90b1af),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: const BorderSide(
-                                              color: const Color(0xFF90b1af),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          suffixIcon: IconButton(
-                                            icon: const Icon(Icons.search,
-                                                color: const Color(0xFF90b1af)),
-                                            onPressed: () {
-                                              searchEstados(
-                                                  estadoSearchController.text);
-                                            },
-                                          ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color:
+                                            Color.fromARGB(255, 171, 209, 207),
+                                        width:
+                                            2.0 // Puedes ajustar el ancho del borde según tus preferencias
                                         ),
-                                        onChanged: (text) {
-                                          // No hacer nada aquí
-                                        },
+                                    borderRadius: BorderRadius.circular(
+                                        8.0), // Puedes ajustar el radio de la esquina según tus preferencias
+                                  ),
+                                  child: ListTile(
+                                    title: const Text(
+                                      "Estado: ",
+                                      style: TextStyle(
+                                        color: Color(0xFF245366),
+                                        fontSize: 14.0,
                                       ),
                                     ),
-                                    ListTile(
-                                      title: const Text(
-                                        "Estado Seleccionado: ",
-                                        style: TextStyle(
-                                            color: Color(0xFF245366),
-                                            fontSize: 14.0),
-                                      ),
-                                      subtitle: Text(
-                                        selectedEstado,
-                                        style: const TextStyle(
-                                            color: Color(0xFF245366),
-                                            fontSize: 18.0),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.arrow_drop_down,
-                                            color: const Color(0xFF90b1af)),
-                                        onPressed: () {
-                                          showEstadoList();
-                                        },
+                                    subtitle: Text(
+                                      selectedEstado,
+                                      style: const TextStyle(
+                                        color: Color(0xFF245366),
+                                        fontSize: 18.0,
                                       ),
                                     ),
-                                  ],
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.arrow_drop_down,
+                                          color: const Color.fromARGB(
+                                              255, 171, 209, 207)),
+                                      onPressed: () {
+                                        showEstadoList();
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(height: 5.0),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(0.0),
-                                      child: TextFormField(
-                                        controller: municipioSearchController,
-                                        decoration: InputDecoration(
-                                          labelText: 'Buscar Municipio',
-                                          labelStyle: const TextStyle(
-                                            color: Color(0xFF245366),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: const BorderSide(
-                                              color: const Color(0xFF90b1af),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: const BorderSide(
-                                              color: const Color(0xFF90b1af),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          suffixIcon: IconButton(
-                                            icon: const Icon(Icons.search,
-                                                color: const Color(0xFF90b1af)),
-                                            onPressed: () {
-                                              searchMunicipios(
-                                                  municipioSearchController
-                                                      .text);
-                                            },
-                                          ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color.fromARGB(
+                                            255, 171, 209, 207),
+                                        width:
+                                            2.0 // Puedes ajustar el ancho del borde según tus preferencias
                                         ),
-                                        onChanged: (text) {
-                                          // No hacer nada aquí
-                                        },
+                                    borderRadius: BorderRadius.circular(
+                                        8.0), // Puedes ajustar el radio de la esquina según tus preferencias
+                                  ),
+                                  child: ListTile(
+                                    title: const Text(
+                                      "Municipio: ",
+                                      style: TextStyle(
+                                        color: Color(0xFF245366),
+                                        fontSize: 14.0,
                                       ),
                                     ),
-                                    ListTile(
-                                      title: const Text(
-                                        "Municipio Seleccionado: ",
-                                        style: TextStyle(
-                                            color: Color(0xFF245366),
-                                            fontSize: 14.0),
-                                      ),
-                                      subtitle: Text(
-                                        selectedMunicipio,
-                                        style: const TextStyle(
-                                            color: Color(0xFF245366),
-                                            fontSize: 18.0),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.arrow_drop_down,
-                                            color: const Color(0xFF90b1af)),
-                                        onPressed: () {
-                                          showMunicipioList();
-                                        },
+                                    subtitle: Text(
+                                      selectedEstado,
+                                      style: const TextStyle(
+                                        color: Color(0xFF245366),
+                                        fontSize: 18.0,
                                       ),
                                     ),
-                                  ],
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.arrow_drop_down,
+                                          color: const Color.fromARGB(
+                                              255, 171, 209, 207)),
+                                      onPressed: () {
+                                        showMunicipioList();
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(height: 0), // Espacio adicional
+                          SizedBox(height: 20), // Espacio adicional
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -1143,7 +1110,7 @@ class _AjustesState extends State<Ajustes> {
                   ),
                   child: Text(
                     'Cerrar sesión',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onPressed: () {
                     _showLogoutDialog();
@@ -1161,10 +1128,15 @@ class _AjustesState extends State<Ajustes> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        title: Text('Cerrar sesión'),
+        title: Text(
+          'Cerrar sesión',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         content: Text('¿Está seguro de que desea cerrar sesión?'),
         actions: [
           TextButton(

@@ -81,7 +81,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
       segundoApellido = docSnapshot.get('segundoApellido') ?? "";
       tipoUsuario = docSnapshot.get('tipoUsuario') ?? "";
       categoria = docSnapshot.get('categoria') ?? "";
-      ubicacion = docSnapshot.get('ubicacion'); 
+      ubicacion = docSnapshot.get('ubicacion');
       distanciaBarra = docSnapshot.get('distancia');
       showContent = true;
     });
@@ -212,8 +212,8 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                         final longitude = ubicacion.longitude;
                         return Text(
                           'Ubicación: Latitud $latitude, Longitud $longitude',
-                          style: TextStyle(
-                              fontSize: 18, color: Color(0xFF245366)),
+                          style:
+                              TextStyle(fontSize: 18, color: Color(0xFF245366)),
                         );
                       }
                     }
@@ -324,13 +324,10 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: AnimatedOpacity(
         opacity: showContent ? 1.0 : 0.0,
         duration: Duration(milliseconds: 700),
@@ -343,7 +340,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                   segundoApellido.isNotEmpty &&
                   tipoUsuario.isNotEmpty)
                 Container(
-                  color: Color(0xFFCFE3E1),
+                  color: Theme.of(context).colorScheme.background,
                   width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -367,20 +364,29 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                       Column(
                         children: [
                           for (String field in [
-                            'BIENVENIDO',
+                            'Bienvenido',
                             '$nombre $primerApellido $segundoApellido',
                             '$tipoUsuario'
                           ])
-                            FittedBox(
+                            SizedBox(
+                              height: 31,
                               child: Text(
                                 field,
                                 style: TextStyle(
-                                    fontSize:
-                                        field.contains('BIENVENIDO') ? 18 : 28,
-                                    color: Color(0xFF245366)),
+                                  fontSize: field.contains('Bienvenido') ||
+                                          field.contains('$tipoUsuario')
+                                      ? 18
+                                      : 24,
+                                  color: Color(0xFF245366),
+                                  fontWeight: field.contains(
+                                          '$nombre $primerApellido $segundoApellido')
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
                               ),
                             ),
-                          if (ubicacion !=
+
+                          /*if (ubicacion !=
                               null) // Verifica si la ubicación no es nula
                             StreamBuilder<DocumentSnapshot>(
                               stream: FirebaseFirestore.instance
@@ -388,80 +394,86 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                                   .doc(_currentUser.uid)
                                   .snapshots(),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.active) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.active) {
                                   final document = snapshot.data;
                                   if (document != null && document.exists) {
-                                    final ubicacion = document['ubicacion'] as GeoPoint?;
+                                    final ubicacion =
+                                        document['ubicacion'] as GeoPoint?;
                                     if (ubicacion != null) {
                                       final latitude = ubicacion.latitude;
                                       final longitude = ubicacion.longitude;
                                       return Text(
                                         'Ubicación: Latitud $latitude, Longitud $longitude',
-                                        style: TextStyle(fontSize: 18, color: Color(0xFF245366)),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Color(0xFF245366)),
                                       );
                                     }
                                   }
                                 }
                                 return CircularProgressIndicator();
                               },
-                            )
+                            )*/
                         ],
                       ),
                     ],
                   ),
                 ),
               Padding(
-  padding: EdgeInsets.only(left: 15, right: 25), // Ajusta el padding según sea necesario
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Coloca los elementos al principio y al final del Row
-    children: [
-      Row(
-        children: [
-          Switch(
-            activeColor: Color(0xFF1FBAAF),
-            inactiveThumbColor: Colors.grey,
-            value: recepcionActivada,
-            onChanged: (value) {
-              setState(() {
-                recepcionActivada = value;
-                _saveState(value);
-              });
-            },
-          ),
-          Text(
-            recepcionActivada ? 'Activo' : 'Inactivo',
-            style: TextStyle(
-              fontSize: 18,
-              color: recepcionActivada
-                  ? Color(0xFF245366)
-                  : Colors.grey,
-            ),
-          ),
-        ],
-      ),
-      InkWell(
-        onTap: () {
-          _showLocationDialog(); // Función para mostrar el diálogo
-        },
-        child: Text(
-          'Ubicación actual',
-          style: TextStyle(
-            fontSize: 18,
-            color: Color(0xFF245366),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
-
+                padding: EdgeInsets.only(
+                    left: 15,
+                    right: 25), // Ajusta el padding según sea necesario
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Coloca los elementos al principio y al final del Row
+                  children: [
+                    Row(
+                      children: [
+                        Switch(
+                          activeColor: Color(0xFF1FBAAF),
+                          inactiveThumbColor: Colors.grey,
+                          value: recepcionActivada,
+                          onChanged: (value) {
+                            setState(() {
+                              recepcionActivada = value;
+                              _saveState(value);
+                            });
+                          },
+                        ),
+                        Text(
+                          recepcionActivada ? 'Activo' : 'Inactivo',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: recepcionActivada
+                                ? Color(0xFF245366)
+                                : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _showLocationDialog(); // Función para mostrar el diálogo
+                      },
+                      child: Text(
+                        'Ubicación actual',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1FBAAF),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               if (recepcionActivada)
                 Container(
                   padding: EdgeInsets.only(left: 25, bottom: 10),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Servicios Disponibles',
+                    'Servicios disponibles',
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xFF245366),
@@ -469,6 +481,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                     ),
                   ),
                 ),
+              SizedBox(height: 0),
               if (recepcionActivada)
                 StreamBuilder<List<QueryDocumentSnapshot<Object?>>>(
                   stream: _getCitasStream('disponible'),
@@ -579,76 +592,80 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                               }
                             },
                             child: Card(
-  elevation: 3,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15),
-  ),
-  margin: EdgeInsets.symmetric(
-    horizontal: 10, vertical: 10),
-  child: Container(
-    width: 170,
-    height: 160,
-    padding: EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          child: iconoUrl != null
-              ? SvgPicture.network(
-            iconoUrl,
-            width: 48,
-            height: 48,
-          )
-              : Icon(Icons.info_outline, size: 48),
-        ),
-        SizedBox(height: 10),
-        Text(
-          servicioRecortado,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF235365),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10),
-        Text(
-          '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 30, vertical: 4),
-            color: tipoServicio == "Urgente"
-                ? Colors.red
-                : Color(0xFF1FBAAF),
-            child: Center(
-              child: Text(
-                tipoServicio,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              surfaceTintColor: Colors.white,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: Container(
+                                width: 165,
+                                height: 152,
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      child: iconoUrl != null
+                                          ? SvgPicture.network(
+                                              iconoUrl,
+                                              width: 48,
+                                              height: 48,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            )
+                                          : Icon(Icons.info_outline, size: 48),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      servicioRecortado,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF235365),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 4),
+                                        color: tipoServicio == "Urgente"
+                                            ? Colors.red
+                                            : Color(0xFF1FBAAF),
+                                        child: Center(
+                                          child: Text(
+                                            tipoServicio,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           );
                         }).toList(),
                       ),
@@ -659,7 +676,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                 padding: EdgeInsets.only(left: 25, top: 10, bottom: 10),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Mis Citas Aceptadas',
+                  'Mis citas aceptadas',
                   style: TextStyle(
                     fontSize: 20,
                     color: Color(0xFF245366),
@@ -683,7 +700,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             vertical:
                                 50), // Ajusta el valor del padding vertical
                         child: Text(
-                          'No hay servicios aceptados.',
+                          'No hay servicios aceptados',
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ),
@@ -778,75 +795,80 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                             }
                           },
                           child: Card(
-  elevation: 3,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15),
-  ),
-  margin: EdgeInsets.symmetric(
-    horizontal: 10, vertical: 10),
-  child: Container(
-    width: 170,
-    height: 160,
-    padding: EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          child: iconoUrl != null
-              ? SvgPicture.network(
-            iconoUrl,
-            width: 48,
-            height: 48,
-          )
-              : Icon(Icons.info_outline, size: 48),
-        ),
-        SizedBox(height: 10),
-        Text(
-          servicioRecortado,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF235365),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10),
-        Text(
-          '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 30, vertical: 4),
-            color: tipoServicio == "Urgente"
-                ? Colors.red
-                : Color(0xFF1FBAAF),
-            child: Center(
-              child: Text(
-                tipoServicio,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            surfaceTintColor: Colors.white,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Container(
+                              width: 165,
+                              height: 152,
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: iconoUrl != null
+                                        ? SvgPicture.network(
+                                            iconoUrl,
+                                            width: 48,
+                                            height: 48,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          )
+                                        : Icon(Icons.info_outline, size: 48),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    servicioRecortado,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF235365),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    '${distanciaCita?.toStringAsFixed(2)} km', // Aquí muestra la distancia
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 4),
+                                      color: tipoServicio == "Urgente"
+                                          ? Colors.red
+                                          : Color(0xFF1FBAAF),
+                                      child: Center(
+                                        child: Text(
+                                          tipoServicio,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       }).toList(),
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hadal/main.dart';
 import 'package:hadal/pacientes/calendario/calendario.dart';
 import 'package:hadal/pacientes/chats/salasPrivadasPacientes.dart';
 import 'package:hadal/pacientes/home/home.dart';
@@ -30,8 +31,8 @@ class _PrincipalState extends State<Principal> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
-                  color: Colors.white, // Color blanco
-                  fontWeight: FontWeight.bold, // Texto en negrita
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -44,15 +45,18 @@ class _PrincipalState extends State<Principal> {
             child: IndexedStack(
               index: _selectedIndex,
               children: [
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await NotificationService.showNotification(
-                        title: "Title of the notification",
-                        body: "Body of the notification",
-                      );
-                    },
-                    child: Text('Notificación'),
+                Container(
+                  //color: Color.fromARGB(255, 244, 252, 251), // Puedes cambiar a tu color deseado
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await NotificationService.showNotification(
+                          title: "Title of the notification",
+                          body: "Body of the notification",
+                        );
+                      },
+                      child: Text('Notificación'),
+                    ),
                   ),
                 ),
                 SalasPrivadasPacientes(),
@@ -63,7 +67,17 @@ class _PrincipalState extends State<Principal> {
             ),
           ),
           Container(
-            color: Color.fromARGB(255, 235, 235, 235),
+            height: 50,
+            margin: EdgeInsets.only(top: 1.0),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: c4, // Puedes ajustar el color según tus necesidades
+                  width:
+                      0.5, // Puedes ajustar el ancho del borde según tus necesidades
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -94,7 +108,7 @@ class _PrincipalState extends State<Principal> {
             alignment: Alignment.center,
             children: [
               Container(
-                height: 40, // Alto del tab
+                height: 50, // Alto del tab
                 decoration: BoxDecoration(
                   color: _selectedIndex == index
                       ? Color.fromARGB(255, 32, 204, 193)
@@ -108,7 +122,7 @@ class _PrincipalState extends State<Principal> {
                   SvgPicture.asset(
                     iconPath,
                     width: 28,
-                    height: 28,
+                    height: 40,
                     color: _selectedIndex == index
                         ? Colors.white
                         : Color(0xFF7C7F83),

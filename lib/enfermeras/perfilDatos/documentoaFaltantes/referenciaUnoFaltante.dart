@@ -11,12 +11,10 @@ import 'package:file_picker/file_picker.dart';
 
 class ReferenciaUnoFaltante extends StatefulWidget {
   @override
-  _ReferenciaUnoFaltanteState createState() =>
-      _ReferenciaUnoFaltanteState();
+  _ReferenciaUnoFaltanteState createState() => _ReferenciaUnoFaltanteState();
 }
 
-class _ReferenciaUnoFaltanteState
-    extends State<ReferenciaUnoFaltante> {
+class _ReferenciaUnoFaltanteState extends State<ReferenciaUnoFaltante> {
   void _getCurrentUserPhotoUrl() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final userData = await FirebaseFirestore.instance
@@ -199,21 +197,19 @@ class _ReferenciaUnoFaltanteState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Color(0xFFF4FFFE),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF4FCFB),
+        backgroundColor: Color(0xFF1FBAAF),
         title: Text(
           'Documentos',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Color(0xFF235365),
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.pop(context, false);
@@ -224,7 +220,7 @@ class _ReferenciaUnoFaltanteState
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          color: Color(0xFFF4FCFB),
+          surfaceTintColor: Colors.white,
           margin: EdgeInsets.all(35),
           elevation: 5,
           shadowColor: Colors.grey,
@@ -295,8 +291,9 @@ class _ReferenciaUnoFaltanteState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: () => _selectFile(true),
-                          child:
-                              Text('Subir', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Subir',
+                              style: TextStyle(
+                                  fontSize: 18.0, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(
@@ -313,7 +310,7 @@ class _ReferenciaUnoFaltanteState
                       Container(
                         padding: EdgeInsets.only(
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
-                        color: Color(0xFFF4FCFB),
+                        color: Colors.white,
                         child: Text(
                           "Se solicita una referencia para conocer más sobre tus aptitudes.\n\nFormato JPG, PNG o PDF requerido.\n\nFAVOR DE TOMAR UNA FOTO LEGIBLE.",
                           style: TextStyle(fontSize: 18.0),
@@ -325,8 +322,9 @@ class _ReferenciaUnoFaltanteState
                             left: 30.0, top: 10.0, bottom: 20.0, right: 30),
                         child: ElevatedButton(
                           onPressed: _uploadDocument,
-                          child:
-                              Text('Aceptar', style: TextStyle(fontSize: 18.0)),
+                          child: Text('Aceptar',
+                              style: TextStyle(
+                                  fontSize: 18.0, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 30),
                             padding: EdgeInsets.symmetric(

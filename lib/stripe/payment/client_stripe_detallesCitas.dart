@@ -1,17 +1,18 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hadal/pacientes/home/home.dart';
+import 'package:hadal/pacientes/home/principalPaciente.dart';
 import 'package:hadal/pacientes/procedimientoServicios/detallesCitas.dart';
-import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/citaAgendada.dart';
 import 'package:http/http.dart' as http;
 
 void showWaitingProgressDialog() {}
 
-class ClientStripePayment extends GetConnect {
+class ClientStripePaymentDetallesCitas extends GetConnect {
   String? paymentIntentStatus;
 
   String? getPaymentIntentId() {
@@ -21,7 +22,7 @@ class ClientStripePayment extends GetConnect {
   double getRefundAmount() {
     final totalAmount = double.parse(paymentIntentData?['amount']) /
         100.0; // Convierte centavos a dólares
-    final cancellationFee = (totalAmount * 0.10) + 3;
+    final cancellationFee = totalAmount * 0.10;
     final refundAmount = totalAmount - cancellationFee;
 
     return refundAmount;
@@ -51,22 +52,15 @@ class ClientStripePayment extends GetConnect {
 
   Function(bool) onPaymentSuccess;
 
-  ClientStripePayment({required this.onPaymentSuccess, this.createdServiceId});
+  ClientStripePaymentDetallesCitas(
+      {required this.onPaymentSuccess, this.createdServiceId});
 
   String? getCreatedServiceId() {
     return createdServiceId;
   }
 
-  Future<void> makePayment(
-      BuildContext context,
-      double _total,
-      String nombre,
-      String primerApellido,
-      String segundoApellido,
-      String userId,
-      String serviceName) async {
+  Future<void> makePayment(BuildContext context, double _total) async {
     print('_________________Valor de total: $_total');
-    print("_____SERVICIO CREADO PARA EL PACIENTE  ID: $userId");
 
     var gpay = PaymentSheetGooglePay(
       merchantCountryCode: "MX",
@@ -76,13 +70,9 @@ class ClientStripePayment extends GetConnect {
 
     try {
       paymentIntentData = await createPaymentIntent(
-          double.parse(_total.toStringAsFixed(2)),
-          'MXN',
-          nombre,
-          primerApellido,
-          segundoApellido,
-          userId,
-          serviceName);
+        double.parse(_total.toStringAsFixed(2)),
+        'MXN',
+      );
 
       await Stripe.instance
           .initPaymentSheet(
@@ -117,7 +107,6 @@ class ClientStripePayment extends GetConnect {
 
           print("_____________Servicio creado_____________");
           print("_____SERVICIO CREADO CITA ID: $detallesCitaState!.citaId");
-
           onPaymentSuccess(true);
           // Agregar un retraso antes de mostrar el diálogo de espera
           Future.delayed(Duration(seconds: 2), () {
@@ -152,34 +141,18 @@ class ClientStripePayment extends GetConnect {
     return commissionAmount;
   }
 
-  //String enfermeraConnect = "acct_1OKWMkPDcItwZiqp";
+  String enfermeraConnect = "acct_1OKWMkPDcItwZiqp";
+
   Future<Map<String, dynamic>?> createPaymentIntent(
-    double amount,
-    String currency,
-    String customerName,
-    String primerApellido,
-    String segundoApellido,
-    String userId,
-    String serviceName,
-  ) async {
+      double amount, String currency) async {
     try {
-      // Generar números aleatorios de hasta 8 caracteres
-      final random = Random();
-      final randomNumbers = List.generate(8, (_) => random.nextInt(10)).join();
-
-      // Crear el order_id combinando el nombre del cliente y los números aleatorios
-      final orderId = '${customerName.replaceAll(" ", "_")}_$randomNumbers';
-
       Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
         'currency': currency,
         'confirmation_method': 'automatic',
-        'metadata[order_id]': orderId,
-        'description': serviceName, // Agregar la descripción del pago
-        'customer': await createStripeCustomer(
-            userId, customerName, primerApellido, segundoApellido),
+        // 'application_fee_amount': calculateAmount(amount * 0.20),
+        // 'transfer_data[destination]': enfermeraConnect,
       };
-
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         body: body,
@@ -195,70 +168,9 @@ class ClientStripePayment extends GetConnect {
 
       return responseBody..['amount'] = amountStr;
     } catch (err) {
-      print('Error: $err');
+      print('Error: ${err} ');
 
       return null; // Devuelve null en caso de error
-    }
-  }
-
-  Future<String?> createStripeCustomer(String userId, String customerName,
-      String primerApellido, String segundoApellido) async {
-    try {
-      // Verifica si ya existe un cliente con el usuario_id
-      final existingCustomer = await findExistingStripeCustomer(userId);
-
-      if (existingCustomer != null) {
-        return existingCustomer;
-      }
-
-      // Si no existe, crea un nuevo cliente
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/customers'),
-        body: {
-          'metadata[usuario_id]': userId,
-          'name':
-              '$customerName $primerApellido $segundoApellido', // Concatenate name, primerApellido, and segundoApellido
-        },
-        headers: {
-          'Authorization':
-              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      );
-
-      final responseBody = jsonDecode(response.body);
-      final customerId = responseBody['id'];
-
-      return customerId;
-    } catch (err) {
-      print('Error al crear/obtener el cliente en Stripe: ${err}');
-      return null;
-    }
-  }
-
-  Future<String?> findExistingStripeCustomer(String userId) async {
-    try {
-      var response = await http.get(
-        Uri.parse('https://api.stripe.com/v1/customers'),
-        headers: {
-          'Authorization':
-              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      );
-
-      final responseBody = jsonDecode(response.body);
-
-      // Busca un cliente con el usuario_id
-      final existingCustomer = responseBody['data'].firstWhere(
-        (customer) => customer['metadata']['usuario_id'] == userId,
-        orElse: () => null,
-      );
-
-      return existingCustomer != null ? existingCustomer['id'] : null;
-    } catch (err) {
-      print('Error al buscar el cliente en Stripe: ${err}');
-      return null;
     }
   }
 
@@ -359,41 +271,31 @@ class ClientStripePayment extends GetConnect {
   // }
 
   Future<void> refundPayment(
-      BuildContext context, String paymentIntentId, double refundAmount) async {
+      String paymentIntentId, double refundAmount) async {
     try {
-      // Convierte el monto de reembolso a una cadena
-      final refundAmountStr = calculateAmount(refundAmount);
-
-      var response = await http
-          .post(Uri.parse('https://api.stripe.com/v1/refunds'), body: {
-        'payment_intent': paymentIntentId,
-        'amount':
-            refundAmountStr, // Utiliza la cadena refundAmountStr en lugar de refundAmount
-      }, headers: {
-        'Authorization':
-            'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      });
+      // Lógica para realizar la solicitud de reembolso utilizando Stripe
+      // Puedes utilizar http.post o cualquier otro método que prefieras
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/refunds'),
+        body: {
+          'payment_intent': paymentIntentId,
+          'amount': calculateAmount(refundAmount),
+        },
+        headers: {
+          'Authorization':
+              'Bearer sk_test_51NyQXLARylbXLgfzvs3lZaHSVbf8gZe4UBUB0VvFRSyBz5Nzg5aDYqLtcb89cwqrwtJtVywScqKChUytCrdsR6Pz00nuym33QP',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
 
       if (response.statusCode == 200) {
         // Reembolso exitoso
-        Home();
-        Navigator.of(context).pop(); // Cierra el diálogo de espera
-        Fluttertoast.showToast(
-          msg: 'El reembolso se ha procesado correctamente.',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
+        // Puedes agregar lógica adicional si es necesario
       } else {
-        // Error en el reembolso
-        Fluttertoast.showToast(
-          msg:
-              'Hubo un error al procesar el reembolso. El valor del reembolso es de: ${refundAmount.toStringAsFixed(2)}',
-          gravity: ToastGravity.CENTER,
-        );
+        // Manejar el error en el reembolso
       }
     } catch (error) {
-      print(error);
+      // Manejar cualquier error durante el proceso
     }
   }
 }

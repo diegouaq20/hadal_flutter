@@ -114,12 +114,16 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
     if (citaDoc.exists) {
       final salasChatCollection = citaDoc.reference.collection('salasChat');
 
+      // Observador de Firebase Firestore
       salasChatCollection
           .orderBy('timestamp', descending: true)
           .snapshots()
           .listen((QuerySnapshot querySnapshot) {
         final salasChatData =
             querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+        final salasChatData = querySnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
 
         setState(() {
           _salasChatData = salasChatData;
@@ -132,6 +136,17 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
 
           if (idDelRemitente != widget.pacienteId) {
             _showNotification("Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
+        // Agregar notificación local aquí cuando llegue un nuevo mensaje
+        if (querySnapshot.docChanges.isNotEmpty &&
+            querySnapshot.docChanges.first.type == DocumentChangeType.added) {
+          final nuevoMensaje = querySnapshot.docChanges.first.doc.data();
+          final idDelRemitente =
+              (nuevoMensaje as Map<String, dynamic>)['id'] as String?;
+
+          // Añadir condición para mostrar la notificación solo si el mensaje es de la enfermera
+          if (idDelRemitente != widget.pacienteId) {
+            _showNotification(
+                "Nuevo mensaje", "Se ha recibido un nuevo mensaje.");
           }
         }
       });
@@ -200,7 +215,7 @@ class _MensajesPacientesState extends State<MensajesPacientes> {
         backgroundColor: Color(0xFF1FBAAF),
         centerTitle: true,
       ),
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(

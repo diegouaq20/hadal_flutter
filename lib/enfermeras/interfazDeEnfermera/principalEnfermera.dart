@@ -4,7 +4,7 @@ import 'package:hadal/enfermeras/interfazDeEnfermera/ajustesEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/calendarioEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/homeEnfermera.dart';
 import 'package:hadal/enfermeras/interfazDeEnfermera/salasPrivadasEnfermeras.dart';
-
+import 'package:hadal/main.dart';
 
 class PrincipalEnfermeras extends StatefulWidget {
   @override
@@ -12,7 +12,8 @@ class PrincipalEnfermeras extends StatefulWidget {
 }
 
 class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
-  int _selectedIndex = 2; // Inicialmente seleccionamos la pestaña del índice 2 (Home).
+  int _selectedIndex =
+      2; // Inicialmente seleccionamos la pestaña del índice 2 (Home).
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,11 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
               Text(
                 'HADAL',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white, // Color blanco
+                  fontWeight: FontWeight.bold, // Texto en negrita
+                ),
               ),
             ],
           ),
@@ -40,7 +45,10 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
             child: IndexedStack(
               index: _selectedIndex,
               children: [
-                Center(child: Text('Notifications')),
+                Container(
+                  //color: Color(0xFFF4FCFB), // Cambia esto al color que desees
+                  child: Center(child: Text('Notifications')),
+                ),
                 SalasPrivadasEnfermeras(),
                 HomeEnfermera(),
                 CalendarioEnfermera(),
@@ -49,7 +57,18 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
             ),
           ),
           Container(
-            color: Color.fromARGB(255, 235, 235, 235),
+            height: 50,
+            margin: EdgeInsets.only(top: 1.0),
+            decoration: BoxDecoration(
+              //color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
+              border: Border(
+                top: BorderSide(
+                  color: c4, // Puedes ajustar el color según tus necesidades
+                  width:
+                      0.4, // Puedes ajustar el ancho del borde según tus necesidades
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -65,6 +84,7 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
       ),
     );
   }
+
   Widget _buildTabItem(int index, String iconPath) {
     return Expanded(
       child: InkWell(
@@ -79,7 +99,7 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
             alignment: Alignment.center,
             children: [
               Container(
-                height: 40, // Alto del tab
+                height: 50, // Alto del tab
                 decoration: BoxDecoration(
                   color: _selectedIndex == index
                       ? Color.fromARGB(255, 32, 204, 193)
@@ -93,8 +113,10 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
                   SvgPicture.asset(
                     iconPath,
                     width: 28,
-                    height: 28,
-                    color: _selectedIndex == index ? Colors.white : Color(0xFF7C7F83),
+                    height: 40,
+                    color: _selectedIndex == index
+                        ? Colors.white
+                        : Color(0xFF7C7F83),
                   ),
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hadal/pacientes/procedimientoServicios/domicilioDeTerceros/citaAgendada.dart';
+import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/citaAgendada.dart';
 import 'package:hadal/pacientes/procedimientoServicios/domicilioRealtime/pantallaDescripcionRealtime.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +19,8 @@ class CalendarioAgregarRealtime extends StatefulWidget {
 
 class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
   late String nombre;
+  late String primerApellido;
+  late String segundoApellido;
   late GeoPoint _ubicacion;
   late String photoUrl;
 
@@ -28,7 +30,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
   void initState() {
     super.initState();
     initializeAppAndGetName();
-    _domicilioController = TextEditingController(text: widget.servicio.domicilio);
+    _domicilioController =
+        TextEditingController(text: widget.servicio.domicilio);
   }
 
   Future<void> initializeAppAndGetName() async {
@@ -40,6 +43,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
       photoUrl = userDoc['photoUrl'] ?? "";
     });
@@ -51,21 +56,33 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
   DateTime? _selectedDay;
 
   final List<String> horarios = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00'
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFF4FCFB),
+        //backgroundColor: Color(0xFFF4FCFB),
         title: Text(
-          'Agendar Cita',
+          'Agendar cita',
           style: TextStyle(
-            color: Color(0xFF235365),
-            fontSize: 20,
-          ),
+              color: Color(0xFF235365),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         toolbarHeight: kToolbarHeight - 15,
         leading: IconButton(
@@ -79,7 +96,7 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
         ),
         elevation: 2.0,
       ),
-      backgroundColor: Color(0xFFF4FCFB),
+      backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -109,7 +126,7 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
             ),
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: Color(0xFF1BC0B2),
+                color: Color(0xFF1FBAAF),
                 shape: BoxShape.circle,
               ),
               todayDecoration: BoxDecoration(
@@ -130,14 +147,15 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
             child: ListView.separated(
               itemCount: horarios.length,
               separatorBuilder: (context, index) => Divider(
-                color: _selectedHorarioIndex == index ? null : Color(0xFF245366),
+                color:
+                    _selectedHorarioIndex == index ? null : Color(0xFF245366),
                 thickness: 2.0,
                 indent: MediaQuery.of(context).size.width * 0.2,
                 endIndent: MediaQuery.of(context).size.width * 0.05,
               ),
               itemBuilder: (context, index) {
                 return ListTile(
-                  tileColor: Color(0xFFEFF4F4),
+                  tileColor: Colors.white,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -145,7 +163,9 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                         child: Text(
                           horarios[index],
                           style: TextStyle(
-                            color: _selectedHorarioIndex == index ? Color(0xFF245366) : null,
+                            color: _selectedHorarioIndex == index
+                                ? Color(0xFF1FBAAF)
+                                : null,
                           ),
                         ),
                       ),
@@ -153,17 +173,21 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.77,
                               decoration: BoxDecoration(
-                                color: Color(0xFF8CA6A3),
+                                color: Color.fromARGB(255, 124, 191, 187),
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(height: 5.0),
                                   Text(
                                     '${widget.servicio.nombre}',
-                                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -183,7 +207,7 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
           SizedBox(height: 5.0),
           Container(
             width: double.infinity,
-            height: 40.0,
+            height: 50.0,
             margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
@@ -196,7 +220,12 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Selecciona una fecha y un horario'),
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        title: Text(
+                          'Selecciona una fecha y un horario',
+                          style: TextStyle(fontSize: 18),
+                        ),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Aceptar'),
@@ -211,12 +240,18 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                   return;
                 }
                 final now = DateTime.now();
-                if (_selectedDay!.isBefore(DateTime(now.year, now.month, now.day - 0))) {
+                if (_selectedDay!
+                    .isBefore(DateTime(now.year, now.month, now.day - 0))) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('No puedes agendar citas en fechas pasadas'),
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        title: Text(
+                          'No puedes agendar citas en fechas pasadas',
+                          style: TextStyle(fontSize: 18),
+                        ),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Aceptar'),
@@ -230,7 +265,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                   );
                   return;
                 }
-                final dayOfWeek = DateFormat.EEEE('es_ES').format(_selectedDay!);
+                final dayOfWeek =
+                    DateFormat.EEEE('es_ES').format(_selectedDay!);
                 final dayOfMonth = _selectedDay!.day;
                 final month = DateFormat.MMMM('es_ES').format(_selectedDay!);
                 final serviceName = widget.servicio.nombre;
@@ -251,6 +287,8 @@ class _CalendarioAgregarRealtimeState extends State<CalendarioAgregarRealtime> {
                       estado: 'disponible',
                       tipoServicio: 'Cita',
                       nombre: nombre,
+                      primerApellido: primerApellido,
+                      segundoApellido: segundoApellido,
                       total: total,
                       icono: icono,
                       domicilio: _domicilioController.text,

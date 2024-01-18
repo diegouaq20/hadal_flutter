@@ -174,7 +174,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////
 
   List<QueryDocumentSnapshot> serviciosBasicosDocs = [];
   bool showContent = false;
@@ -196,6 +196,7 @@ class _HomeState extends State<Home> {
     }
   }
 
+/////////////////////////////////////////////////////////////////////////
   @override
   void initState() {
     super.initState();
@@ -210,7 +211,7 @@ class _HomeState extends State<Home> {
   void _loadServicios() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('serviciosbasicos')
-        .limit(4)
+        .limit(3)
         .get();
 
     setState(() {
@@ -222,11 +223,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: showContent ? 1.0 : 0.0,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
       child: Column(
         children: [
           Container(
-            color: Color(0xFFCFE3E1),
+            //color: c7,
             width: double.infinity,
             child: nombre != "" &&
                     primerApellido != "" &&
@@ -254,35 +255,43 @@ class _HomeState extends State<Home> {
                       Column(
                         children: [
                           for (String field in [
-                            'BIENVENIDO',
+                            'Bienvenido',
                             '$nombre $primerApellido $segundoApellido',
                             '$tipoUsuario'
                           ])
-                            FittedBox(
+                            SizedBox(
+                              height: 30.0,
                               child: Text(
                                 field,
                                 style: TextStyle(
-                                    fontSize:
-                                        field.contains('BIENVENIDO') ? 18 : 28,
-                                    color: Color(0xFF245366)),
+                                  fontSize: field.contains('Bienvenido') ||
+                                          field.contains('$tipoUsuario')
+                                      ? 18
+                                      : 24,
+                                  color: const Color(0xFF245366),
+                                  fontWeight: field.contains(
+                                          '$nombre $primerApellido $segundoApellido')
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
                               ),
                             ),
                         ],
                       ),
                     ],
                   )
-                : Text(''),
+                : const Text(''),
           ),
           Expanded(
             child: Container(
-              color: Color(0xFFF4FCFB),
+              color: Colors.white,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.only(
                               left: 35.0, top: 20.0, bottom: 20.0),
                           child: Text(
@@ -303,13 +312,14 @@ class _HomeState extends State<Home> {
                               ),
                             );
                           },
-                          child: Padding(
+                          child: const Padding(
                             padding: EdgeInsets.only(
                                 right: 35.0, top: 20.0, bottom: 20.0),
                             child: Text(
                               'Ver más',
                               style: TextStyle(
                                 fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                 color: Color(0xFF1FBAAF),
                               ),
                             ),
@@ -318,8 +328,8 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      constraints: BoxConstraints(maxHeight: 60),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      constraints: const BoxConstraints(maxHeight: 60),
                       child: Center(
                         child: Wrap(
                           spacing: 27,
@@ -342,6 +352,8 @@ class _HomeState extends State<Home> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
+                                          backgroundColor: Colors.white,
+                                          surfaceTintColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(10.0)),
@@ -349,16 +361,19 @@ class _HomeState extends State<Home> {
                                             child: Text(
                                               "Selecciona una opción",
                                               style: TextStyle(
-                                                color: Color(0xFF235365),
-                                              ),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500),
                                             ),
                                           ),
                                           content: SingleChildScrollView(
                                             child: ListBody(
                                               children: <Widget>[
                                                 Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
                                                   child: ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -368,8 +383,11 @@ class _HomeState extends State<Home> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           10.0)),
-                                                      primary:
-                                                          Color(0xFF1FBAAF),
+                                                      primary: const Color(
+                                                          0xFF1FBAAF),
+                                                      minimumSize: const Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -383,13 +401,17 @@ class _HomeState extends State<Home> {
                                                         ),
                                                       );
                                                     },
-                                                    child: Text(
-                                                        "Domicilio registrado"),
+                                                    child: const Text(
+                                                      "Domicilio registrado",
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
                                                   child: ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -399,8 +421,11 @@ class _HomeState extends State<Home> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           10.0)),
-                                                      primary:
-                                                          Color(0xFF1FBAAF),
+                                                      primary: const Color(
+                                                          0xFF1FBAAF),
+                                                      minimumSize: const Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -414,13 +439,17 @@ class _HomeState extends State<Home> {
                                                         ),
                                                       );
                                                     },
-                                                    child: Text(
-                                                        "Para alguien más"),
+                                                    child: const Text(
+                                                      "Para alguien más",
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
                                                   child: ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -430,8 +459,11 @@ class _HomeState extends State<Home> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           10.0)),
-                                                      primary:
-                                                          Color(0xFF1FBAAF),
+                                                      primary: const Color(
+                                                          0xFF1FBAAF),
+                                                      minimumSize: const Size(
+                                                          double.infinity,
+                                                          45.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.push(
@@ -445,27 +477,33 @@ class _HomeState extends State<Home> {
                                                         ),
                                                       );
                                                     },
-                                                    child: Column(
+                                                    child: const Column(
                                                       children: [
                                                         Text(
-                                                          "Ubicación actual",
+                                                          "Mi ubicación",
                                                           style: TextStyle(
-                                                              fontSize: 16),
-                                                        ),
-                                                        Text(
-                                                          "(Solo si se encuentra fuera de su domicilio registrado)",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 16,
                                                               color:
                                                                   Colors.white),
+                                                        ),
+                                                        Text(
+                                                          "(Fuera de su domicilio registrado)",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
                                                   child: ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -476,12 +514,22 @@ class _HomeState extends State<Home> {
                                                                       .circular(
                                                                           10.0)),
                                                       primary: Colors.red,
+                                                      minimumSize: const Size(
+                                                          double.infinity,
+                                                          40.0),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
-                                                    child: Text("Cancelar"),
+                                                    child: const Text(
+                                                      "Cancelar",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18.0,
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -495,10 +543,10 @@ class _HomeState extends State<Home> {
                                     height: 60,
                                     width: 60,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFF6FFFE),
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(10.0),
                                       boxShadow: [
-                                        BoxShadow(
+                                        const BoxShadow(
                                           color: Colors.grey,
                                           blurRadius: 5.0,
                                           offset: Offset(0, 2),
@@ -512,19 +560,25 @@ class _HomeState extends State<Home> {
                                         SvgPicture.network(
                                           serviceIconUrl,
                                           height: 40.0,
-                                          color: Color(0xFF7C7F83),
+                                          //color de iconos en pantalla principal
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 0),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
                                   child: Text(
                                     serviceNameFormatted,
                                     style: TextStyle(
-                                      color: Color(0xFF235365),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
@@ -540,10 +594,10 @@ class _HomeState extends State<Home> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Padding(
-                      padding:
-                          EdgeInsets.only(left: 35.0, top: 20.0, bottom: 10.0),
+                      padding: const EdgeInsets.only(
+                          left: 35.0, top: 20.0, bottom: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -551,7 +605,7 @@ class _HomeState extends State<Home> {
                             'Citas',
                             style: TextStyle(
                               fontSize: 20,
-                              color: Color(0xFF245366),
+                              color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -569,11 +623,11 @@ class _HomeState extends State<Home> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           // Mostrar un indicador de carga mientras se espera la consulta.
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
 
                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Center(
+                          return const Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical:
@@ -594,7 +648,7 @@ class _HomeState extends State<Home> {
                         return ListView.builder(
                           itemCount: citasUsuario.length,
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final citaData = citasUsuario[index].data()
                                 as Map<String, dynamic>;
@@ -618,18 +672,25 @@ class _HomeState extends State<Home> {
                             //final photoUrl = citaData['photoUrl'];
                             final tipoCategoria = citaData['tipoCategoria'];
                             final total = citaData['total'].toString();
+                            final paymentIntent = citaData['paymentIntent'];
                             //final distancia = citaData['distancia'];
 
                             return Card(
-                              elevation: 3,
-                              margin: EdgeInsets.symmetric(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              surfaceTintColor: Colors.white,
+                              elevation: 5,
+                              clipBehavior: Clip.hardEdge,
+                              margin: const EdgeInsets.symmetric(
                                 horizontal: 35,
-                                vertical: 10,
+                                vertical: 15,
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
+                              borderOnForeground: false,
                               child: ExpansionTile(
+                                tilePadding:
+                                    EdgeInsets.symmetric(horizontal: 16),
                                 title: Row(
                                   children: [
                                     FutureBuilder<DocumentSnapshot>(
@@ -644,13 +705,13 @@ class _HomeState extends State<Home> {
                                             enfermeraSnapshot.connectionState ==
                                                 ConnectionState.waiting) {
                                           // Mostrar un indicador de carga mientras se espera la consulta.
-                                          return CircularProgressIndicator();
+                                          return const CircularProgressIndicator();
                                         }
 
                                         if (enfermeraId.isEmpty ||
                                             !enfermeraSnapshot.hasData) {
                                           // Mostrar un icono de perfil predeterminado si enfermeraId está vacío o no hay datos de la enfermera.
-                                          return CircleAvatar(
+                                          return const CircleAvatar(
                                             child: Icon(Icons.person,
                                                 size: 20, color: Colors.white),
                                             backgroundColor: Color(0xFF235365),
@@ -667,14 +728,15 @@ class _HomeState extends State<Home> {
                                         return CachedNetworkImage(
                                           imageUrl: enfermeraPhotoUrl,
                                           placeholder: (context, url) =>
-                                              CircleAvatar(
+                                              const CircleAvatar(
                                             child: Icon(Icons.person,
                                                 size: 20, color: Colors.white),
-                                            backgroundColor: Color(0xFF235365),
+                                            backgroundColor:
+                                                Color.fromRGBO(35, 83, 101, 1),
                                             radius: 30,
                                           ), // Indicador de carga personalizado
                                           errorWidget: (context, url, error) =>
-                                              Icon(Icons
+                                              const Icon(Icons
                                                   .error), // Widget para mostrar en caso de error
                                           imageBuilder:
                                               (context, imageProvider) =>
@@ -686,7 +748,7 @@ class _HomeState extends State<Home> {
                                       },
                                     ),
 
-                                    SizedBox(
+                                    const SizedBox(
                                         width:
                                             10), // Espacio entre la imagen y el serviceName
                                     Flexible(
@@ -694,10 +756,11 @@ class _HomeState extends State<Home> {
                                         fit: BoxFit.scaleDown,
                                         child: Text(
                                           servicio,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Color(0xFF235365),
+                                            color:
+                                                Color.fromRGBO(35, 83, 101, 1),
                                           ),
                                           maxLines: 2, // Limitar a una línea
                                           overflow: TextOverflow
@@ -713,33 +776,114 @@ class _HomeState extends State<Home> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Usuario: $nombre',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Usuario: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$nombre',
+                                                style: const TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Fecha: $dia, $diaDelMes de $mes',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Fecha: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    '$dia, $diaDelMes de $mes',
+                                                style: const TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Hora: $hora',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Hora: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$hora',
+                                                style: const TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Estado: $estado',
-                                          style: TextStyle(
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Estado: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '$estado',
+                                                style: const TextStyle(
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Total: \$${total}',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF235365)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context)
+                                                .style,
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Total: ',
+                                                style: TextStyle(
+                                                  color: Color(0xFF235365),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: '\$${total}',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF235365),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Center(
                                           child: ElevatedButton(
                                             onPressed: () {
@@ -769,21 +913,25 @@ class _HomeState extends State<Home> {
                                                     pacienteId: pacienteId,
                                                     enfermeraId: enfermeraId,
                                                     citaId:
-                                                        citaId, // Agregado citaId aquí
+                                                        citaId,
+                                                        paymentIntent: paymentIntent  // Agregado citaId aquí
                                                   ),
                                                 ),
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              primary: Color(0xFF235365),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20, vertical: 10),
+                                              backgroundColor:
+                                                  const Color(0xFF235365),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
                                             ),
-                                            child: Text(
+                                            child: const Text(
                                               'Ver más detalles',
                                               style: TextStyle(
                                                 color: Colors.white,
