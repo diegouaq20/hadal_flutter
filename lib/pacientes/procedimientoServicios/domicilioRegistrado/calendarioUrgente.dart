@@ -39,6 +39,8 @@ class _CalendarioUrgenteState extends State<CalendarioUrgente> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       domicilio = userDoc['domicilio'] ?? "";
       photoUrl = userDoc['photoUrl'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? "";

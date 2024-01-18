@@ -39,6 +39,8 @@ class _CalendarioAgregarState extends State<CalendarioAgregar> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       domicilio = userDoc['domicilio'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? "";
       photoUrl = userDoc['photoUrl'] ?? "";

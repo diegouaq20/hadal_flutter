@@ -43,6 +43,8 @@ class _CalendarioAgregarTercerosState extends State<CalendarioAgregarTerceros> {
         .get();
     setState(() {
       nombre = userDoc['nombre'] ?? "";
+      primerApellido = userDoc['primerApellido'] ?? "";
+      segundoApellido = userDoc['segundoApellido'] ?? "";
       _ubicacion = userDoc['ubicacion'] ?? GeoPoint(0, 0);
       photoUrl = userDoc['photoUrl'] ?? "";
     });
