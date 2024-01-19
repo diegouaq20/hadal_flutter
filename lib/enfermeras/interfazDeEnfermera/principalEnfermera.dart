@@ -58,14 +58,13 @@ class _PrincipalEnfermerasState extends State<PrincipalEnfermeras> {
           ),
           Container(
             height: 50,
-            margin: EdgeInsets.only(top: 1.0),
+            margin: EdgeInsets.only(top: 0.0),
             decoration: BoxDecoration(
               //color: Color.fromARGB(255, 32, 204, 193).withOpacity(0.1),
               border: Border(
                 top: BorderSide(
-                  color: c4, // Puedes ajustar el color según tus necesidades
                   width:
-                      0.4, // Puedes ajustar el ancho del borde según tus necesidades
+                      0.0, // Puedes ajustar el ancho del borde según tus necesidades
                 ),
               ),
             ),

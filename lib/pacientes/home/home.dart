@@ -223,11 +223,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: showContent ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 500),
       child: Column(
         children: [
           Container(
-            //color: c7,
+            color: Color(0xFFCFE3E1),
             width: double.infinity,
             child: nombre != "" &&
                     primerApellido != "" &&
@@ -360,12 +360,12 @@ class _HomeState extends State<Home> {
                                           title: Center(
                                             child: Text(
                                               "Selecciona una opción",
-                                              style: TextStyle(
+                                              /*style: TextStyle(
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .secondary,
                                                   fontSize: 18,
-                                                  fontWeight: FontWeight.w500),
+                                                  fontWeight: FontWeight.w500),*/
                                             ),
                                           ),
                                           content: SingleChildScrollView(
@@ -561,9 +561,9 @@ class _HomeState extends State<Home> {
                                           serviceIconUrl,
                                           height: 40.0,
                                           //color de iconos en pantalla principal
-                                          color: Theme.of(context)
+                                          /*color: Theme.of(context)
                                               .colorScheme
-                                              .primary,
+                                              .primary,*/
                                         ),
                                       ],
                                     ),
@@ -575,13 +575,13 @@ class _HomeState extends State<Home> {
                                       const EdgeInsets.symmetric(horizontal: 0),
                                   child: Text(
                                     serviceNameFormatted,
-                                    style: TextStyle(
+                                    /*style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
-                                    ),
+                                    ),*/
                                     maxLines: 1,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
@@ -603,11 +603,11 @@ class _HomeState extends State<Home> {
                         children: [
                           Text(
                             'Citas',
-                            style: TextStyle(
+                            /*style: TextStyle(
                               fontSize: 20,
                               color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.bold,
-                            ),
+                            ),*/
                           ),
                         ],
                       ),

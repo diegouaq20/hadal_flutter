@@ -46,6 +46,7 @@ class _PrincipalState extends State<Principal> {
               index: _selectedIndex,
               children: [
                 Container(
+                  color: Color(0x7C7F8326),
                   //color: Color.fromARGB(255, 244, 252, 251), // Puedes cambiar a tu color deseado
                   child: Center(
                     child: ElevatedButton(
@@ -72,7 +73,6 @@ class _PrincipalState extends State<Principal> {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: c4, // Puedes ajustar el color según tus necesidades
                   width:
                       0.5, // Puedes ajustar el ancho del borde según tus necesidades
                 ),

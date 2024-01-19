@@ -340,7 +340,7 @@ class _HomeEnfermeraState extends State<HomeEnfermera> {
                   segundoApellido.isNotEmpty &&
                   tipoUsuario.isNotEmpty)
                 Container(
-                  color: Theme.of(context).colorScheme.background,
+                  color: Color(0xFFCFE3E1),
                   width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

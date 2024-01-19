@@ -209,12 +209,6 @@ class CustomAlertDialog extends StatelessWidget {
   }
 }
 
-Color c1 = Color.fromARGB(255, 197, 0, 135);
-Color c2 = Color.fromARGB(255, 23, 197, 0);
-Color c3 = Color(0xffF4FCFB);
-Color c4 = Color(0xffECFFFE);
-Color c6 = Color(0xFFF4FCFB);
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -222,7 +216,13 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: 'HADAL',
       debugShowCheckedModeBanner: false,
+      
       theme: ThemeData(
+  colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF1FBAAF)),
+  useMaterial3: true,
+  fontFamily: 'Roboto',
+),
+      /*theme: ThemeData(
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF1FBAAF),
           onPrimary: Color(0xffF4FCFB),
@@ -233,7 +233,7 @@ class MyApp extends StatelessWidget {
 
           //Theme.of(context).colorScheme.primary,
         ),
-      ),
+      ),*/
       home: FutureBuilder<String?>(
         future: checkUserType(),
         builder: (context, snapshot) {
@@ -260,7 +260,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-ThemeData theme = ThemeData(
+/*ThemeData theme = ThemeData(
   primaryColor: Colors.teal, // Color principal de la aplicación
   textTheme: TextTheme(
     bodyText1: TextStyle(
@@ -268,4 +268,4 @@ ThemeData theme = ThemeData(
           Color(0xFF1FBAAF), // Color del texto de los campos de texto y botones
     ),
   ),
-);
+);*/
